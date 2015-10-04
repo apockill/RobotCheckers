@@ -1,0 +1,1133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1cd6d5f3-5552-400d-a05a-f2089b376189" name="Default" comment="" />
+    <ignored path="RobotArm.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="Vision.py" pinned="false" current="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.058553386" vertical-offset="255" max-vertical-offset="1156">
+                    <caret line="41" column="12" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
+                    <folding>
+                      <element signature="e#363#568#1" expanded="false" />
+                      <element signature="e#650#886#1" expanded="false" />
+                      <element signature="e#958#1209#1" expanded="false" />
+                      <element signature="e#1330#4478#0" expanded="false" />
+                      <element signature="e#1358#1929#0" expanded="false" />
+                      <element signature="e#1986#2890#0" expanded="false" />
+                      <element signature="e#1986#2355#1" expanded="false" />
+                      <element signature="e#2933#2959#0" expanded="false" />
+                      <element signature="e#2993#4052#0" expanded="false" />
+                      <element signature="e#4103#4398#0" expanded="false" />
+                      <element signature="e#4103#4344#1" expanded="false" />
+                      <element signature="e#4437#4478#0" expanded="false" />
+                      <element signature="e#4574#5019#0" expanded="false" />
+                      <element signature="e#5057#5310#0" expanded="false" />
+                      <element signature="e#5393#6421#0" expanded="false" />
+                      <element signature="e#6516#7455#0" expanded="false" />
+                      <element signature="e#6516#6812#1" expanded="false" />
+                      <element signature="e#7504#8114#0" expanded="false" />
+                      <element signature="e#7504#7802#1" expanded="false" />
+                      <element signature="e#8210#8597#0" expanded="false" />
+                      <element signature="e#8210#8295#1" expanded="false" />
+                      <element signature="e#8651#9534#0" expanded="false" />
+                      <element signature="e#9609#15039#0" expanded="false" />
+                      <element signature="e#9609#11257#1" expanded="false" />
+                      <element signature="e#15087#15809#0" expanded="false" />
+                      <element signature="e#15856#16944#0" expanded="false" />
+                      <element signature="e#15856#16227#1" expanded="false" />
+                      <element signature="e#17088#17208#0" expanded="false" />
+                      <element signature="e#17257#17498#0" expanded="false" />
+                      <element signature="e#17564#18960#0" expanded="false" />
+                      <element signature="e#19026#19315#0" expanded="false" />
+                      <element signature="e#19411#20352#0" expanded="false" />
+                      <element signature="e#19411#19706#1" expanded="false" />
+                      <element signature="e#20381#23595#0" expanded="false" />
+                      <element signature="e#20440#20717#0" expanded="false" />
+                      <element signature="e#20778#21327#0" expanded="false" />
+                      <element signature="e#21358#21432#0" expanded="false" />
+                      <element signature="e#21470#23278#0" expanded="false" />
+                      <element signature="e#23326#23595#0" expanded="false" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+    <window id="2">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="Robot.py" pinned="false" current="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/Robot.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.9758898" vertical-offset="0" max-vertical-offset="1037">
+                    <caret line="216" column="26" selection-start-line="216" selection-start-column="26" selection-end-line="216" selection-end-column="26" />
+                    <folding>
+                      <element signature="e#245#1504#1" expanded="false" />
+                      <element signature="e#2159#2287#0" expanded="false" />
+                      <element signature="e#2317#2514#0" expanded="false" />
+                      <element signature="e#2549#2877#0" expanded="false" />
+                      <element signature="e#2549#2696#1" expanded="false" />
+                      <element signature="e#2915#3031#0" expanded="false" />
+                      <element signature="e#3060#6521#0" expanded="false" />
+                      <element signature="e#3060#4168#1" expanded="false" />
+                      <element signature="e#6548#8137#0" expanded="false" />
+                      <element signature="e#6548#6773#1" expanded="false" />
+                      <element signature="e#8258#9905#0" expanded="false" />
+                      <element signature="e#9939#11138#0" expanded="false" />
+                      <element signature="e#9939#10203#1" expanded="false" />
+                      <element signature="e#11175#11700#0" expanded="false" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="RobotArm" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="testVisionLibrary.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="1071">
+              <caret line="31" column="42" selection-start-line="31" selection-start-column="42" selection-end-line="31" selection-end-column="42" />
+              <folding>
+                <element signature="e#170#174#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Main.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.54980844" vertical-offset="818" max-vertical-offset="2805">
+              <caret line="540" column="51" selection-start-line="540" selection-start-column="51" selection-end-line="540" selection-end-column="51" />
+              <folding>
+                <element signature="e#311#1219#0" expanded="false" />
+                <element signature="e#1391#2530#0" expanded="false" />
+                <element signature="e#2722#6496#0" expanded="false" />
+                <element signature="e#2722#3978#1" expanded="false" />
+                <element signature="e#6661#7331#0" expanded="false" />
+                <element signature="e#7371#9929#0" expanded="false" />
+                <element signature="e#7371#7678#1" expanded="false" />
+                <element signature="e#9964#10545#0" expanded="false" />
+                <element signature="e#10571#11013#0" expanded="false" />
+                <element signature="e#11096#16931#0" expanded="false" />
+                <element signature="e#16993#24147#0" expanded="false" />
+                <element signature="e#16993#17959#1" expanded="false" />
+                <element signature="e#24176#24516#0" expanded="false" />
+                <element signature="e#24563#24972#0" expanded="false" />
+                <element signature="e#25021#28292#0" expanded="false" />
+                <element signature="e#25021#25554#1" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testOpenCV.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="425">
+              <caret line="13" column="28" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="true" />
+    </FindUsagesManager>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/../First OpenCV project/RobotTest2.py" />
+        <option value="$PROJECT_DIR$/MoveTo.py" />
+        <option value="$PROJECT_DIR$/Video/ObjectRecognition.py" />
+        <option value="$PROJECT_DIR$/lib/__init__.py" />
+        <option value="$PROJECT_DIR$/lib/Vision.py" />
+        <option value="$PROJECT_DIR$/Constants.py" />
+        <option value="C:/Python27/Lib/site-packages/serial/serialwin32.py" />
+        <option value="$USER_HOME$/Desktop/assign1.py" />
+        <option value="$PROJECT_DIR$/assign1.py" />
+        <option value="$PROJECT_DIR$/assign2.py" />
+        <option value="$PROJECT_DIR$/bugs.txt" />
+        <option value="$PROJECT_DIR$/assign3.py" />
+        <option value="$PROJECT_DIR$/obfuscatedCode.py" />
+        <option value="$PROJECT_DIR$/Bug List.txt" />
+        <option value="$PROJECT_DIR$/Video/Common.py" />
+        <option value="$PROJECT_DIR$/assign4.py" />
+        <option value="$PROJECT_DIR$/Variables.py" />
+        <option value="$PROJECT_DIR$/Robot.py" />
+        <option value="$PROJECT_DIR$/lol.py" />
+        <option value="$PROJECT_DIR$/Video/testVideoLibrary.py" />
+        <option value="$PROJECT_DIR$/Robot-arm-control-using-machine-vision/Video/Vision.py" />
+        <option value="$PROJECT_DIR$/RobotLibraryTest.py" />
+        <option value="$PROJECT_DIR$/Tests/test (1).py" />
+        <option value="$PROJECT_DIR$/Tests/RobotLibraryTest.py" />
+        <option value="$PROJECT_DIR$/Robot-arm-control-using-machine-vision/Main.py" />
+        <option value="$PROJECT_DIR$/Robot-arm-control-using-machine-vision/Video/Common.py" />
+        <option value="$PROJECT_DIR$/Robot-arm-control-using-machine-vision/Robot.py" />
+        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/Tests/test.py" />
+        <option value="$PROJECT_DIR$/Tests/TestOpenCV.py" />
+        <option value="$PROJECT_DIR$/Tests/testStereoscopic.py" />
+        <option value="$PROJECT_DIR$/Tests/testOpenCV.py" />
+        <option value="$PROJECT_DIR$/Video/Vision.py" />
+        <option value="$PROJECT_DIR$/Tests/testVisionLibrary.py" />
+        <option value="$PROJECT_DIR$/Main.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-1450" />
+    <option name="y" value="204" />
+    <option name="width" value="1152" />
+    <option name="height" value="720" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state />
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Video" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RobotArm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="recentsLimit" value="5" />
+    <property name="FullScreen" value="false" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/AlexThiel/PycharmProjects/RobotArm/Variables.py" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings />
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\Google Drive\Projects\Project - Robot Arm - 2014 to 2015\RobotArm\Tests" />
+      <recent name="F:\Google Drive\Projects\Project - Robot Arm - 2014 to 2015\RobotArm" />
+      <recent name="F:\Google Drive\Projects\Project - Robot Arm - 2014 to 2015\RobotArm\Robot-arm-control-using-machine-vision" />
+      <recent name="C:\Users\AlexThiel\PycharmProjects\RobotArm" />
+      <recent name="C:\Users\AlexThiel\PycharmProjects\RobotArm\Video" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.testVisionLibrary">
+    <configuration default="false" name="TestOpenCV" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="F:\Google Drive\Projects\Project - Robot Arm - 2014 to 2015\RobotArm\Tests\testOpenCV.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="testVisionLibrary" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testVisionLibrary.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="testOpenCV" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testOpenCV.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="testStereoscopic" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testStereoscopic.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Main.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="Python.TestOpenCV" />
+      <item index="1" class="java.lang.String" itemvalue="Python.testVisionLibrary" />
+      <item index="2" class="java.lang.String" itemvalue="Python.testOpenCV" />
+      <item index="3" class="java.lang.String" itemvalue="Python.testStereoscopic" />
+      <item index="4" class="java.lang.String" itemvalue="Python.Main" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.testVisionLibrary" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Main" />
+        <item index="2" class="java.lang.String" itemvalue="Python.testOpenCV" />
+        <item index="3" class="java.lang.String" itemvalue="Python.TestOpenCV" />
+        <item index="4" class="java.lang.String" itemvalue="Python.testStereoscopic" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\AlexThiel\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1cd6d5f3-5552-400d-a05a-f2089b376189" name="Default" comment="" />
+      <created>1420493883777</created>
+      <updated>1420493883777</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="2">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-1450" y="204" width="1152" height="720" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32823366" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19658887" sideWeight="0.49822065" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37041157" sideWeight="0.5349233" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20169252" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.96123147" sideWeight="0.24872231" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30144605" sideWeight="0.7512777" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814237" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="82" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="55" max-vertical-offset="1156">
+          <caret line="15" column="39" selection-start-line="15" selection-start-column="39" selection-end-line="15" selection-end-column="39" />
+          <folding>
+            <element signature="e#170#174#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="765" max-vertical-offset="8687">
+          <caret line="45" column="37" selection-start-line="45" selection-start-column="37" selection-end-line="45" selection-end-column="37" />
+          <folding>
+            <element signature="e#363#568#1" expanded="false" />
+            <element signature="e#650#886#1" expanded="false" />
+            <element signature="e#958#1209#1" expanded="false" />
+            <element signature="e#1330#4478#0" expanded="false" />
+            <element signature="e#1358#1929#0" expanded="false" />
+            <element signature="e#1986#2890#0" expanded="false" />
+            <element signature="e#1986#2355#1" expanded="false" />
+            <element signature="e#2933#2959#0" expanded="false" />
+            <element signature="e#2993#4052#0" expanded="false" />
+            <element signature="e#4103#4398#0" expanded="false" />
+            <element signature="e#4103#4344#1" expanded="false" />
+            <element signature="e#4437#4478#0" expanded="false" />
+            <element signature="e#4574#5019#0" expanded="false" />
+            <element signature="e#5057#5310#0" expanded="false" />
+            <element signature="e#5393#6421#0" expanded="false" />
+            <element signature="e#6516#7455#0" expanded="false" />
+            <element signature="e#6516#6812#1" expanded="false" />
+            <element signature="e#7504#8114#0" expanded="false" />
+            <element signature="e#7504#7802#1" expanded="false" />
+            <element signature="e#8210#8597#0" expanded="false" />
+            <element signature="e#8210#8295#1" expanded="false" />
+            <element signature="e#8651#9534#0" expanded="false" />
+            <element signature="e#9609#15039#0" expanded="false" />
+            <element signature="e#9609#11257#1" expanded="false" />
+            <element signature="e#15087#15809#0" expanded="false" />
+            <element signature="e#15856#16944#0" expanded="false" />
+            <element signature="e#15856#16227#1" expanded="false" />
+            <element signature="e#17088#17208#0" expanded="false" />
+            <element signature="e#17257#17498#0" expanded="false" />
+            <element signature="e#17564#18960#0" expanded="false" />
+            <element signature="e#19026#19315#0" expanded="false" />
+            <element signature="e#19411#20352#0" expanded="false" />
+            <element signature="e#19411#19706#1" expanded="false" />
+            <element signature="e#20381#23595#0" expanded="false" />
+            <element signature="e#20440#20717#0" expanded="false" />
+            <element signature="e#20778#21327#0" expanded="false" />
+            <element signature="e#21358#21432#0" expanded="false" />
+            <element signature="e#21470#23278#0" expanded="false" />
+            <element signature="e#23326#23595#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="425">
+          <caret line="13" column="28" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1156">
+          <caret line="15" column="39" selection-start-line="15" selection-start-column="39" selection-end-line="15" selection-end-column="39" />
+          <folding>
+            <element signature="e#170#174#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="765" max-vertical-offset="8687">
+          <caret line="45" column="37" selection-start-line="45" selection-start-column="37" selection-end-line="45" selection-end-column="37" />
+          <folding>
+            <element signature="e#363#568#1" expanded="false" />
+            <element signature="e#650#886#1" expanded="false" />
+            <element signature="e#958#1209#1" expanded="false" />
+            <element signature="e#1330#4478#0" expanded="false" />
+            <element signature="e#1358#1929#0" expanded="false" />
+            <element signature="e#1986#2890#0" expanded="false" />
+            <element signature="e#1986#2355#1" expanded="false" />
+            <element signature="e#2933#2959#0" expanded="false" />
+            <element signature="e#2993#4052#0" expanded="false" />
+            <element signature="e#4103#4398#0" expanded="false" />
+            <element signature="e#4103#4344#1" expanded="false" />
+            <element signature="e#4437#4478#0" expanded="false" />
+            <element signature="e#4574#5019#0" expanded="false" />
+            <element signature="e#5057#5310#0" expanded="false" />
+            <element signature="e#5393#6421#0" expanded="false" />
+            <element signature="e#6516#7455#0" expanded="false" />
+            <element signature="e#6516#6812#1" expanded="false" />
+            <element signature="e#7504#8114#0" expanded="false" />
+            <element signature="e#7504#7802#1" expanded="false" />
+            <element signature="e#8210#8597#0" expanded="false" />
+            <element signature="e#8210#8295#1" expanded="false" />
+            <element signature="e#8651#9534#0" expanded="false" />
+            <element signature="e#9609#15039#0" expanded="false" />
+            <element signature="e#9609#11257#1" expanded="false" />
+            <element signature="e#15087#15809#0" expanded="false" />
+            <element signature="e#15856#16944#0" expanded="false" />
+            <element signature="e#15856#16227#1" expanded="false" />
+            <element signature="e#17088#17208#0" expanded="false" />
+            <element signature="e#17257#17498#0" expanded="false" />
+            <element signature="e#17564#18960#0" expanded="false" />
+            <element signature="e#19026#19315#0" expanded="false" />
+            <element signature="e#19411#20352#0" expanded="false" />
+            <element signature="e#19411#19706#1" expanded="false" />
+            <element signature="e#20381#23595#0" expanded="false" />
+            <element signature="e#20440#20717#0" expanded="false" />
+            <element signature="e#20778#21327#0" expanded="false" />
+            <element signature="e#21358#21432#0" expanded="false" />
+            <element signature="e#21470#23278#0" expanded="false" />
+            <element signature="e#23326#23595#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="425">
+          <caret line="13" column="28" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1156">
+          <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+          <folding>
+            <element signature="e#170#174#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="425">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testStereoscopic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="136" max-vertical-offset="935">
+          <caret line="8" column="29" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1156">
+          <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+          <folding>
+            <element signature="e#170#174#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="425">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="15" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testStereoscopic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="83" max-vertical-offset="748">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="10744">
+          <caret line="502" column="0" selection-start-line="502" selection-start-column="0" selection-end-line="502" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Robot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3825" max-vertical-offset="4590">
+          <caret line="225" column="7" selection-start-line="225" selection-start-column="7" selection-end-line="225" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1505" max-vertical-offset="2363">
+          <caret line="302" column="65" selection-start-line="302" selection-start-column="65" selection-end-line="302" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="10744">
+          <caret line="502" column="0" selection-start-line="502" selection-start-column="0" selection-end-line="502" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Robot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3825" max-vertical-offset="4590">
+          <caret line="225" column="7" selection-start-line="225" selection-start-column="7" selection-end-line="225" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1589" max-vertical-offset="2363">
+          <caret line="302" column="65" selection-start-line="302" selection-start-column="65" selection-end-line="302" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2652">
+          <caret line="464" column="84" selection-start-line="464" selection-start-column="84" selection-end-line="464" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="512" max-vertical-offset="2652">
+          <caret line="459" column="66" selection-start-line="459" selection-start-column="66" selection-end-line="459" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1478" max-vertical-offset="2822">
+          <caret line="558" column="35" selection-start-line="558" selection-start-column="35" selection-end-line="558" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/serial/serialwin32.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="888" max-vertical-offset="7888">
+          <caret line="94" column="20" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="20825" max-vertical-offset="29563">
+          <caret line="1225" column="0" selection-start-line="1225" selection-start-column="0" selection-end-line="1226" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="20825" max-vertical-offset="29563">
+          <caret line="1225" column="0" selection-start-line="1225" selection-start-column="0" selection-end-line="1226" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="19545" max-vertical-offset="28458">
+          <caret line="1225" column="0" selection-start-line="1225" selection-start-column="0" selection-end-line="1226" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/serial/serialutil.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1055" max-vertical-offset="9469">
+          <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/numpy/core/_methods.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33228347" vertical-offset="78" max-vertical-offset="2091">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/ast.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="402" max-vertical-offset="5372">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/gridspec.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2739" max-vertical-offset="7871">
+          <caret line="175" column="0" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="14554" max-vertical-offset="62067">
+          <caret line="896" column="0" selection-start-line="896" selection-start-column="0" selection-end-line="896" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/serial/serialwin32.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.2459283" vertical-offset="1819" max-vertical-offset="7888">
+          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/numpy/lib/function_base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="53731" max-vertical-offset="60333">
+          <caret line="3165" column="0" selection-start-line="3165" selection-start-column="0" selection-end-line="3165" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/numpy/core/numeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33035713" vertical-offset="7576" max-vertical-offset="46359">
+          <caret line="459" column="0" selection-start-line="459" selection-start-column="0" selection-end-line="459" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="12741" max-vertical-offset="22695">
+          <caret line="760" column="0" selection-start-line="760" selection-start-column="0" selection-end-line="761" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Bug List.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
+          <caret line="23" column="58" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.078071184" vertical-offset="0" max-vertical-offset="871">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="665">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="665">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/RobotLibraryTest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="665">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testStereoscopic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12" vertical-offset="64" max-vertical-offset="935">
+          <caret line="8" column="29" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
+          <caret line="13" column="28" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Robot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9758898" vertical-offset="0" max-vertical-offset="1037">
+          <caret line="216" column="26" selection-start-line="216" selection-start-column="26" selection-end-line="216" selection-end-column="26" />
+          <folding>
+            <element signature="e#245#1504#1" expanded="false" />
+            <element signature="e#2159#2287#0" expanded="false" />
+            <element signature="e#2317#2514#0" expanded="false" />
+            <element signature="e#2549#2877#0" expanded="false" />
+            <element signature="e#2549#2696#1" expanded="false" />
+            <element signature="e#2915#3031#0" expanded="false" />
+            <element signature="e#3060#6521#0" expanded="false" />
+            <element signature="e#3060#4168#1" expanded="false" />
+            <element signature="e#6548#8137#0" expanded="false" />
+            <element signature="e#6548#6773#1" expanded="false" />
+            <element signature="e#8258#9905#0" expanded="false" />
+            <element signature="e#9939#11138#0" expanded="false" />
+            <element signature="e#9939#10203#1" expanded="false" />
+            <element signature="e#11175#11700#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.058553386" vertical-offset="255" max-vertical-offset="1156">
+          <caret line="41" column="12" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
+          <folding>
+            <element signature="e#363#568#1" expanded="false" />
+            <element signature="e#650#886#1" expanded="false" />
+            <element signature="e#958#1209#1" expanded="false" />
+            <element signature="e#1330#4478#0" expanded="false" />
+            <element signature="e#1358#1929#0" expanded="false" />
+            <element signature="e#1986#2890#0" expanded="false" />
+            <element signature="e#1986#2355#1" expanded="false" />
+            <element signature="e#2933#2959#0" expanded="false" />
+            <element signature="e#2993#4052#0" expanded="false" />
+            <element signature="e#4103#4398#0" expanded="false" />
+            <element signature="e#4103#4344#1" expanded="false" />
+            <element signature="e#4437#4478#0" expanded="false" />
+            <element signature="e#4574#5019#0" expanded="false" />
+            <element signature="e#5057#5310#0" expanded="false" />
+            <element signature="e#5393#6421#0" expanded="false" />
+            <element signature="e#6516#7455#0" expanded="false" />
+            <element signature="e#6516#6812#1" expanded="false" />
+            <element signature="e#7504#8114#0" expanded="false" />
+            <element signature="e#7504#7802#1" expanded="false" />
+            <element signature="e#8210#8597#0" expanded="false" />
+            <element signature="e#8210#8295#1" expanded="false" />
+            <element signature="e#8651#9534#0" expanded="false" />
+            <element signature="e#9609#15039#0" expanded="false" />
+            <element signature="e#9609#11257#1" expanded="false" />
+            <element signature="e#15087#15809#0" expanded="false" />
+            <element signature="e#15856#16944#0" expanded="false" />
+            <element signature="e#15856#16227#1" expanded="false" />
+            <element signature="e#17088#17208#0" expanded="false" />
+            <element signature="e#17257#17498#0" expanded="false" />
+            <element signature="e#17564#18960#0" expanded="false" />
+            <element signature="e#19026#19315#0" expanded="false" />
+            <element signature="e#19411#20352#0" expanded="false" />
+            <element signature="e#19411#19706#1" expanded="false" />
+            <element signature="e#20381#23595#0" expanded="false" />
+            <element signature="e#20440#20717#0" expanded="false" />
+            <element signature="e#20778#21327#0" expanded="false" />
+            <element signature="e#21358#21432#0" expanded="false" />
+            <element signature="e#21470#23278#0" expanded="false" />
+            <element signature="e#23326#23595#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="1071">
+          <caret line="31" column="42" selection-start-line="31" selection-start-column="42" selection-end-line="31" selection-end-column="42" />
+          <folding>
+            <element signature="e#170#174#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.54980844" vertical-offset="818" max-vertical-offset="2805">
+          <caret line="540" column="51" selection-start-line="540" selection-start-column="51" selection-end-line="540" selection-end-column="51" />
+          <folding>
+            <element signature="e#311#1219#0" expanded="false" />
+            <element signature="e#1391#2530#0" expanded="false" />
+            <element signature="e#2722#6496#0" expanded="false" />
+            <element signature="e#2722#3978#1" expanded="false" />
+            <element signature="e#6661#7331#0" expanded="false" />
+            <element signature="e#7371#9929#0" expanded="false" />
+            <element signature="e#7371#7678#1" expanded="false" />
+            <element signature="e#9964#10545#0" expanded="false" />
+            <element signature="e#10571#11013#0" expanded="false" />
+            <element signature="e#11096#16931#0" expanded="false" />
+            <element signature="e#16993#24147#0" expanded="false" />
+            <element signature="e#16993#17959#1" expanded="false" />
+            <element signature="e#24176#24516#0" expanded="false" />
+            <element signature="e#24563#24972#0" expanded="false" />
+            <element signature="e#25021#28292#0" expanded="false" />
+            <element signature="e#25021#25554#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+

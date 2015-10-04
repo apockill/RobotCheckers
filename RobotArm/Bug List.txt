@@ -1,0 +1,24 @@
+Bug list:
+
+
+
+When the robot is unplugged, the robot will freeze during "waitForRobot" statements
+
+When entering a value on the xy polar coordinate things, it won't handle getting any strings without causing an error and making me force restart
+
+When clicking and dragging a target on the screen, if there are no keypoints there, the program will freeze.
+
+
+
+
+#BUGS WITH PICKING STUFF UP:
+
+Sometimes the robot will fail to actually pluck the object up (or be slightly off center...)
+
+Robot will get too close to object and lose track of it
+    MOve up to search
+    Pan left/right to search
+
+Robot gets stuck going left/right over and over during focusing function.
+
+Make it so that the robot updates the "last known focused position" of the 'marker' block every time it places a block.
