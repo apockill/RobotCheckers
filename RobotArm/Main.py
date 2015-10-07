@@ -204,6 +204,10 @@ def waitTillStill(**kwargs):
     sleep(.1)
 
 def getAngle(quad):
+    """
+    :param quad: The 4 coordinate point array
+    :return: Returns the angle of the block in the long side, which can be used to orient the wrist of the robot.
+    """
     side1 = ((quad[0][0] - quad[1][0]) ** 2.0 + (quad[0][1] - quad[1][1]) ** 2.0) ** 0.5
     side2 = ((quad[1][0] - quad[2][0]) ** 2.0 + (quad[1][1] - quad[2][1]) ** 2.0) ** 0.5
     if side2 < side1:
@@ -512,17 +516,20 @@ def placeBlockAtPosition(layer, position):
     Robot.moveTo(relative = False, **currentPosition)
     waitTillStill()
 
-########### ITEM BANK FUNCTIONS ###########
+########### Checkers FUNCTIONS ###########
+def checkersMain():
+    pass
+
 
 
 
 #MAIN THREADS
 def runRobot():
-    sleep(3)
     #SET UP VARIABLES AND RESET ROBOT POSITION
     print "runRobot(", locals().get("args"), "): Setting up Robot Thread...."
     global exitApp
     global keyPressed  #Is set in the main function, because CV2 can only read keypresses in the main function. Is a character.
+
     Robot.moveTo(relative = False, waitForRobot = True, **Robot.home)
     Robot.setGrabber(0)
 
@@ -530,39 +537,8 @@ def runRobot():
     while not exitApp:
 
         if keyPressed == 'h':  #HELP COMMAND
-            print "Help: \n c: CALLIBRATION \n j: STACKJENGA \n m: DETECT MOVEMENT",
-            print       "\n p: PICKUPTARGET \n r: RESETPOS,"
-            print       "\n t: TARGET       \n x: MOVETOXY"
+            print "Help: \n x: MOVETOXY"
 
-        if keyPressed == 'c':  #CALIBRATION COMMAND
-            r, s = calibrateRobotCamera(0)
-            print 'Distance r: %s s: %s' % (r, s)
-
-        if keyPressed == 'j':  #CALIBRATION COMMAND
-            stackJenga()
-
-        if keyPressed == 'm':  #DETECT MOVEMENT
-            print "Movement: ", objTracker.getMovement()[0]
-            print "Is object grabbed: ", isObjectGrabbed()
-
-
-        if keyPressed == 'p':  #PICK UP TARGET
-            pickUpBlock(isObjectGrabbed(), Robot.getPosArgsCopy())
-
-
-        if keyPressed == 'r':  #RESET
-            Robot.moveTo(relative = False, waitForRobot = True, **Robot.home)
-            Robot.setGrabber(0)
-
-        if keyPressed == 's':  #GET ANGLE OF OBJECT ON SCREEN CLOSEST TO CENTER
-            print getAngle(objTracker.bruteGetFrame(lambda: objTracker.getNearestShape(4).vertices))
-
-        if keyPressed == 't':  #TARGET
-            try:
-                targetFocus = [screenDimensions[0] * .75 + int(raw_input("Shift x by?:")), screenDimensions[1] / 2 + int(raw_input("Shift y by?:"))]
-                focusOnTarget(lambda: objTracker.bruteGetFrame(lambda: objTracker.getNearestShape(4, nearestTo = targetFocus).center), targetFocus = targetFocus, tolerance = 3, **{"ppX": 3.7, "ppY": 15})
-            except Exception as e:
-                print e
 
         if keyPressed == 'x':  #MOVE TO XY
             Robot.moveTo(height = float(raw_input("Height?:")), rotation = float(raw_input("Rotation?:")), stretch = float(raw_input("Stretch:")), relative = False)
@@ -572,13 +548,11 @@ if '__main__' == __name__:
     print 'Start!'
     #SET UP VIDEO CLASS AND WINDOWS VARIABLES
     vid                 = Vision.Video()
-    vid.createNewWindow("Main", xPos = 10, yPos = 10)
-    vid.createNewWindow("Edged", xPos = 660, yPos = 7)
-    vid.createNewWindow("Movement", xPos = 660, yPos = 500)
-    vid.createNewWindow("KeyPoints", xPos = 10, yPos = 507)
+    vid.createNewWindow("Main",             xPos = 10,  yPos = 10)
+    vid.createNewWindow("Perspective",      xPos = 500,  yPos = 10)
 
     #SETUP UP OTHER VARIABLES/CLASSES
-    objTracker          = Vision.ObjectTracker(vid, 10, V.keyPointsToTrack)
+    objTracker          = Vision.ObjectTracker(vid, rectSelectorWindow = "KeyPoints")
     screenDimensions    = vid.getDimensions()
     global exitApp
     exitApp = False
@@ -602,28 +576,28 @@ if '__main__' == __name__:
 
 
         #DO FRAME OPERATIONS:
-        shapeArray, edgedFrame = objTracker.getShapes(4, returnFrame = True)
-        movementFrame = objTracker.getMovement(returnFrame = True)[1]
+        testFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
+
+        shapeArray, edgedFrame = objTracker.getShapes(sides=4, threshHold = cv2.THRESH_OTSU, frameToAnalyze= testFrame, returnFrame = True)
+        warped = objTracker.getTransform(shapeArray[0], frameToAnalyze=testFrame, transformHeight= 600, transformWidth=600)
+        circleArray = objTracker.getCircles(frameToAnalyze = warped)
+
 
         #SET FRAMES FOR THE WINDOWS:
-        vid.windowFrame["Main"]     = objTracker.drawShapes(shapeArray)
-        vid.windowFrame["Edged"]    = edgedFrame
-        vid.windowFrame["Movement"] = movementFrame
-        vid.windowFrame["KeyPoints"] = objTracker.drawKeypoints()
+        vid.windowFrame["Main"]        = objTracker.drawShapes([shapeArray[0]], frameToDraw=testFrame)
+        vid.windowFrame["Perspective"] = objTracker.drawCircles(circleArray,    frameToDraw=warped)
 
-        #DISPLAY THINGS
+        #UPDATE WINDOWS
         vid.display("Main")
-        vid.display("Edged")
-        vid.display("Movement")
-        vid.display("KeyPoints")
+        vid.display("Perspective")
 
-        ch = cv2.waitKey(10)
-        keyPressed = chr(ch + (ch == -1) * 256).lower().strip()  #Convert ascii to character, and the (ch == -1)*256 is to fix a bug.
-        if keyPressed == chr(27): exitApp = True  #If escape has been pressed
-        if keyPressed == ord('g'):
-            print "MAIN: ", Robot.getOutput('all')
-        if keyPressed == ord(' '):  #PAUSE
-                    vid.paused = not vid.paused
+        ch = cv2.waitKey(10000)                                      #Wait between frames, and also check for keys pressed.
+
+        keyPressed = chr(ch + (ch == -1) * 256).lower().strip()  #Convert ascii to character, and the (ch == -1)*256 is to fix a bug. Used mostly in runRobot() function
+        if keyPressed == chr(27): exitApp = True                 #If escape has been pressed, close program
+        if keyPressed == 'p':                                    #Pause and unpause when spacebar has been pressed
+            vid.paused = not vid.paused
+            print "__main(XXX)__: PAUSED: ", vid.paused
 
 
     #CLOSE EVERYTHING CORRECTLY

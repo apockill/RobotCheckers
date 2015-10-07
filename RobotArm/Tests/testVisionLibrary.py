@@ -16,9 +16,8 @@ if '__main__' == __name__:
     vid                 = Vision.Video()
     vid.createNewWindow("Main", xPos = 10, yPos = 10)
 
-
     #SETUP UP OTHER VARIABLES/CLASSES
-    objTracker          = Vision.ObjectTracker(vid, 10, V.keyPointsToTrack)
+    objTracker          = Vision.ObjectTracker(vid)
     screenDimensions    = vid.getDimensions()
     global exitApp
     exitApp = False
@@ -42,10 +41,11 @@ if '__main__' == __name__:
 
 
         #DO FRAME OPERATIONS:
-        shapeArray, edgedFrame = objTracker.getShapes(4, returnFrame = True)
+        shapeArray, edgedFrame = objTracker.getShapes(sides=4, threshHold = cv2.THRESH_OTSU, returnFrame = True)
 
         #SET FRAMES FOR THE WINDOWS:
         vid.windowFrame["Main"]     = objTracker.drawShapes(shapeArray)
+
 
         #DISPLAY THINGS
         vid.display("Main")

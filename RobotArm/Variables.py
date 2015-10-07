@@ -1,16 +1,3 @@
-    #ROBOT CONSTANTS (HARDWARE SPECIFIC)
-stretchMin              = 30.0
-stretchMax              = 210.0
-heightMin               = -55
-heightMax               = 150.0
-rotationMin             = -90.0
-rotationMax             = 90.0
-handRotMin              = -84
-handRotMax              = 74
-handAngleOpen           = 25.0
-handAngleClose          = 70.0
-
-
 
     #ROBOT CONSTANTS (SOFTWARE SPECIFIC)
 stationaryTolerance     =   50          #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"

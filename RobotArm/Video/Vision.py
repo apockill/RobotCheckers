@@ -1,12 +1,9 @@
 __author__ = 'AlexThiel'
 import math
 from collections import namedtuple
-
 import numpy as np
 import cv2
-
 import Common
-import Variables as V
 
 
 #Constants
@@ -36,8 +33,9 @@ TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad')
     quad - target boundary quad (4 points deliniating the size of the object) [[x,y], [x,y], [x,y], [x,y]]
     center - center of the boundary quad [x,y]
 """
-ShapeTarget   = namedtuple('ShapeTarget', 'vertices, area, center')
+ShapeTarget   = namedtuple('ShapeTarget', 'vertices, area, center')  #Any shape with x amount of sides
 
+CircleTarget  = namedtuple('CircleTarget', 'radius, area, center')
 
 class Video:  #Handles basic video functions
 
@@ -117,41 +115,24 @@ class Video:  #Handles basic video functions
 
 class ObjectTracker:
 
-    def __init__(self, video, minMatchCount, trackingPoints):
+    def __init__(self, video, **kwargs):
+
         print "ObjTracker.__init__(", locals().get("args"), "): Setting up objectTracker..."
+
+        minMatchCount =  kwargs.get("minPointsToMatch", 10)       #Number of keypoints that must match for an object to be "recognized"
+        trackingPoints = kwargs.get("pointsToTrack", 500)         #Number of keypoints to find per frame
+        selectorWindow = kwargs.get("rectSelectorWindow", "Main")
+
         self.vid = video  #Passes the video class/window/webcam that the object tracker will be analyzing.
         self.tracker = PlaneTracker(minMatchCount, trackingPoints)  #Does all the tracking. The ObjectTracker class is simply to simplify things.
-        self.rectSel = Common.RectSelector('window', self.onRect)
         self.keyPointsColor = (0, 255, 0)
+        self.rectSel = Common.RectSelector(selectorWindow, self.onRect)
 
     def onRect(self, rect):
         self.tracker.addTarget(self.vid.frame, rect)
         print "onRect(", locals().get("args"), "): tracker.targets: ", self.tracker.targets[len(self.tracker.targets) - 1]
         self.vid.paused = not self.vid.paused  #unpause video after drawing rectangle
 
-    def getDistanceFromObject(self, target, uniqueFrames, objectLength):
-        #Gets the actual distance from an object in whatever unit the objectSize is in.
-        #Only as accurate as your values for pixels per degree, and your object tracking...
-
-        p = self.getTargetAvgCoords(target, uniqueFrames)  #Get the 4 points of the rectangle
-        #Get length between two sides of a rectangleh
-        p0p1LenPixels = ((p[0][0] - p[1][0]) ** 2 + (p[0][1] - p[1][1]) ** 2) ** .5
-        p2p3LenPixels = ((p[2][0] - p[3][0]) ** 2 + (p[2][1] - p[3][1]) ** 2) ** .5
-        avgPixelSize = (p0p1LenPixels + p2p3LenPixels) / 2
-        avgAngularSize = avgPixelSize / V.pixelsPerDegree
-
-        actualSize = objectLength
-
-        distance = (actualSize / avgAngularSize) * 360 / (2 * math.pi)
-        """
-        print "Object Points: ", p
-        print "pixLenOne: ", p0p1LenPixels
-        print "pixLenTwo: ", p2p3LenPixels
-        print "avgPixSize: ", avgPixelSize
-        print "actSize: ", actualSize
-        print "avgAngleSize: ", avgAngularSize
-        """
-        print "DISTANCE: ", distance, "\n"
 
 
     #DRAWING FUNCTIONS (GIVE FRAME, GET FRAME)
@@ -160,12 +141,15 @@ class ObjectTracker:
         Draws targets found through PlaneTracker, using a keyPoint algorithm
         :param kwargs:
             frameToDraw: defaults to self.vid.frame.copy, but allows you to draw over a different frame. (Useful if drawing over a frame with other drawings on it)
+            frameToAnalyze: defaults to self.vid.frame.copy, but allows you to analyze an already-processed frame. Might be useful if you are inputting a grayscale frame.
         :return:
         """
 
-        frameToDraw = kwargs.get("frameToDraw", self.vid.frame.copy())
+        frameToDraw =    kwargs.get("frameToDraw",    self.vid.frame.copy())
+        frameToAnalyze = kwargs.get("frameToAnalyze", self.vid.frame.copy())
+
         if not self.vid.paused:
-            tracked = self.tracker.track(frameToDraw)
+            tracked = self.tracker.track(frameToAnalyze)
             for t in range(0, len(tracked)):
                 currentTracked = tracked[t]
                 centerXY = self.getTargetCenter(t)
@@ -177,41 +161,66 @@ class ObjectTracker:
 
     def drawKeypoints(self, **kwargs):
         """
-        Draws keypoints found through PlaneTracker, using a keyPoint algorithm
+        Draws targets found through PlaneTracker, using a keyPoint algorithm
         :param kwargs:
             frameToDraw: defaults to self.vid.frame.copy, but allows you to draw over a different frame. (Useful if drawing over a frame with other drawings on it)
+            frameToAnalyze: defaults to self.vid.frame.copy, but allows you to analyze an already-processed frame. Might be useful if you are inputting a grayscale frame.
         :return:
         """
 
-        frameToDraw = kwargs.get("frameToDraw", self.vid.frame.copy())
-        self.tracker.track(frameToDraw)
+        frameToDraw =    kwargs.get("frameToDraw",    self.vid.frame.copy())
+        frameToAnalyze = kwargs.get("frameToAnalyze", self.vid.frame.copy())
+
+        self.tracker.track(frameToAnalyze)
         keypoints = self.tracker.frame_points
         for kp in keypoints:
             x, y = kp.pt
             cv2.circle(frameToDraw, (int(x), int(y)), 3, (0, 0, 255), 2)
         return frameToDraw
 
-    def drawShapes(self, shapeTargets):  #RETURNS A FRAME WITH THE SHAPES DRAWN ON IT
+    def drawEdged(self, frameToAnalyze, **kwargs):
         """
-        Draws circles on every center of the shapes in the shapeArray
+        Gets the contours and draws them on the frame and returns the frame.
+        :param bilateralConstant: Increases how well the image is blurred before analyzed for edges.
+        :param kwargs:
+        :return:
         """
-        originalFrame = self.vid.frame.copy()
-        for shapeTarget in shapeTargets:
-            cv2.circle(originalFrame, tuple(shapeTarget.center), 10, (0, 0, 255), -1)
-            cv2.polylines(originalFrame, [np.asarray(shapeTarget.vertices)], True, (0, 255, 0), 4)
+        bilateralConstant = kwargs.get('bilateralConstant', 17)
+        threshHoldMethod  = kwargs.get('threshHold', cv2.THRESH_BINARY)
 
-        return originalFrame
-
-    def drawEdged(self, bilateralConstant):
-        img = self.vid.frame.copy()
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(frameToAnalyze, cv2.COLOR_BGR2GRAY)
         gray = cv2.bilateralFilter(gray, bilateralConstant, bilateralConstant, 27)  #Blurs photo while maintaining edge integrity. Up the 2nd number for more lag but accuracy
         #self.vid.windowFrame["Main"] = gray
-        ret, gray = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)                 #Turn image into a true all black all white. Higher number reduces threshhold (I THINK). Higher number on 2nd argument will make more things black.
+        ret, gray = cv2.threshold(gray, 140, 255, threshHoldMethod)                 #Use a threshold on the image (black and white)
         edged = cv2.Canny(gray, 100, 130)                                           #Gets edged version of photo. 2nd and 3rd numbers are the threshholds (100,130 for optimal)
-        cnts = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE  )[1]
+        cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE  )
         cv2.drawContours(edged, cnts, -1, (255, 255, 255), 3)
         return edged
+
+    def drawShapes(self, shapeTargets, **kwargs):  #RETURNS A FRAME WITH THE SHAPES DRAWN ON IT
+        """
+        Draws circles on every center of the shapes in the shapeArray
+
+        frameToDraw: What frame to draw on top of.
+        """
+
+        frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
+
+        for shapeTarget in shapeTargets:
+            cv2.circle(frameToDraw, tuple(shapeTarget.center), 10, (0, 0, 255), -1)
+            cv2.polylines(frameToDraw, [np.asarray(shapeTarget.vertices)], True, (0, 255, 0), 4)
+
+        return frameToDraw
+
+    def drawCircles(self, circleTargets, **kwargs):
+        frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
+
+        for circle in circleTargets:
+            cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (0, 0, 255), 3, 3)  #Draw outline of circle
+            cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
+
+        return frameToDraw
+
 
 
     #VISION FUNCTIONS
@@ -260,13 +269,15 @@ class ObjectTracker:
         #SETUP:
         bilateralConstant = kwargs.get('bilateralConstant', 17)
         returnFrame       = kwargs.get('returnFrame',       False)
-        minArea           = kwargs.get('minArea',           6000)
+        minArea           = kwargs.get('minArea',           10)
+        frameToAnalyze    = kwargs.get('frameToAnalyze', self.vid.frame.copy())
+        threshHoldMethod  = kwargs.get('threshHold', cv2.THRESH_BINARY)
         ################################GET SHAPE CONTOUR ARRAYS##############################################
         #Get edged version of image
-        edged = self.drawEdged(bilateralConstant = bilateralConstant)
+        edged = self.drawEdged(frameToAnalyze, bilateralConstant = bilateralConstant, threshHold = threshHoldMethod)
 
         #Find contours in the edged image, keep only the largest ones (the [:x] in sorted cnts line)
-        (_, cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE  )  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
+        cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE  )  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
         cnts = sorted(cnts, key = cv2.contourArea, reverse = True)  #to limit, add [:20] to the end of the array
 
         #OPTIONAL: DRAW THE CONTOURS
@@ -275,10 +286,10 @@ class ObjectTracker:
         #RECORD ALL CONTOURS WITH ONLY 'sides' SIDES
         shapesDetected = []                                  #Array of all 'shape' contours found in the image so far
         for c in cnts:
-            peri = cv2.arcLength(c, True) # approximate the contour
+            peri = cv2.arcLength(c, True)                    # approximate the contour
             approx = cv2.approxPolyDP(c, .05 * peri, True)   #This is how precise you want it to look at the contours. (Aka, the curvature of 2%)
             if len(approx) == sides:
-                if cv2.contourArea(approx) > minArea:        #Get rid of small anomalies that were mistakenly recognized as contours
+                if cv2.contourArea(approx) > minArea:        #Get rid of small anomalies that were mistakenly recognized as contours (size)
                     shapesDetected.append(approx)
 
         if len(shapesDetected) == 0:  #If no shapes detected, end function.
@@ -318,6 +329,23 @@ class ObjectTracker:
         if returnFrame:
             return (shapeTargets, edged)
         return shapeTargets
+
+    def getCircles(self, **kwargs):
+        frameToAnalyze    = kwargs.get('frameToAnalyze', self.vid.frame.copy())
+
+        gray = cv2.cvtColor(frameToAnalyze.copy(), cv2.COLOR_BGR2GRAY)
+        gray = cv2.medianBlur(gray, 5)
+
+        circles = cv2.HoughCircles(gray, 3, 1, 20, np.array([]), param1= 100, param2=30, minRadius=1, maxRadius=100)[0]
+
+        #Circles come in this format [x,y,radius] in an array of these. I change them to CircleTarget tuple format, for consistency
+        circleArray = []
+
+        for circle in circles:
+
+            circleArray.append(CircleTarget(radius = circle[2], area = math.pi * circle[2] ** 2, center = [circle[0], circle[1]]))
+
+        return circleArray
 
     def bruteGetFrame(self, getFunc):
         #Wait for new frame
@@ -366,14 +394,41 @@ class ObjectTracker:
             return avgDifference, movementImg
         return  avgDifference
 
+    def getTransform(self, shapeTarget, **kwargs):
 
-    #COORDINATE MATH FUNCTIONS
+        frameToTransform = kwargs.get('frameToAnalyze',  self.vid.frame.copy())
+        imgW =             kwargs.get('transformWidth',  frameToTransform.shape[0])  #The target transformation width and height
+        imgH =             kwargs.get('transformHeight', frameToTransform.shape[1])
+
+
+        #ptsFrom = np.float32(shapeTarget.vertices)
+
+        #FIND THE TOP LEFT, BOTTOM LEFT, TOP RIGHT, AND BOTTOM RIGHT POINTS THROUGH SORTING
+        #[[TOP LEFT], [BOTTOM LEFT], [TOP RIGHT], [BOTTOM RIGHT]]
+        vertices = shapeTarget.vertices
+        tL = sorted(vertices, key = lambda s: (s[0])        ** 2 + (s[1])        ** 2)[0]
+        bL = sorted(vertices, key = lambda s: (s[0] - imgH) ** 2 + (s[1])        ** 2)[0]
+        tR = sorted(vertices, key = lambda s: (s[0])        ** 2 + (s[1] - imgW) ** 2)[0]
+        bR = sorted(vertices, key = lambda s: (s[0] - imgH) ** 2 + (s[1] - imgW) ** 2)[0]
+
+
+        ptsFrom = np.float32([tL, bL, tR, bR])
+        #ptsFrom = np.float32([[56,65],[368,52],[28,387],[389,390]])
+        ptsTo   = np.float32([[0, 0],   [imgW, 0],  [0, imgH],  [imgW, imgH]])
+
+        M = cv2.getPerspectiveTransform(ptsFrom, ptsTo)
+        dst = cv2.warpPerspective(frameToTransform, M, (imgW, imgH))
+
+        return dst
+
     def getTargetCoords(self, target):  #Returns 4 xy coordinates that make up the object's rectangle
         try:
             return self.tracker.track(self.vid.frame)[target].quad
         except IndexError:
             return []
 
+
+    #COORDINATE MATH FUNCTIONS
     def getTargetCenter(self, target):
         coords = self.getTargetCoords(target)  #coordinate array
         if len(coords) == 0:  #If it could not get target center
@@ -430,10 +485,12 @@ class ObjectTracker:
 
 
 
+
 class PlaneTracker:
 
     def __init__(self, minMatchCount, trackingPoints):
-        self.detector = cv2.ORB_create(nfeatures = trackingPoints)  #CHANGES THE NUMBER OF DOT THINGS ON SCREEN!
+        self.detector = cv2.ORB(nfeatures = trackingPoints)  #CHANGES THE NUMBER OF DOT THINGS ON SCREEN!
+
         self.matcher = cv2.FlannBasedMatcher(flann_params, {})  # bug : need to pass empty dict (#1329)
         self.targets = []
         self.minMatchCount = minMatchCount

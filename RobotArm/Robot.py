@@ -3,13 +3,25 @@ import Common
 __author__ = 'AlexThiel'
 import serial
 import math
-import Variables as V
 from ast import literal_eval
 from time import sleep
 
-ser1 = serial.Serial('COM4', 9600, timeout=0)
+ser1 = serial.Serial('COM5', 9600, timeout=0)
 
-#Position Variables. Decides the robots initial position
+#ROBOT CONSTANTS
+stretchMin              = 30.0
+stretchMax              = 210.0
+heightMin               = -55
+heightMax               = 150.0
+rotationMin             = -90.0
+rotationMax             = 90.0
+handRotMin              = -84
+handRotMax              = 74
+handAngleOpen           = 25.0
+handAngleClose          = 70.0
+stationaryTolerance     = 50     #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"
+
+#Position Variables
 """ CARTESIAN COORDINATES:
 Not intuitivie at first. The y +- is flipped, relative to the direction of the rotation, and the axis are flipped the conventional way:
 What this really means is that the axis look like this:
@@ -33,17 +45,8 @@ Now, since the y+ direction moves the robot counterclockwise, and the servo is i
 This is the reason for that sign change. It is all to make moving more intuitive, and has everything to do with camera positioning and hardware silliness.
 """
 pos  = {'rotation': 0.0, 'stretch': 0.0, 'height': 0.0, 'wrist': 0.0, 'grabber': 0.0, 'touch': 0, 'x': 0.0, 'y': 0.0}  #Everything about the robot. X and Y are derived cartesian coordinates.
-home = {'rotation': 0.0, 'stretch': V.stretchMax / 2, 'height': V.heightMax, 'wrist': 0}                     #A preset position, used with the moveTo() function
-stretchMin      = 0.0
-stretchMax      = 210.0
-heightMin       = -180.0
-heightMax       = 150.0
-rotationMin     = -90.0
-rotationMax     = 90.0
-handRotMin      = -90.0
-handRotMax      = 90.0
-handAngleOpen   = 25.0
-handAngleClose  = 70.0
+home = {'rotation': 0.0, 'stretch': stretchMax / 2, 'height': heightMax, 'wrist': 0}                     #A preset position, used with the moveTo() function
+
 
 
 
@@ -179,7 +182,7 @@ def waitForRobot():
         #ACTUALLY DO THE MOVEMENT DETECTION...
         stillMoving = False
         for name, value in initialPos.items():  #If any of the values have a difference larger than tolerance, then this will make stillMoving True and check once more.
-            if not (abs(initialPos[name] - finalPos[name]) <= V.stationaryTolerance or abs(finalPos[name] - initialPos[name]) <= V.stationaryTolerance):
+            if not (abs(initialPos[name] - finalPos[name]) <= stationaryTolerance or abs(finalPos[name] - initialPos[name]) <= stationaryTolerance):
                 stillMoving = True
         initialPos = finalPos
 
@@ -193,10 +196,10 @@ def constrainPos(position):  #Make sure that the pos function is within all limi
     height      = position.get("height", -.1)
     wrist       = position.get("wrist", -.1)
 
-    rotation    = clamp(rotation, V.rotationMin, V.rotationMax)
-    stretch     = clamp(stretch, V.stretchMin, stretchMax)
-    height      = clamp(height, V.heightMin, V.heightMax)
-    wrist       = clamp(wrist, V.handRotMin, V.handRotMax)
+    rotation    = clamp(rotation, rotationMin, rotationMax)
+    stretch     = clamp(stretch, stretchMin, stretchMax)
+    height      = clamp(height, heightMin, heightMax)
+    wrist       = clamp(wrist, handRotMin, handRotMax)
 
     if not rotation == position["rotation"] and not position["rotation"] == -.1:
         print "constrainPos(", locals().get("args"), "): Constrained rotation to", rotation, "from ", position["rotation"]
