@@ -25,13 +25,13 @@ Robot.moveTo(height=150, relative=False)
 cap = cv2.VideoCapture(1)
 _, throwaway = cap.read()  #Wait for camera to adjust to lighting. Toss this frame (camera buffer)
 cv2.imshow('main', throwaway)
-
+cv2.waitKey(1000)
 
 images_array = []
 for index, position in enumerate(picturePositions):
 
     Robot.moveTo(relative = False, **position)
-    cv2.waitKey(500)
+    cv2.waitKey(750)
     print "Taking image ", index
     _, _= cap.read()  #Throw away this frame. Fixes oddities with the cameras buffering.
     _, img = cap.read()

@@ -64,7 +64,7 @@ def findDimensions(image, homography):
 
 def stitchImages(base_img_rgb, images_array, round):
     if ( len(images_array) < 1 ):
-        print "Image array empty, ending stitchImages()"
+        #print "Image array empty, ending stitchImages()"
         return base_img_rgb
 
     base_img = cv2.GaussianBlur(cv2.cvtColor(base_img_rgb, cv2.COLOR_BGR2GRAY), (5, 5), 0)
@@ -80,7 +80,7 @@ def stitchImages(base_img_rgb, images_array, round):
     flann_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
     matcher = cv2.FlannBasedMatcher(flann_params, {})
 
-    print "Iterating through next images..."
+    ##print "Iterating through next images..."
 
     closestImage = None
 
@@ -90,21 +90,21 @@ def stitchImages(base_img_rgb, images_array, round):
     for index, next_img_rgb in enumerate(images_array):
         next_img = cv2.GaussianBlur(cv2.cvtColor(next_img_rgb, cv2.COLOR_BGR2GRAY), (5, 5), 0)
 
-        print "\t Finding points..."
+        #print "\t Finding points..."
 
         next_features, next_descs = detector.detectAndCompute(next_img, None)
 
         matches = matcher.knnMatch(next_descs, trainDescriptors=base_descs, k=2)
-        print "\t Match Count: ", len(matches)
+        #print "\t Match Count: ", len(matches)
 
         matches_subset = filter_matches(matches)
-        print "\t Filtered Match Count: ", len(matches_subset)
+        #print "\t Filtered Match Count: ", len(matches_subset)
 
         distance = imageDistance(matches_subset)
-        print "\t Distance from Key Image: ", distance
+        #print "\t Distance from Key Image: ", distance
 
         averagePointDistance = distance/float(len(matches_subset))
-        print "\t Average Distance: ", averagePointDistance
+        #print "\t Average Distance: ", averagePointDistance
 
         kp1 = []
         kp2 = []
@@ -117,7 +117,7 @@ def stitchImages(base_img_rgb, images_array, round):
         p2 = np.array([k.pt for k in kp2])
 
         H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-        print '%d / %d  inliers/matched' % (np.sum(status), len(status))
+        #print '%d / %d  inliers/matched' % (np.sum(status), len(status))
 
         inlierRatio = float(np.sum(status)) / float(len(status))
 
@@ -134,7 +134,7 @@ def stitchImages(base_img_rgb, images_array, round):
             closestImage['desc']    = next_descs
             closestImage['match']   = matches_subset
 
-    print "Closest Image Ratio: ", closestImage['inliers']
+    #print "Closest Image Ratio: ", closestImage['inliers']
 
     new_images_array = images_array
     del new_images_array[closestImage['index']]  # Shortening the images array to not have the last used image
@@ -143,7 +143,7 @@ def stitchImages(base_img_rgb, images_array, round):
 
     H = closestImage['h']
     if np.isnan(H[0]).any():
-        print "Error: About to crash, H is nan"
+        print "ImageStitching(): Error: About to crash, H is nan"
     H = H / H[2, 2]
     H_inv = np.linalg.inv(H)
 
@@ -164,31 +164,31 @@ def stitchImages(base_img_rgb, images_array, round):
             move_h[1,2] += -min_y
             max_y += -min_y
 
-        print "Homography: \n", H
-        print "Inverse Homography: \n", H_inv
-        print "Min Points: ", (min_x, min_y)
+        #print "Homography: \n", H
+        #print "Inverse Homography: \n", H_inv
+        #print "Min Points: ", (min_x, min_y)
 
         mod_inv_h = move_h * H_inv
 
         if math.isnan(math.ceil(max_x)) or math.isnan(math.ceil(max_y)):
             # If program was unable to stitch this correctly, return the work so far instead of crashing.
-            print "Error: About to crash, max_x is NaN"
+            #print "Error: About to crash, max_x is NaN"
             return base_img_rgb
 
         img_w = int(math.ceil(max_x))
         img_h = int(math.ceil(max_y))
 
-        print "New Dimensions: ", (img_w, img_h)
+        #print "New Dimensions: ", (img_w, img_h)
 
         # Warp the new image given the homography from the old image
         base_img_warp = cv2.warpPerspective(base_img_rgb, move_h, (img_w, img_h))
-        print "Warped base image"
+        #print "Warped base image"
 
         # utils.showImage(base_img_warp, scale=(0.2, 0.2), timeout=5000)
         # cv2.destroyAllWindows()
 
         next_img_warp = cv2.warpPerspective(closestImage['rgb'], mod_inv_h, (img_w, img_h))
-        print "Warped next image"
+        #print "Warped next image"
 
         # utils.showImage(next_img_warp, scale=(0.2, 0.2), timeout=5000)
         # cv2.destroyAllWindows()
@@ -196,9 +196,9 @@ def stitchImages(base_img_rgb, images_array, round):
         # Put the base image on an enlarged palette
         enlarged_base_img = np.zeros((img_h, img_w, 3), np.uint8)
 
-        print "Enlarged Image Shape: ",  enlarged_base_img.shape
-        print "Base Image Shape: ",      base_img_rgb.shape
-        print "Base Image Warp Shape: ", base_img_warp.shape
+        #print "Enlarged Image Shape: ",  enlarged_base_img.shape
+        #print "Base Image Shape: ",      base_img_rgb.shape
+        #print "Base Image Warp Shape: ", base_img_warp.shape
 
         # enlarged_base_img[y:y+base_img_rgb.shape[0],x:x+base_img_rgb.shape[1]] = base_img_rgb
         # enlarged_base_img[:base_img_warp.shape[0],:base_img_warp.shape[1]] = base_img_warp
@@ -221,14 +221,14 @@ def stitchImages(base_img_rgb, images_array, round):
         final_gray = cv2.cvtColor(final_img, cv2.COLOR_BGR2GRAY)
         _, thresh = cv2.threshold(final_gray, 1, 255, cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        print "Found %d contours..." % (len(contours))
+        #print "Found %d contours..." % (len(contours))
 
         max_area = 0
         best_rect = (0, 0, 0, 0)
 
         for cnt in contours:
             x, y, w, h = cv2.boundingRect(cnt)
-            # print "Bounding Rectangle: ", (x,y,w,h)
+            # #print "Bounding Rectangle: ", (x,y,w,h)
 
             deltaHeight = h - y
             deltaWidth = w - x
@@ -240,8 +240,8 @@ def stitchImages(base_img_rgb, images_array, round):
                 best_rect = (x, y, w, h)
 
         if ( max_area > 0 ):
-            print "Maximum Contour: ", max_area
-            print "Best Rectangle: ", best_rect
+            #print "Maximum Contour: ", max_area
+            #print "Best Rectangle: ", best_rect
 
             final_img_crop = final_img[best_rect[1]:best_rect[1]+best_rect[3],
                     best_rect[0]:best_rect[0]+best_rect[2]]

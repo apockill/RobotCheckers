@@ -35,11 +35,13 @@ TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad')
 """
 ShapeTarget   = namedtuple('ShapeTarget', 'vertices, area, center')  #Any shape with x amount of sides
 
-CircleTarget  = namedtuple('CircleTarget', 'radius, area, center')
+CircleTarget  = namedtuple('CircleTarget', 'radius, area, center, color')
 
 class Video:  #Handles basic video functions
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        recordFrames = kwargs.get('recordFrames', 2)
+
         print "Video.__init(", locals().get("args"), "): Setting up video capture..."
         self.cap = cv2.VideoCapture(1)
         self.frame = None
@@ -73,30 +75,35 @@ class Video:  #Handles basic video functions
     def isCameraConnected(self):
         return self.cap.isOpened()
 
-    def getVideo(self):
+    def getVideo(self, **kwargs):
+        returnFrame = kwargs.get('returnFrame', False)
+        numberOfFrames = kwargs.get('readXFrames', 1)  #Read multiple frames in one go. These all get recorded on the previousFrames list
         if not self.paused:
-            ret, newFrame = self.cap.read()
-            try:  #CHECK IF CAP SENT AN IMAGE BACK. If not, this will throw an error, and the "frame" image will not be replaced
-                self.frame = newFrame.copy()                    #If it is indeed a frame, put it into self.frame, which all the programs use.
-                self.previousFrames.append(self.frame.copy())   #Add the frame to the cache of 10 frames in previousFrames
-            except:
-                print "ERROR: getVideo(XXX): Frame not captured."
+            for i in range(numberOfFrames):
+                ret, newFrame = self.cap.read()
+                try:  #CHECK IF CAP SENT AN IMAGE BACK. If not, this will throw an error, and the "frame" image will not be replaced
+                    self.frame = newFrame.copy()                    #If it is indeed a frame, put it into self.frame, which all the programs use.
+                    self.previousFrames.append(self.frame.copy())   #Add the frame to the cache of 10 frames in previousFrames
+                except:
+                    print "ERROR: getVideo(XXX): Frame not captured."
 
-            #self.frame= cv2.Canny(self.frame,100,200)
-            if not ret:  #If there was no frame captured
-                print "getVideo(", locals().get("args"), "): Error while capturing frame"
-
-        #HANDLES RECORDING OF FRAMES. RECORDS ONLY 10 OF THE PREVIOUS FRAMES
-
+                #self.frame= cv2.Canny(self.frame,100,200)
+                if not ret:  #If there was no frame captured
+                    print "getVideo(", locals().get("args"), "): Error while capturing frame"
 
 
-        if len(self.previousFrames) > 10:
+        #HANDLE RECORDING OF FRAMES. RECORDS ONLY 10 OF THE PREVIOUS FRAMES
+        while len(self.previousFrames) > 10:
             del self.previousFrames[0]
 
         if self.frameCount >= 100:  #Keeps the framecount to under 100
             self.frameCount = 0
         else:
             self.frameCount += 1
+
+        if returnFrame:
+            print "returning frame"
+            return self.frame
 
     def display(self, window, **kwargs):
         """
@@ -216,8 +223,8 @@ class ObjectTracker:
         frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
 
         for circle in circleTargets:
-            cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (0, 0, 255), 3, 3)  #Draw outline of circle
-            cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
+            cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (255, 255, 255), 3, 3)  #Draw outline of circle
+            #cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
 
         return frameToDraw
 
@@ -331,19 +338,28 @@ class ObjectTracker:
         return shapeTargets
 
     def getCircles(self, **kwargs):
-        frameToAnalyze    = kwargs.get('frameToAnalyze', self.vid.frame.copy())
+        frameToAnalyze = kwargs.get('frameToAnalyze', self.vid.frame.copy())
+        minRadius      = kwargs.get('minRadius', 1)
 
         gray = cv2.cvtColor(frameToAnalyze.copy(), cv2.COLOR_BGR2GRAY)
         gray = cv2.medianBlur(gray, 5)
 
-        circles = cv2.HoughCircles(gray, 3, 1, 20, np.array([]), param1= 100, param2=30, minRadius=1, maxRadius=100)[0]
+        circles = cv2.HoughCircles(gray, 3, 1, 20, np.array([]), param1= 100, param2=30, minRadius=minRadius, maxRadius=100)[0]
 
         #Circles come in this format [x,y,radius] in an array of these. I change them to CircleTarget tuple format, for consistency
         circleArray = []
 
         for circle in circles:
 
-            circleArray.append(CircleTarget(radius = circle[2], area = math.pi * circle[2] ** 2, center = [circle[0], circle[1]]))
+            #  GET AVERAGE COLOR OF CIRCLE
+            fromX = int(circle[0] - circle[2] / 2)
+            toX   = int(circle[0] + circle[2] / 4)
+            fromY = int(circle[1] - circle[2] / 4)
+            toY   = int(circle[1] + circle[2] / 4)
+
+            rect = frameToAnalyze[fromY:toY, fromX:toX]
+            avgColor = cv2.mean(rect)
+            circleArray.append(CircleTarget(radius = circle[2], area = math.pi * circle[2] ** 2, center = [int(circle[0]), int(circle[1])], color = avgColor))
 
         return circleArray
 

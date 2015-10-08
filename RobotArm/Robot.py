@@ -6,7 +6,7 @@ import math
 from ast import literal_eval
 from time import sleep
 
-ser1 = serial.Serial('COM5', 9600, timeout=0)
+ser1 = serial.Serial('COM4', 9600, timeout=0)
 
 #ROBOT CONSTANTS
 stretchMin              = 30.0
@@ -151,6 +151,7 @@ def moveTo(**kwargs):
         waitForRobot()
     else:
         sleep(.1)
+
 
 
 def waitForRobot():

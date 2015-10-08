@@ -1,13 +1,15 @@
 import math
-from time import sleep
-from threading import Thread
 import cv2
 import Common
-import Variables as V
 import Robot                    #All robot related commands
+import Variables as V
+import numpy as np
+import CheckersAI
 from Video import Vision        #All camera and object-rec commands
+from Video import ImageStitching
+from time import sleep
 
-
+from threading import Thread
 
 
 
@@ -516,10 +518,83 @@ def placeBlockAtPosition(layer, position):
     Robot.moveTo(relative = False, **currentPosition)
     waitTillStill()
 
-########### Checkers FUNCTIONS ###########
-def checkersMain():
-    pass
 
+
+########### Checkers FUNCTIONS ###########
+def getBoardOverview(vid):
+    """
+    Gets several images of the board and stitches them together to return a stitched image of the whole board.
+    """
+
+    cap = vid.cap
+    picturePositions = [{'rotation': -13, 'stretch': 107},
+                        {'rotation': -12, 'stretch': 45}]
+    _, throwaway = cap.read()  #Wait for camera to adjust to lighting. Toss this frame (camera buffer)
+    cv2.imshow('Main', throwaway)
+
+    images_array = []
+    for index, position in enumerate(picturePositions):
+
+        Robot.moveTo(relative = False, **position)
+        cv2.waitKey(500)
+        print "Taking image ", index
+        _, _= cap.read()  #Throw away this frame. Fixes oddities with the cameras buffering.
+        _, img = cap.read()
+        cv2.imshow("Main", img)
+        cv2.waitKey(10)
+        images_array.append(img)
+
+    final_img = ImageStitching.stitchImages(images_array[0], images_array[1:], 0)
+    #cv2.imshow("Main",final_img)
+    #cv2.waitKey(1000)
+    return final_img
+
+def getBoardState(frame, circleArray, screenDimensions):
+    boardSize = 6
+    board = [[0 for i in range(boardSize)] for j in range(boardSize)]
+    squareSize = (screenDimensions[0] / boardSize)
+    dist       = lambda a, b: ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** .5  #sign(x) will return the sign of a number'
+
+    avgColor = [0, 0, 0]
+    for circle in circleArray:
+        avgColor = [avgColor[0] + circle.color[0],
+                    avgColor[1] + circle.color[1],
+                    avgColor[2] +  circle.color[2]]
+    avgColor = [avgColor[0] / len(circleArray), avgColor[1] / len(circleArray), avgColor[2] / len(circleArray)]
+    print "Average Color of ALL", avgColor
+
+    frameToDraw = frame.copy()
+
+    for column in range(boardSize):
+        for row in range(boardSize):
+           # print "row: ", row, "column: ", column, "squareSize: ", squareSize
+            location = [squareSize * row + squareSize / 2, squareSize * column + squareSize / 2]
+           # print location
+            if len(circleArray) == 0: continue
+
+            circleArray = sorted(circleArray, key = lambda c: (c.center[0] - location[0]) ** 2 + (c.center[1] - location[1]) ** 2)
+            nearest     = circleArray[0]
+
+
+            if dist(nearest.center, location) < squareSize / 2:
+                fromX = int(nearest.center[0] - nearest.radius / 2)
+                toX   = int(nearest.center[0] + nearest.radius / 2)
+                fromY = int(nearest.center[1] - nearest.radius / 2)
+                toY   = int(nearest.center[1] + nearest.radius / 2)
+
+                if nearest.color[0] > avgColor[0] - 5:
+                    board[column][row] = 1
+                    color = (0, 255, 255)
+                else:
+                    board[column][row] = 2
+                    color = (0, 255, 0)
+                print np.around(nearest.color)
+                cv2.rectangle(frameToDraw, tuple([fromX, fromY]), tuple([toX, toY]), color, 3)
+                cv2.putText(frameToDraw, str(row) + "," + str(column), (nearest.center[0] - 25, nearest.center[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, 0)
+                del circleArray[0]
+        #print board[column]
+
+    return board, frameToDraw
 
 
 
@@ -549,7 +624,7 @@ if '__main__' == __name__:
     #SET UP VIDEO CLASS AND WINDOWS VARIABLES
     vid                 = Vision.Video()
     vid.createNewWindow("Main",             xPos = 10,  yPos = 10)
-    vid.createNewWindow("Perspective",      xPos = 500,  yPos = 10)
+    vid.createNewWindow("Perspective",      xPos = 700,  yPos = 10)
 
     #SETUP UP OTHER VARIABLES/CLASSES
     objTracker          = Vision.ObjectTracker(vid, rectSelectorWindow = "KeyPoints")
@@ -557,17 +632,32 @@ if '__main__' == __name__:
     global exitApp
     exitApp = False
     keyPressed          = ''  #Keeps track of the latest key pressed
+    AI = CheckersAI.DraughtsBrain({'PIECE':    10,  #Checkers AI class
+                           'KING':    100,
+                           'BACK':    5,
+                           'KBACK':   5,
+                           'CENTER':  6,
+                           'KCENTER': 7,
+                           'FRONT':   5,
+                           'KFRONT':  5,
+                           'MOB':     6}, 15)
 
     #START SEPERATE THREAD FOR MOVING ROBOT
-    robotThread = Thread(target = runRobot)
-    robotThread.start()
+    Robot.moveTo(relative=False, **Robot.home)
+    Robot.moveTo(relative=False, **Robot.home)
+    #robotThread = Thread(target = runRobot)
+    #robotThread.start()
+
     vid.getVideo()
+    vid.windowFrame["Main"] = vid.frame
+    vid.display("Main")
+
 
     #DISPLAY VIDEO/IMAGE REC. MAIN THREAD.
     while not exitApp:
         vid.getVideo()
 
-        #IF THE CAMERA HAS BEEN UNPLUGGED, RECONNECT EVERYTHING:
+        #DETECT IF CAMERA HAS BEEN UNPLUGGED, AND IF SO TRY TO RECONNECT EVERYTHING:
         if objTracker.getMovement() == 0:
             print "ERROR: __main__(XXX): Camera NOT detected."
             sleep(1)
@@ -575,24 +665,36 @@ if '__main__' == __name__:
             vid.cap = cv2.VideoCapture(1)
 
 
-        #DO FRAME OPERATIONS:
-        testFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
 
-        shapeArray, edgedFrame = objTracker.getShapes(sides=4, threshHold = cv2.THRESH_OTSU, frameToAnalyze= testFrame, returnFrame = True)
-        warped = objTracker.getTransform(shapeArray[0], frameToAnalyze=testFrame, transformHeight= 600, transformWidth=600)
-        circleArray = objTracker.getCircles(frameToAnalyze = warped)
+        #DO FRAME OPERATIONS:
+        #stitchedFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
+        stitchedFrame = getBoardOverview(vid)
+        shapeArray, edgedFrame = objTracker.getShapes(sides=4, minArea =vid.getDimensions()[0] * vid.getDimensions()[1],
+                                                      threshHold =cv2.THRESH_OTSU, frameToAnalyze=stitchedFrame, returnFrame = True)
+
+        if len(shapeArray) == 0:  #Make sure that the board was correctly found. If not, restart the loop and try again.
+            print "__main()___: No board Found"
+            continue
+        warped = objTracker.getTransform(shapeArray[0], frameToAnalyze=stitchedFrame, transformHeight= 600, transformWidth=600)
+        circleArray = objTracker.getCircles(frameToAnalyze = warped, minRadius = 40)
+
+        boardState, warped = getBoardState(warped, circleArray, [600, 600])
+
 
 
         #SET FRAMES FOR THE WINDOWS:
-        vid.windowFrame["Main"]        = objTracker.drawShapes([shapeArray[0]], frameToDraw=testFrame)
+        vid.windowFrame["Main"]        = objTracker.drawShapes([shapeArray[0]], frameToDraw=stitchedFrame)
         vid.windowFrame["Perspective"] = objTracker.drawCircles(circleArray,    frameToDraw=warped)
 
         #UPDATE WINDOWS
         vid.display("Main")
         vid.display("Perspective")
 
-        ch = cv2.waitKey(10000)                                      #Wait between frames, and also check for keys pressed.
+        print AI.best_move(board=boardState)
 
+        raw_input("Type anything to continue:")
+
+        ch = cv2.waitKey(10)                                      #Wait between frames, and also check for keys pressed.
         keyPressed = chr(ch + (ch == -1) * 256).lower().strip()  #Convert ascii to character, and the (ch == -1)*256 is to fix a bug. Used mostly in runRobot() function
         if keyPressed == chr(27): exitApp = True                 #If escape has been pressed, close program
         if keyPressed == 'p':                                    #Pause and unpause when spacebar has been pressed
