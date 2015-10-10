@@ -5,17 +5,17 @@ from matplotlib import pyplot as plt
 cap = cv2.VideoCapture(1)
 
 while True:
-    #ret0, img0 = cap.read()
-    img0 = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
+    ret0, img0 = cap.read()
+    #img0 = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
     img = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
 
 
 
 
-    #low  = float(raw_input("Low?:"))    #Default 127
-    #high = float(raw_input("High?:"))   #Default 255
-    low = 127
-    high = 255
+    low  = float(raw_input("Low?:"))    #Default 127
+    high = float(raw_input("High?:"))   #Default 255
+    #low = 127
+    #high = 255
 
     ret1,  thresh1  = cv2.threshold(img, low, high, cv2.THRESH_BINARY)
     ret2,  thresh2  = cv2.threshold(img, low, high, cv2.THRESH_BINARY_INV)

@@ -185,24 +185,31 @@ class ObjectTracker:
             cv2.circle(frameToDraw, (int(x), int(y)), 3, (0, 0, 255), 2)
         return frameToDraw
 
-    def drawEdged(self, frameToAnalyze, **kwargs):
+    def drawEdged(self, **kwargs):
         """
         Gets the contours and draws them on the frame and returns the frame.
         :param bilateralConstant: Increases how well the image is blurred before analyzed for edges.
         :param kwargs:
         :return:
         """
+        frameToAnalyze    = kwargs.get('frameToAnalyze', self.vid.frame.copy())
         bilateralConstant = kwargs.get('bilateralConstant', 17)
         threshHoldMethod  = kwargs.get('threshHold', cv2.THRESH_BINARY)
+        returnContours    = kwargs.get('returnContours', False)
+        contourMethod     = kwargs.get('contourMethod', cv2.RETR_EXTERNAL)  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
 
         gray = cv2.cvtColor(frameToAnalyze, cv2.COLOR_BGR2GRAY)
         gray = cv2.bilateralFilter(gray, bilateralConstant, bilateralConstant, 27)  #Blurs photo while maintaining edge integrity. Up the 2nd number for more lag but accuracy
         #self.vid.windowFrame["Main"] = gray
         ret, gray = cv2.threshold(gray, 140, 255, threshHoldMethod)                 #Use a threshold on the image (black and white)
         edged = cv2.Canny(gray, 100, 130)                                           #Gets edged version of photo. 2nd and 3rd numbers are the threshholds (100,130 for optimal)
-        cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE  )
+        cnts, _ = cv2.findContours(edged.copy(), contourMethod, cv2.CHAIN_APPROX_SIMPLE  )
         cv2.drawContours(edged, cnts, -1, (255, 255, 255), 3)
-        return edged
+
+        if returnContours:
+            return cnts, edged
+        else:
+            return edged
 
     def drawShapes(self, shapeTargets, **kwargs):  #RETURNS A FRAME WITH THE SHAPES DRAWN ON IT
         """
@@ -274,17 +281,22 @@ class ObjectTracker:
         """
 
         #SETUP:
-        bilateralConstant = kwargs.get('bilateralConstant', 17)
+        bilateralConstant = kwargs.get('bilateralConstant', 20)
         returnFrame       = kwargs.get('returnFrame',       False)
+        periTolerance     = kwargs.get('peri',              .05)                 #Percent "closeness" to being flat edged
         minArea           = kwargs.get('minArea',           10)
-        frameToAnalyze    = kwargs.get('frameToAnalyze', self.vid.frame.copy())
-        threshHoldMethod  = kwargs.get('threshHold', cv2.THRESH_BINARY)
+        maxArea           = kwargs.get('maxArea',           100000000)
+        frameToAnalyze    = kwargs.get('frameToAnalyze',    self.vid.frame.copy())
+        threshHoldMethod  = kwargs.get('threshHold',        cv2.THRESH_BINARY)
+        contourMethod     = kwargs.get('contourMethod',     cv2.RETR_EXTERNAL)  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
+
         ################################GET SHAPE CONTOUR ARRAYS##############################################
         #Get edged version of image
-        edged = self.drawEdged(frameToAnalyze, bilateralConstant = bilateralConstant, threshHold = threshHoldMethod)
+        cnts, edged = self.drawEdged(frameToAnalyze = frameToAnalyze, bilateralConstant = bilateralConstant, threshHold = threshHoldMethod,
+                                     returnContours = True, contourMethod = contourMethod)
 
         #Find contours in the edged image, keep only the largest ones (the [:x] in sorted cnts line)
-        cnts, _ = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE  )  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
+        #cnts, _ = cv2.findContours(edged.copy(), contourMethod, cv2.CHAIN_APPROX_SIMPLE  )
         cnts = sorted(cnts, key = cv2.contourArea, reverse = True)  #to limit, add [:20] to the end of the array
 
         #OPTIONAL: DRAW THE CONTOURS
@@ -294,9 +306,9 @@ class ObjectTracker:
         shapesDetected = []                                  #Array of all 'shape' contours found in the image so far
         for c in cnts:
             peri = cv2.arcLength(c, True)                    # approximate the contour
-            approx = cv2.approxPolyDP(c, .05 * peri, True)   #This is how precise you want it to look at the contours. (Aka, the curvature of 2%)
+            approx = cv2.approxPolyDP(c, periTolerance * peri, True)   #This is how precise you want it to look at the contours. (Aka, the curvature of 2%)
             if len(approx) == sides:
-                if cv2.contourArea(approx) > minArea:        #Get rid of small anomalies that were mistakenly recognized as contours (size)
+                if  minArea < cv2.contourArea(approx) < maxArea:        #Get rid of small anomalies that were mistakenly recognized as contours (size)
                     shapesDetected.append(approx)
 
         if len(shapesDetected) == 0:  #If no shapes detected, end function.
@@ -318,20 +330,20 @@ class ObjectTracker:
         tolerance = 5  #How many pixels two coordinates in a shape must be away in order to be considered different shapes
         shapeTargets = []  #Creates an array of ShapeTargets
 
-        for shape in range(len(shapeArray)):
-            similarCoords = 0  #Keeps track of how many coordinates were within the tolerance
-            for otherShape in range(shape + 1, len(shapeArray)):
-                for coordShape in range(len(shapeArray[shape])):
-                    for coordOtherShape in range(len(shapeArray[otherShape])):
-                        shapeX = shapeArray[shape][coordShape][0]
-                        shapeY = shapeArray[shape][coordShape][1]
-                        otherShapeX = shapeArray[otherShape][coordOtherShape][0]
-                        otherShapeY = shapeArray[otherShape][coordOtherShape][1]
-                        if (shapeX - tolerance) < otherShapeX < (shapeX + tolerance):  #not within tolerance
-                            if (shapeY - tolerance) < otherShapeY < (shapeY + tolerance):
-                                similarCoords += 1
-            if similarCoords < 3:
-                shapeTargets.append(ShapeTarget(vertices = shapeArray[shape], area = cv2.contourArea(shapesDetected[shape]), center = np.sum(shapeArray[shape], axis = 0) / len(shapeArray[shape])))
+        for shape in range(len(shapeArray)):  #Gets rid of weird overlapping shapes and also finished making the shapeTargets array
+            # similarCoords = 0  #Keeps track of how many coordinates were within the tolerance
+            # for otherShape in range(shape + 1, len(shapeArray)):
+            #     for coordShape in range(len(shapeArray[shape])):
+            #         for coordOtherShape in range(len(shapeArray[otherShape])):
+            #             shapeX = shapeArray[shape][coordShape][0]
+            #             shapeY = shapeArray[shape][coordShape][1]
+            #             otherShapeX = shapeArray[otherShape][coordOtherShape][0]
+            #             otherShapeY = shapeArray[otherShape][coordOtherShape][1]
+            #             if (shapeX - tolerance) < otherShapeX < (shapeX + tolerance):  #not within tolerance
+            #                 if (shapeY - tolerance) < otherShapeY < (shapeY + tolerance):
+            #                     similarCoords += 1
+            #if similarCoords < 120:
+            shapeTargets.append(ShapeTarget(vertices = shapeArray[shape], area = cv2.contourArea(shapesDetected[shape]), center = np.sum(shapeArray[shape], axis = 0) / len(shapeArray[shape])))
 
         if returnFrame:
             return (shapeTargets, edged)

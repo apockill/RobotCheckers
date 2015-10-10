@@ -521,14 +521,35 @@ def placeBlockAtPosition(layer, position):
 
 
 ########### Checkers FUNCTIONS ###########
+def getAverageColor(circleArray):
+    """
+    The pieces on the board are determined to be one side or another by their color. Since color can be be read differently
+    in different lightings, this function can be used to calibrate at the start of the game.
+
+    What it does is it takes the average color of each circle and returns it. This is then used to find the "midpoint"
+    for determining if one piece is from player A or player B. It must only be run when there is an equal number
+    of each type of piece on the board, or it will skew the results.
+    """
+    avgColor = [0, 0, 0]
+    for circle in circleArray:
+        avgColor = [avgColor[0] + circle.color[0],
+                    avgColor[1] + circle.color[1],
+                    avgColor[2] +  circle.color[2]]
+    avgColor = [avgColor[0] / len(circleArray), avgColor[1] / len(circleArray), avgColor[2] / len(circleArray)]
+    print "getAverageColor(): ", avgColor
+    return avgColor
+
 def getBoardOverview(vid):
     """
     Gets several images of the board and stitches them together to return a stitched image of the whole board.
     """
 
     cap = vid.cap
-    picturePositions = [{'rotation': -13, 'stretch': 107},
-                        {'rotation': -12, 'stretch': 45}]
+    picturePositions = [{'rotation': -11, 'stretch': 70,  'height': 150},
+                        {'rotation': -8, 'stretch': 140,  'height': 150},
+                        {'rotation': -17, 'stretch': 140, 'height': 150},
+                        {'rotation': -21, 'stretch': 45,  'height': 150},
+                        {'rotation': -8, 'stretch': 35,   'height': 150}]
     _, throwaway = cap.read()  #Wait for camera to adjust to lighting. Toss this frame (camera buffer)
     cv2.imshow('Main', throwaway)
 
@@ -545,23 +566,16 @@ def getBoardOverview(vid):
         images_array.append(img)
 
     final_img = ImageStitching.stitchImages(images_array[0], images_array[1:], 0)
-    #cv2.imshow("Main",final_img)
-    #cv2.waitKey(1000)
+    #cv2.imshow("Main", final_img)
+    #cv2.waitKey(1500)
     return final_img
 
-def getBoardState(frame, circleArray, screenDimensions):
+def getBoardState(frame, circleArray, screenDimensions, redThreshold):
     boardSize = 6
     board = [[0 for i in range(boardSize)] for j in range(boardSize)]
     squareSize = (screenDimensions[0] / boardSize)
     dist       = lambda a, b: ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** .5  #sign(x) will return the sign of a number'
 
-    avgColor = [0, 0, 0]
-    for circle in circleArray:
-        avgColor = [avgColor[0] + circle.color[0],
-                    avgColor[1] + circle.color[1],
-                    avgColor[2] +  circle.color[2]]
-    avgColor = [avgColor[0] / len(circleArray), avgColor[1] / len(circleArray), avgColor[2] / len(circleArray)]
-    print "Average Color of ALL", avgColor
 
     frameToDraw = frame.copy()
 
@@ -582,13 +596,13 @@ def getBoardState(frame, circleArray, screenDimensions):
                 fromY = int(nearest.center[1] - nearest.radius / 2)
                 toY   = int(nearest.center[1] + nearest.radius / 2)
 
-                if nearest.color[0] > avgColor[0] - 5:
+                if nearest.color[2] > redThreshold:
                     board[column][row] = 1
                     color = (0, 255, 255)
                 else:
                     board[column][row] = 2
                     color = (0, 255, 0)
-                print np.around(nearest.color)
+
                 cv2.rectangle(frameToDraw, tuple([fromX, fromY]), tuple([toX, toY]), color, 3)
                 cv2.putText(frameToDraw, str(row) + "," + str(column), (nearest.center[0] - 25, nearest.center[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, 0)
                 del circleArray[0]
@@ -616,8 +630,9 @@ def runRobot():
 
 
         if keyPressed == 'x':  #MOVE TO XY
-            Robot.moveTo(height = float(raw_input("Height?:")), rotation = float(raw_input("Rotation?:")), stretch = float(raw_input("Stretch:")), relative = False)
-
+            #Robot.moveTo(height = float(raw_input("Height?:")), rotation = float(raw_input("Rotation?:")), stretch = float(raw_input("Stretch:")), relative = False)
+            Robot.moveTo(height = 150, rotation = float(raw_input("Rotation?:")), stretch = float(raw_input("Stretch:")), relative = False)
+            #Robot.moveTo(x=float(raw_input("X?: ")), y=float(raw_input("Y?: ")), relative=False)
 
 if '__main__' == __name__:
     print 'Start!'
@@ -629,8 +644,6 @@ if '__main__' == __name__:
     #SETUP UP OTHER VARIABLES/CLASSES
     objTracker          = Vision.ObjectTracker(vid, rectSelectorWindow = "KeyPoints")
     screenDimensions    = vid.getDimensions()
-    global exitApp
-    exitApp = False
     keyPressed          = ''  #Keeps track of the latest key pressed
     AI = CheckersAI.DraughtsBrain({'PIECE':    10,  #Checkers AI class
                            'KING':    100,
@@ -640,13 +653,16 @@ if '__main__' == __name__:
                            'KCENTER': 7,
                            'FRONT':   5,
                            'KFRONT':  5,
-                           'MOB':     6}, 15)
+                           'MOB':     6}, 5)
+    global exitApp
+    exitApp         = False
+    firstLoop       = True  #This will tell the robot to calibrate the average color on the first round of the game.
+    redThreshold    = 160   #This will be changed in the getAverageColor() calibration
 
     #START SEPERATE THREAD FOR MOVING ROBOT
     Robot.moveTo(relative=False, **Robot.home)
-    Robot.moveTo(relative=False, **Robot.home)
-    #robotThread = Thread(target = runRobot)
-    #robotThread.start()
+    robotThread = Thread(target = runRobot)
+    robotThread.start()
 
     vid.getVideo()
     vid.windowFrame["Main"] = vid.frame
@@ -667,18 +683,23 @@ if '__main__' == __name__:
 
 
         #DO FRAME OPERATIONS:
-        #stitchedFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
-        stitchedFrame = getBoardOverview(vid)
-        shapeArray, edgedFrame = objTracker.getShapes(sides=4, minArea =vid.getDimensions()[0] * vid.getDimensions()[1],
-                                                      threshHold =cv2.THRESH_OTSU, frameToAnalyze=stitchedFrame, returnFrame = True)
+        stitchedFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
+        #stitchedFrame = getBoardOverview(vid)
+        #vid.windowFrame["Main"]        = objTracker.drawEdged(frameToAnalyze=stitchedFrame)
+        #vid.display("Main")
+        #cv2.waitKey(1500)
+        shapeArray, edgedFrame = objTracker.getShapes(sides=4, minArea=vid.getDimensions()[0] * vid.getDimensions()[1], peri=0.05,
+                                                      threshHold=cv2.THRESH_OTSU, frameToAnalyze=stitchedFrame, returnFrame = True)
 
         if len(shapeArray) == 0:  #Make sure that the board was correctly found. If not, restart the loop and try again.
             print "__main()___: No board Found"
             continue
+
         warped = objTracker.getTransform(shapeArray[0], frameToAnalyze=stitchedFrame, transformHeight= 600, transformWidth=600)
         circleArray = objTracker.getCircles(frameToAnalyze = warped, minRadius = 40)
 
-        boardState, warped = getBoardState(warped, circleArray, [600, 600])
+        if firstLoop: redThreshold = getAverageColor(circleArray)[2]
+        boardState, warped = getBoardState(warped, circleArray, [600, 600], redThreshold)
 
 
 
@@ -691,10 +712,15 @@ if '__main__' == __name__:
         vid.display("Perspective")
 
         print AI.best_move(board=boardState)
+        move = AI.best_move(board=boardState)
+        print "From ", move.source[::-1], " to ", move.destination[::-1]
 
+
+
+
+        ch = cv2.waitKey(100)                                      #Wait between frames, and also check for keys pressed.
         raw_input("Type anything to continue:")
 
-        ch = cv2.waitKey(10)                                      #Wait between frames, and also check for keys pressed.
         keyPressed = chr(ch + (ch == -1) * 256).lower().strip()  #Convert ascii to character, and the (ch == -1)*256 is to fix a bug. Used mostly in runRobot() function
         if keyPressed == chr(27): exitApp = True                 #If escape has been pressed, close program
         if keyPressed == 'p':                                    #Pause and unpause when spacebar has been pressed
