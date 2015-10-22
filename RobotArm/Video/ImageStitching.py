@@ -20,6 +20,7 @@ def imageDistance(matches):
 
     return sumDistance
 
+
 def findDimensions(image, homography):
     base_p1 = np.ones(3, np.float32)
     base_p2 = np.ones(3, np.float32)
@@ -61,6 +62,15 @@ def findDimensions(image, homography):
     min_y = min(0, min_y)
 
     return (min_x, min_y, max_x, max_y)
+
+def resizeImages(dir_list, dir_name, width):
+    width = int(width)
+    for i in range(len(dir_list)):
+        imTemp = Image.open(dir_list[i])
+        wPercent = (width/float(imTemp.size[0]))
+        height = int((float(imTemp.size[1]) * float(wPercent)))
+        imTemp = imTemp.resize((width, height), Image.BILINEAR)
+        imTemp.save(os.path.join(dir_name, dir_list[i]))
 
 def stitchImages(base_img_rgb, images_array, round):
     if ( len(images_array) < 1 ):

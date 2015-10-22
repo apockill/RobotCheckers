@@ -246,7 +246,7 @@ class DBoard(object):
             column = 1
             delta = 1
             for _ in xrange(6):
-                print "Placing Dark:\trow: ", row, " column:", column
+                #print "Placing Dark:\trow: ", row, " column:", column
                 new_piece = DPiece(self, row, column, 'DARK')
                 self.dark_pieces.append(new_piece)
                 self.set_bitmap(row, column, new_piece)
@@ -261,7 +261,7 @@ class DBoard(object):
             column = 1
             delta = 1
             for _ in xrange(6):
-                print "Placing Light:\trow: ", row, " column:", column
+                #print "Placing Light:\trow: ", row, " column:", column
                 new_piece = DPiece(self, row, column, 'LIGHT')
                 self.light_pieces.append(new_piece)
                 self.set_bitmap(row, column, new_piece)

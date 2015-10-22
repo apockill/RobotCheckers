@@ -6,10 +6,19 @@ import math
 from ast import literal_eval
 from time import sleep
 
+
+"""
+Experimentally derived information:
+
+After 4 trials, I was able to determine that at height=150 the stretch/inch constant is 24.18
+From that, I got that the "stretch" from stretch=0 to the base of the robot is:
+    4.625"*24.18= 111.84 'stretch' from the base of the robot.
+"""
+
 ser1 = serial.Serial('COM4', 9600, timeout=0)
 
 #ROBOT CONSTANTS
-stretchMin              = 30.0
+stretchMin              = 0
 stretchMax              = 210.0
 heightMin               = -55
 heightMax               = 150.0
@@ -20,6 +29,7 @@ handRotMax              = 74
 handAngleOpen           = 25.0
 handAngleClose          = 70.0
 stationaryTolerance     = 50     #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"
+stretchDistFromBase     = 111.84 #How far in "stretch units" the arm is from the pivot of the robot when stretch is 0
 
 #Position Variables
 """ CARTESIAN COORDINATES:
@@ -77,10 +87,10 @@ def setPolarPosition(x, y):
         theta = tan^-1(abs(y/x))
     """
     radius = (x ** 2.0 + y ** 2.0) ** .5  #R = sqrt(x^2+y^2)
-    theta  = math.degrees(math.atan2(y  , x ))
+    theta  = math.degrees(math.atan2(y, x ))
 
     pos['rotation'] = -theta
-    pos['stretch']  = radius
+    pos['stretch']  = radius - stretchDistFromBase
 
     moveTo()
 
@@ -117,7 +127,7 @@ def moveTo(**kwargs):
     #HANDLE ANY CARTESIAN COORDINATE COMMANDS
     if any(coords in kwargs for coords in ('x', 'y')):  #If either x or y are in kwargs, then do cartesian coordinate calculations on pos
         if relative:
-            setPolarPosition(kwargs.get('x', 0) + pos['x'], kwargs.get('y', 0) - pos['y'])
+            setPolarPosition(kwargs.get('x', 0) + pos['x'], kwargs.get('y', 0) + pos['y'])
         else:  #For things that are not relative, it is expected for there to be both an X and a Y value
             setPolarPosition(kwargs['x'], kwargs['y'])
 
@@ -139,8 +149,9 @@ def moveTo(**kwargs):
         sendVariable('h', pos['height'  ])
         sendVariable('w', pos['wrist'   ])
 
-        pos['x'] = pos['stretch'] * math.cos(math.radians(pos['rotation']))
-        pos['y'] = -pos['stretch'] * math.sin(math.radians(pos['rotation']))
+        pos['x'] =  (pos['stretch'] + stretchDistFromBase) * math.cos(math.radians(pos['rotation']))
+        pos['y'] = (-pos['stretch'] - stretchDistFromBase) * math.sin(math.radians(pos['rotation']))
+        #print "moveTo(): x:", int(pos['x']), " y: ", int(pos['y'])
         #print "moveTo(XXX): Position: ", pos
     except:
         print "moveTo(", locals().values(), "): Failed to send moveTo command to Robot!"
@@ -151,7 +162,6 @@ def moveTo(**kwargs):
         waitForRobot()
     else:
         sleep(.1)
-
 
 
 def waitForRobot():
@@ -261,7 +271,7 @@ def getPosArgsCopy(**kwargs):
 
     for key in pos.keys():  #Go over every key in position, and see if it is mentioned in the **args. If it is, remove it.
         if key in onlyRecord and not key in dontRecord:
-            currentPosition[key] = pos[key]
+            currentPosition[key] = int(pos[key])
 
 
     return currentPosition

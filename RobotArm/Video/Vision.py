@@ -1,10 +1,10 @@
 __author__ = 'AlexThiel'
 import math
-from collections import namedtuple
 import numpy as np
-import cv2
 import Common
-
+import cv2
+from cv2 import cv
+from collections import namedtuple
 
 #Constants
 FLANN_INDEX_LSH    = 6
@@ -105,6 +105,31 @@ class Video:  #Handles basic video functions
             print "returning frame"
             return self.frame
 
+    def setCamResolution(self, width, height):
+
+        originalWidth  = self.cap.get(cv.CV_CAP_PROP_FRAME_WIDTH)
+        originalHeight = self.cap.get(cv.CV_CAP_PROP_FRAME_HEIGHT)
+
+        successWidth   = self.cap.set(cv.CV_CAP_PROP_FRAME_WIDTH,  width)
+        successHeight  = self.cap.set(cv.CV_CAP_PROP_FRAME_HEIGHT, height)
+
+        finalWidth     = self.cap.get(cv.CV_CAP_PROP_FRAME_WIDTH)
+        finalHeight    = self.cap.get(cv.CV_CAP_PROP_FRAME_HEIGHT)
+
+        if not successWidth or not successHeight:
+            print "Video.setResolution(): Error in setting resolution using cap.set()"
+
+        if originalWidth == finalWidth or originalHeight == finalHeight:
+            print "Video.setResolution(): Error in setting resolution, original and final sizes were =="
+
+    def resizeFrame(self, frameToResize, finalWidth):
+        if frameToResize.shape[1] == finalWidth:
+            return frameToResize
+        r = finalWidth / float(frameToResize.shape[1])
+        dim = (finalWidth, int(float(frameToResize.shape[0]) * r))
+        resized = cv2.resize(frameToResize, dim, interpolation = cv2.INTER_AREA)
+        return resized
+
     def display(self, window, **kwargs):
         """
         Args:
@@ -139,7 +164,6 @@ class ObjectTracker:
         self.tracker.addTarget(self.vid.frame, rect)
         print "onRect(", locals().get("args"), "): tracker.targets: ", self.tracker.targets[len(self.tracker.targets) - 1]
         self.vid.paused = not self.vid.paused  #unpause video after drawing rectangle
-
 
 
     #DRAWING FUNCTIONS (GIVE FRAME, GET FRAME)
@@ -229,8 +253,7 @@ class ObjectTracker:
     def drawCircles(self, circleTargets, **kwargs):
         frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
 
-        for circle in circleTargets:
-            cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (255, 255, 255), 3, 3)  #Draw outline of circle
+        for circle in circleTargets:            cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (255, 255, 255), 3, 3)  #Draw outline of circle
             #cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
 
         return frameToDraw
@@ -331,19 +354,19 @@ class ObjectTracker:
         shapeTargets = []  #Creates an array of ShapeTargets
 
         for shape in range(len(shapeArray)):  #Gets rid of weird overlapping shapes and also finished making the shapeTargets array
-            # similarCoords = 0  #Keeps track of how many coordinates were within the tolerance
-            # for otherShape in range(shape + 1, len(shapeArray)):
-            #     for coordShape in range(len(shapeArray[shape])):
-            #         for coordOtherShape in range(len(shapeArray[otherShape])):
-            #             shapeX = shapeArray[shape][coordShape][0]
-            #             shapeY = shapeArray[shape][coordShape][1]
-            #             otherShapeX = shapeArray[otherShape][coordOtherShape][0]
-            #             otherShapeY = shapeArray[otherShape][coordOtherShape][1]
-            #             if (shapeX - tolerance) < otherShapeX < (shapeX + tolerance):  #not within tolerance
-            #                 if (shapeY - tolerance) < otherShapeY < (shapeY + tolerance):
-            #                     similarCoords += 1
-            #if similarCoords < 120:
-            shapeTargets.append(ShapeTarget(vertices = shapeArray[shape], area = cv2.contourArea(shapesDetected[shape]), center = np.sum(shapeArray[shape], axis = 0) / len(shapeArray[shape])))
+            similarCoords = 0  #Keeps track of how many coordinates were within the tolerance
+            for otherShape in range(shape + 1, len(shapeArray)):
+                for coordShape in range(len(shapeArray[shape])):
+                    for coordOtherShape in range(len(shapeArray[otherShape])):
+                        shapeX = shapeArray[shape][coordShape][0]
+                        shapeY = shapeArray[shape][coordShape][1]
+                        otherShapeX = shapeArray[otherShape][coordOtherShape][0]
+                        otherShapeY = shapeArray[otherShape][coordOtherShape][1]
+                        if (shapeX - tolerance) < otherShapeX < (shapeX + tolerance):  #not within tolerance
+                            if (shapeY - tolerance) < otherShapeY < (shapeY + tolerance):
+                                similarCoords += 1
+            if similarCoords < 120:
+                shapeTargets.append(ShapeTarget(vertices = shapeArray[shape], area = cv2.contourArea(shapesDetected[shape]), center = np.sum(shapeArray[shape], axis = 0) / len(shapeArray[shape])))
 
         if returnFrame:
             return (shapeTargets, edged)
@@ -356,7 +379,12 @@ class ObjectTracker:
         gray = cv2.cvtColor(frameToAnalyze.copy(), cv2.COLOR_BGR2GRAY)
         gray = cv2.medianBlur(gray, 5)
 
-        circles = cv2.HoughCircles(gray, 3, 1, 20, np.array([]), param1= 100, param2=30, minRadius=minRadius, maxRadius=100)[0]
+        circles = cv2.HoughCircles(gray, 3, 1, 20, np.array([]), param1= 100, param2=30, minRadius=minRadius, maxRadius=100)
+
+        if not circles is None:
+            circles = circles[0]
+        else:
+            return []
 
         #Circles come in this format [x,y,radius] in an array of these. I change them to CircleTarget tuple format, for consistency
         circleArray = []
@@ -375,9 +403,9 @@ class ObjectTracker:
 
         return circleArray
 
-    def bruteGetFrame(self, getFunc):
+    def bruteGetFrame(self, getFunc, **kwargs):
         #Wait for new frame
-        maxAttempts = 15
+        maxAttempts = kwargs.get("attempts", 15)
         for a in range(maxAttempts):
             #Get function value and test the validity
             try:
@@ -387,11 +415,11 @@ class ObjectTracker:
 
             if len(values) > 0:
                 return values
-            #print "bruteGetFrame(", locals().get("args"), "): Trying again..."
+            print "bruteGetFrame(", locals().get("args"), "): Trying again..."
             #If validity false (empty array), get a new frame then try it again
             lastFrame = self.vid.frameCount
             while self.vid.frameCount == lastFrame:
-                cv2.waitKey(51)
+                cv2.waitKey(1)
 
 
 
@@ -457,6 +485,16 @@ class ObjectTracker:
 
 
     #COORDINATE MATH FUNCTIONS
+    def getShapesCentroid(self, shapeArray):
+        """
+            Returns the average coordinate in an array of ShapeTargets
+        """
+        if len(shapeArray) == 0:
+            return []
+        shapeCenters = [s.center for i, s in enumerate(shapeArray)]
+        avgCenters = np.mean(shapeCenters, axis = 0).astype(int)
+        return avgCenters
+
     def getTargetCenter(self, target):
         coords = self.getTargetCoords(target)  #coordinate array
         if len(coords) == 0:  #If it could not get target center
@@ -491,25 +529,26 @@ class ObjectTracker:
         y = (avgCoords[0][1] + avgCoords[1][1] + avgCoords[2][1] + avgCoords[3][1]) / 4  #(y1+y2)/2
         return [int(x), int(y)]
 
-    def getNearestShape(self, sides, **kwargs):  #Returns the shape nearest to coords
+    def sortShapesByDistance(self, shapeArray, **kwargs):  #Returns the shape nearest to coords
         """
         :param sides: How many sides does the object have that is being searched for?
         :param kwargs:
             "nearestTo": (Defaults to the [x,y] of the center of the screen. This means that the function will return shapes closest to these coordinates
         :return:
         """
+
         #SET UP VARIABLES
         screenDimensions = self.vid.getDimensions()
         coords = kwargs.get("nearestTo", [screenDimensions[0] / 2, screenDimensions[1] / 2])
-        shapeTargets = self.getShapes(sides)
+        #shapeTargets = self.getShapes(sides)
 
         #SORT THE SHAPES IN THE ARRAY BY HOW FAR THEY ARE FROM THE "COORDS" VARIABLE
-        shapeTargets = sorted(shapeTargets, key = lambda s: (s.center[0] - coords[0]) ** 2 + (s.center[1] - coords[1]) ** 2)
+        shapeTargets = sorted(shapeArray, key = lambda s: (s.center[0] - coords[0]) ** 2 + (s.center[1] - coords[1]) ** 2)
         if len(shapeTargets) == 0:  #If no shapes found
             #print "getNearestShape(", locals().get("args"), "): No shapes found"
             return []
 
-        return shapeTargets[0]  #Return the nearest shape
+        return shapeTargets  #Return the nearest shape
 
 
 

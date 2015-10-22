@@ -23,6 +23,9 @@ Robot.moveTo(relative=False, **Robot.home)
 Robot.moveTo(height=150, relative=False)
 
 cap = cv2.VideoCapture(1)
+cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH,  2000)
+cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 2000)
+
 _, throwaway = cap.read()  #Wait for camera to adjust to lighting. Toss this frame (camera buffer)
 cv2.imshow('main', throwaway)
 cv2.waitKey(1000)
