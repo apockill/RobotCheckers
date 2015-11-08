@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/Video/Vision.py" line="156" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1cd6d5f3-5552-400d-a05a-f2089b376189" name="Default" comment="" />
     <ignored path="RobotArm.iws" />
@@ -22,22 +25,83 @@
       <content type="file-editors">
         <state>
           <leaf>
-            <file leaf-file-name="Robot.py" pinned="false" current="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/Robot.py">
+            <file leaf-file-name="CheckersAI.py" pinned="false" current="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/CheckersAI.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0" vertical-offset="2193" max-vertical-offset="4828">
-                    <caret line="129" column="80" selection-start-line="129" selection-start-column="80" selection-end-line="129" selection-end-column="80" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="Vision.py" pinned="false" current="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/Video/Vision.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0" vertical-offset="9350" max-vertical-offset="10795">
-                    <caret line="550" column="27" selection-start-line="550" selection-start-column="27" selection-end-line="550" selection-end-column="27" />
-                    <folding />
+                  <state vertical-scroll-proportion="0.6004592" vertical-offset="293" max-vertical-offset="1445">
+                    <caret line="790" column="0" selection-start-line="790" selection-start-column="0" selection-end-line="793" selection-end-column="71" />
+                    <folding>
+                      <element signature="e#0#55#1" expanded="false" />
+                      <element signature="e#105#187#1" expanded="false" />
+                      <element signature="e#259#982#0" expanded="false" />
+                      <element signature="e#259#523#1" expanded="false" />
+                      <element signature="e#1029#1164#0" expanded="false" />
+                      <element signature="e#1205#1371#0" expanded="false" />
+                      <element signature="e#1205#1259#1" expanded="false" />
+                      <element signature="e#1423#1689#0" expanded="false" />
+                      <element signature="e#1423#1590#1" expanded="false" />
+                      <element signature="e#1738#2370#0" expanded="false" />
+                      <element signature="e#1738#1796#1" expanded="false" />
+                      <element signature="e#2430#3087#0" expanded="false" />
+                      <element signature="e#2430#2568#1" expanded="false" />
+                      <element signature="e#3157#4596#0" expanded="false" />
+                      <element signature="e#3157#3439#1" expanded="false" />
+                      <element signature="e#4684#6298#0" expanded="false" />
+                      <element signature="e#4684#5056#1" expanded="false" />
+                      <element signature="e#6326#16318#0" expanded="false" />
+                      <element signature="e#6326#6367#1" expanded="false" />
+                      <element signature="e#6411#8947#0" expanded="false" />
+                      <element signature="e#6411#6739#1" expanded="false" />
+                      <element signature="e#8996#9504#0" expanded="false" />
+                      <element signature="e#8996#9261#1" expanded="false" />
+                      <element signature="e#9560#9779#0" expanded="false" />
+                      <element signature="e#9560#9721#1" expanded="false" />
+                      <element signature="e#9825#10335#0" expanded="false" />
+                      <element signature="e#9825#10041#1" expanded="false" />
+                      <element signature="e#10383#10656#0" expanded="false" />
+                      <element signature="e#10383#10599#1" expanded="false" />
+                      <element signature="e#10708#12923#0" expanded="false" />
+                      <element signature="e#10708#11055#1" expanded="false" />
+                      <element signature="e#12964#13946#0" expanded="false" />
+                      <element signature="e#12964#13144#1" expanded="false" />
+                      <element signature="e#13992#15236#0" expanded="false" />
+                      <element signature="e#13992#14200#1" expanded="false" />
+                      <element signature="e#15271#15470#0" expanded="false" />
+                      <element signature="e#15271#15312#1" expanded="false" />
+                      <element signature="e#15503#16318#0" expanded="false" />
+                      <element signature="e#16346#23304#0" expanded="false" />
+                      <element signature="e#16346#16400#1" expanded="false" />
+                      <element signature="e#16461#16856#0" expanded="false" />
+                      <element signature="e#16461#16678#1" expanded="false" />
+                      <element signature="e#16889#16957#0" expanded="false" />
+                      <element signature="e#16889#16929#1" expanded="false" />
+                      <element signature="e#16989#17058#0" expanded="false" />
+                      <element signature="e#16989#17029#1" expanded="false" />
+                      <element signature="e#17096#18574#0" expanded="false" />
+                      <element signature="e#17096#17184#1" expanded="false" />
+                      <element signature="e#18619#19105#0" expanded="false" />
+                      <element signature="e#18619#18851#1" expanded="false" />
+                      <element signature="e#19139#19330#0" expanded="false" />
+                      <element signature="e#19139#19258#1" expanded="false" />
+                      <element signature="e#19376#19632#0" expanded="false" />
+                      <element signature="e#19376#19443#1" expanded="false" />
+                      <element signature="e#19680#21418#0" expanded="false" />
+                      <element signature="e#19680#19737#1" expanded="false" />
+                      <element signature="e#21465#23062#0" expanded="false" />
+                      <element signature="e#21465#21517#1" expanded="false" />
+                      <element signature="e#23103#23304#0" expanded="false" />
+                      <element signature="e#23103#23166#1" expanded="false" />
+                      <element signature="e#23333#23560#1" expanded="false" />
+                      <element signature="e#23651#24173#0" expanded="false" />
+                      <element signature="e#23651#23943#1" expanded="false" />
+                      <element signature="e#24222#24446#0" expanded="false" />
+                      <element signature="e#24222#24359#1" expanded="false" />
+                      <element signature="e#24476#24941#0" expanded="false" />
+                      <element signature="e#24476#24589#1" expanded="false" />
+                      <element signature="e#24971#25056#0" expanded="false" />
+                      <element signature="e#25089#25158#0" expanded="false" />
+                      <element signature="e#25197#25534#0" expanded="false" />
+                    </folding>
                   </state>
                 </provider>
               </entry>
@@ -56,46 +120,55 @@
       <file leaf-file-name="Main.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.29193547" vertical-offset="1094" max-vertical-offset="3145">
-              <caret line="528" column="0" selection-start-line="528" selection-start-column="0" selection-end-line="528" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7706767" vertical-offset="1188" max-vertical-offset="4182">
+              <caret line="574" column="18" selection-start-line="574" selection-start-column="18" selection-end-line="574" selection-end-column="18" />
               <folding>
-                <element signature="e#2638#6924#0" expanded="false" />
-                <element signature="e#2638#3895#1" expanded="false" />
-                <element signature="e#7089#7768#0" expanded="false" />
-                <element signature="e#7808#10366#0" expanded="false" />
-                <element signature="e#7808#8115#1" expanded="false" />
-                <element signature="e#10401#11047#0" expanded="false" />
-                <element signature="e#11075#11693#0" expanded="false" />
-                <element signature="e#11075#11246#1" expanded="false" />
-                <element signature="e#11758#17624#0" expanded="false" />
-                <element signature="e#17686#24840#0" expanded="false" />
-                <element signature="e#17686#18652#1" expanded="false" />
-                <element signature="e#24869#25209#0" expanded="false" />
-                <element signature="e#25256#25665#0" expanded="false" />
-                <element signature="e#25714#28985#0" expanded="false" />
-                <element signature="e#25714#26247#1" expanded="false" />
-                <element signature="e#29056#32124#0" expanded="false" />
-                <element signature="e#32153#36513#0" expanded="false" />
-                <element signature="e#32153#32923#1" expanded="false" />
-                <element signature="e#36553#37467#0" expanded="false" />
-                <element signature="e#36553#37083#1" expanded="false" />
-                <element signature="e#37522#39756#0" expanded="false" />
-                <element signature="e#37522#37707#1" expanded="false" />
-                <element signature="e#39833#41581#0" expanded="false" />
-                <element signature="e#41632#44208#0" expanded="false" />
-                <element signature="e#41632#42184#1" expanded="false" />
-                <element signature="e#44266#45421#0" expanded="false" />
-                <element signature="e#45457#46637#0" expanded="false" />
+                <element signature="e#292#5954#0" expanded="false" />
+                <element signature="e#292#1549#1" expanded="false" />
+                <element signature="e#6119#6798#0" expanded="false" />
+                <element signature="e#6838#9396#0" expanded="false" />
+                <element signature="e#6838#7145#1" expanded="false" />
+                <element signature="e#9431#10077#0" expanded="false" />
+                <element signature="e#10103#10721#0" expanded="false" />
+                <element signature="e#10103#10274#1" expanded="false" />
+                <element signature="e#10786#16652#0" expanded="false" />
+                <element signature="e#16681#17021#0" expanded="false" />
+                <element signature="e#17083#24237#0" expanded="false" />
+                <element signature="e#17083#18049#1" expanded="false" />
+                <element signature="e#24284#24693#0" expanded="false" />
+                <element signature="e#24742#28013#0" expanded="false" />
+                <element signature="e#24742#25275#1" expanded="false" />
+                <element signature="e#33576#35328#0" expanded="false" />
+                <element signature="e#35378#36395#0" expanded="false" />
+                <element signature="e#35378#35563#1" expanded="false" />
+                <element signature="e#36446#39058#0" expanded="false" />
+                <element signature="e#36446#36998#1" expanded="false" />
+                <element signature="e#39184#46350#0" expanded="false" />
+                <element signature="e#46460#48435#0" expanded="false" />
+                <element signature="e#48510#54312#0" expanded="false" />
+                <element signature="e#48510#48910#1" expanded="false" />
+                <element signature="e#54369#59543#0" expanded="false" />
+                <element signature="e#54369#56267#1" expanded="false" />
+                <element signature="e#59587#62605#0" expanded="false" />
+                <element signature="e#59587#60815#1" expanded="false" />
+                <element signature="e#62645#64719#0" expanded="false" />
+                <element signature="e#62645#63082#1" expanded="false" />
+                <element signature="e#64759#65673#0" expanded="false" />
+                <element signature="e#64759#65289#1" expanded="false" />
+                <element signature="e#65724#69130#0" expanded="false" />
+                <element signature="e#65724#66174#1" expanded="false" />
+                <element signature="e#69188#70876#0" expanded="false" />
+                <element signature="e#70942#72446#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Variables.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Variables.py">
+      <file leaf-file-name="Vision.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Video/Vision.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="544">
-              <caret line="5" column="7" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="6953" max-vertical-offset="11747">
+              <caret line="409" column="0" selection-start-line="409" selection-start-column="0" selection-end-line="409" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -143,15 +216,19 @@
         <option value="$PROJECT_DIR$/Variables.py" />
         <option value="$PROJECT_DIR$/Tests/testImageStitching.py" />
         <option value="$PROJECT_DIR$/Tests/testThresholding.py" />
-        <option value="$PROJECT_DIR$/Tests/testVisionLibrary.py" />
         <option value="$PROJECT_DIR$/Tests/testCircleFinder.py" />
-        <option value="$PROJECT_DIR$/Tests/testThreshholding.py" />
         <option value="$PROJECT_DIR$/Tests/testImageStitchingWithRobot.py" />
-        <option value="$PROJECT_DIR$/Tests/testOpenCV.py" />
-        <option value="$PROJECT_DIR$/CheckersAI.py" />
         <option value="$PROJECT_DIR$/Video/ImageStitching.py" />
-        <option value="$PROJECT_DIR$/Video/Vision.py" />
+        <option value="$PROJECT_DIR$/Scrap.py" />
+        <option value="$PROJECT_DIR$/Tests/__init__.py" />
+        <option value="$PROJECT_DIR$/Tests/testVisionLibrary.py" />
+        <option value="$PROJECT_DIR$/Tests/testThreshholding.py" />
         <option value="$PROJECT_DIR$/Robot.py" />
+        <option value="$PROJECT_DIR$/Tests/testScrap.py" />
+        <option value="$PROJECT_DIR$/Tests/testOpenCV.py" />
+        <option value="$PROJECT_DIR$/Tests/testRobotLibrary.py" />
+        <option value="$PROJECT_DIR$/Video/Vision.py" />
+        <option value="$PROJECT_DIR$/CheckersAI.py" />
         <option value="$PROJECT_DIR$/Main.py" />
       </list>
     </option>
@@ -193,6 +270,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -225,23 +303,8 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="RobotArm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="RobotArm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Tests" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -272,26 +335,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.Main">
-    <configuration default="false" name="testImageStitchingWithRobot" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="RobotArm" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testImageStitchingWithRobot.py" />
-      <option name="PARAMETERS" value="" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
     <configuration default="false" name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -348,7 +391,7 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="testVisionLibrary" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration default="false" name="testRobotLibrary" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -360,7 +403,25 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="RobotArm" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testVisionLibrary.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testRobotLibrary.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="testScrap" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="RobotArm" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests/testScrap.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
@@ -488,18 +549,18 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.testImageStitchingWithRobot" />
-      <item index="1" class="java.lang.String" itemvalue="Python.Main" />
-      <item index="2" class="java.lang.String" itemvalue="Python.testThreshholding" />
-      <item index="3" class="java.lang.String" itemvalue="Python.testOpenCV" />
-      <item index="4" class="java.lang.String" itemvalue="Python.testVisionLibrary" />
+      <item index="0" class="java.lang.String" itemvalue="Python.Main" />
+      <item index="1" class="java.lang.String" itemvalue="Python.testThreshholding" />
+      <item index="2" class="java.lang.String" itemvalue="Python.testOpenCV" />
+      <item index="3" class="java.lang.String" itemvalue="Python.testRobotLibrary" />
+      <item index="4" class="java.lang.String" itemvalue="Python.testScrap" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.Main" />
-        <item index="1" class="java.lang.String" itemvalue="Python.testOpenCV" />
-        <item index="2" class="java.lang.String" itemvalue="Python.testVisionLibrary" />
-        <item index="3" class="java.lang.String" itemvalue="Python.testImageStitchingWithRobot" />
+        <item index="1" class="java.lang.String" itemvalue="Python.testRobotLibrary" />
+        <item index="2" class="java.lang.String" itemvalue="Python.testOpenCV" />
+        <item index="3" class="java.lang.String" itemvalue="Python.testScrap" />
         <item index="4" class="java.lang.String" itemvalue="Python.testThreshholding" />
       </list>
     </recent_temporary>
@@ -538,21 +599,21 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32823366" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29365963" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17386723" sideWeight="0.49822065" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12118019" sideWeight="0.72432435" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36717662" sideWeight="0.5349233" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20169252" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.96123147" sideWeight="0.24872231" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27919912" sideWeight="0.7512777" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.0887199" sideWeight="0.27567568" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35523385" sideWeight="0.24868283" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36262515" sideWeight="0.7507903" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814237" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32739422" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -580,45 +641,10 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="99" />
+      <option name="time" value="111" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="9860" max-vertical-offset="10387">
-          <caret line="580" column="0" selection-start-line="580" selection-start-column="0" selection-end-line="580" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="800" max-vertical-offset="1564">
-          <caret line="375" column="91" selection-start-line="375" selection-start-column="91" selection-end-line="375" selection-end-column="91" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/testImageStitchingWithRobot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="1122">
-          <caret line="26" column="29" selection-start-line="26" selection-start-column="29" selection-end-line="26" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="408">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Video/ImageStitching.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3111" max-vertical-offset="4454">
-          <caret line="183" column="8" selection-start-line="183" selection-start-column="8" selection-end-line="183" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1173">
@@ -780,13 +806,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/image.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6817" max-vertical-offset="24225">
-          <caret line="424" column="0" selection-start-line="424" selection-start-column="0" selection-end-line="424" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/site-packages/matplotlib/gridspec.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2712" max-vertical-offset="7871">
@@ -794,31 +813,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/axes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="156834" max-vertical-offset="159851">
-          <caret line="9248" column="0" selection-start-line="9248" selection-start-column="0" selection-end-line="9248" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="14527" max-vertical-offset="62067">
-          <caret line="896" column="0" selection-start-line="896" selection-start-column="0" selection-end-line="896" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/site-packages/numpy/core/fromnumeric.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="2.1519537" vertical-offset="42764" max-vertical-offset="49589">
           <caret line="2611" column="0" selection-start-line="2611" selection-start-column="0" selection-end-line="2611" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/testRobotLibrary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -833,39 +831,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15567766" vertical-offset="0" max-vertical-offset="546">
           <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/testThreshholding.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5464983" vertical-offset="0" max-vertical-offset="871">
-          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45226917" vertical-offset="0" max-vertical-offset="639">
-          <caret line="17" column="28" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/stitched.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.007824726" vertical-offset="199" max-vertical-offset="1088">
-          <caret line="16" column="53" selection-start-line="16" selection-start-column="53" selection-end-line="16" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CheckersAI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16693944" vertical-offset="0" max-vertical-offset="731">
-          <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -890,83 +855,276 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/serial/serialwin32.py">
+    <entry file="file://$PROJECT_DIR$/Video/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="912" max-vertical-offset="7888">
-          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/serial/serialutil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3264368" vertical-offset="4635" max-vertical-offset="9469">
-          <caret line="281" column="0" selection-start-line="281" selection-start-column="0" selection-end-line="281" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/threading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33269963" vertical-offset="13544" max-vertical-offset="22695">
-          <caret line="807" column="0" selection-start-line="807" selection-start-column="0" selection-end-line="807" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="506">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Variables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="544">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="7" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+    <entry file="file://$PROJECT_DIR$/Tests/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="587" max-vertical-offset="1530">
-          <caret line="550" column="27" selection-start-line="550" selection-start-column="27" selection-end-line="550" selection-end-column="27" />
-          <folding />
+        <state vertical-scroll-proportion="0.15912637" vertical-offset="0" max-vertical-offset="641">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testVisionLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.46309695" vertical-offset="3" max-vertical-offset="1241">
+          <caret line="19" column="47" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testStereoscopic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="935">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/serial/serialutil.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="4610" max-vertical-offset="9469">
+          <caret line="281" column="0" selection-start-line="281" selection-start-column="0" selection-end-line="281" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/axes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="123698" max-vertical-offset="159851">
+          <caret line="7298" column="0" selection-start-line="7298" selection-start-column="0" selection-end-line="7298" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="48456" max-vertical-offset="62067">
+          <caret line="2891" column="0" selection-start-line="2891" selection-start-column="0" selection-end-line="2891" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/image.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6772" max-vertical-offset="24225">
+          <caret line="424" column="0" selection-start-line="424" selection-start-column="0" selection-end-line="424" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stitched.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testThreshholding.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.0435685" vertical-offset="741" max-vertical-offset="1394">
+          <caret line="133" column="0" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/serial/serialwin32.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.19348268" vertical-offset="891" max-vertical-offset="7888">
+          <caret line="61" column="43" selection-start-line="61" selection-start-column="43" selection-end-line="61" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testScrap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="552">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="12737" max-vertical-offset="22695">
+          <caret line="760" column="0" selection-start-line="760" selection-start-column="0" selection-end-line="760" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testOpenCV.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391">
+          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Robot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2193" max-vertical-offset="4828">
-          <caret line="129" column="80" selection-start-line="129" selection-start-column="80" selection-end-line="129" selection-end-column="80" />
+        <state vertical-scroll-proportion="0.114854515" vertical-offset="622" max-vertical-offset="1275">
+          <caret line="68" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <folding>
+            <element signature="e#151#432#1" expanded="false" />
+            <element signature="e#1501#2760#1" expanded="false" />
+            <element signature="e#3138#7220#0" expanded="false" />
+            <element signature="e#3138#4246#1" expanded="false" />
+            <element signature="e#7287#7415#0" expanded="false" />
+            <element signature="e#7444#7641#0" expanded="false" />
+            <element signature="e#7695#8008#0" expanded="false" />
+            <element signature="e#8054#8258#0" expanded="false" />
+            <element signature="e#8297#8413#0" expanded="false" />
+            <element signature="e#8439#10024#0" expanded="false" />
+            <element signature="e#8439#8664#1" expanded="false" />
+            <element signature="e#10145#11778#0" expanded="false" />
+            <element signature="e#11813#13012#0" expanded="false" />
+            <element signature="e#11813#12077#1" expanded="false" />
+            <element signature="e#13048#13578#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/testRobotLibrary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18223584" vertical-offset="0" max-vertical-offset="653">
+          <caret line="8" column="55" selection-start-line="8" selection-start-column="55" selection-end-line="8" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Video/Vision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="214" max-vertical-offset="1292">
+          <caret line="409" column="0" selection-start-line="409" selection-start-column="0" selection-end-line="409" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm30/system/python_stubs/-762174762/__builtin__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33295062" vertical-offset="11508" max-vertical-offset="87567">
+          <caret line="694" column="8" selection-start-line="694" selection-start-column="8" selection-end-line="694" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CheckersAI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6004592" vertical-offset="293" max-vertical-offset="1445">
+          <caret line="790" column="0" selection-start-line="790" selection-start-column="0" selection-end-line="793" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#55#1" expanded="false" />
+            <element signature="e#105#187#1" expanded="false" />
+            <element signature="e#259#982#0" expanded="false" />
+            <element signature="e#259#523#1" expanded="false" />
+            <element signature="e#1029#1164#0" expanded="false" />
+            <element signature="e#1205#1371#0" expanded="false" />
+            <element signature="e#1205#1259#1" expanded="false" />
+            <element signature="e#1423#1689#0" expanded="false" />
+            <element signature="e#1423#1590#1" expanded="false" />
+            <element signature="e#1738#2370#0" expanded="false" />
+            <element signature="e#1738#1796#1" expanded="false" />
+            <element signature="e#2430#3087#0" expanded="false" />
+            <element signature="e#2430#2568#1" expanded="false" />
+            <element signature="e#3157#4596#0" expanded="false" />
+            <element signature="e#3157#3439#1" expanded="false" />
+            <element signature="e#4684#6298#0" expanded="false" />
+            <element signature="e#4684#5056#1" expanded="false" />
+            <element signature="e#6326#16318#0" expanded="false" />
+            <element signature="e#6326#6367#1" expanded="false" />
+            <element signature="e#6411#8947#0" expanded="false" />
+            <element signature="e#6411#6739#1" expanded="false" />
+            <element signature="e#8996#9504#0" expanded="false" />
+            <element signature="e#8996#9261#1" expanded="false" />
+            <element signature="e#9560#9779#0" expanded="false" />
+            <element signature="e#9560#9721#1" expanded="false" />
+            <element signature="e#9825#10335#0" expanded="false" />
+            <element signature="e#9825#10041#1" expanded="false" />
+            <element signature="e#10383#10656#0" expanded="false" />
+            <element signature="e#10383#10599#1" expanded="false" />
+            <element signature="e#10708#12923#0" expanded="false" />
+            <element signature="e#10708#11055#1" expanded="false" />
+            <element signature="e#12964#13946#0" expanded="false" />
+            <element signature="e#12964#13144#1" expanded="false" />
+            <element signature="e#13992#15236#0" expanded="false" />
+            <element signature="e#13992#14200#1" expanded="false" />
+            <element signature="e#15271#15470#0" expanded="false" />
+            <element signature="e#15271#15312#1" expanded="false" />
+            <element signature="e#15503#16318#0" expanded="false" />
+            <element signature="e#16346#23304#0" expanded="false" />
+            <element signature="e#16346#16400#1" expanded="false" />
+            <element signature="e#16461#16856#0" expanded="false" />
+            <element signature="e#16461#16678#1" expanded="false" />
+            <element signature="e#16889#16957#0" expanded="false" />
+            <element signature="e#16889#16929#1" expanded="false" />
+            <element signature="e#16989#17058#0" expanded="false" />
+            <element signature="e#16989#17029#1" expanded="false" />
+            <element signature="e#17096#18574#0" expanded="false" />
+            <element signature="e#17096#17184#1" expanded="false" />
+            <element signature="e#18619#19105#0" expanded="false" />
+            <element signature="e#18619#18851#1" expanded="false" />
+            <element signature="e#19139#19330#0" expanded="false" />
+            <element signature="e#19139#19258#1" expanded="false" />
+            <element signature="e#19376#19632#0" expanded="false" />
+            <element signature="e#19376#19443#1" expanded="false" />
+            <element signature="e#19680#21418#0" expanded="false" />
+            <element signature="e#19680#19737#1" expanded="false" />
+            <element signature="e#21465#23062#0" expanded="false" />
+            <element signature="e#21465#21517#1" expanded="false" />
+            <element signature="e#23103#23304#0" expanded="false" />
+            <element signature="e#23103#23166#1" expanded="false" />
+            <element signature="e#23333#23560#1" expanded="false" />
+            <element signature="e#23651#24173#0" expanded="false" />
+            <element signature="e#23651#23943#1" expanded="false" />
+            <element signature="e#24222#24446#0" expanded="false" />
+            <element signature="e#24222#24359#1" expanded="false" />
+            <element signature="e#24476#24941#0" expanded="false" />
+            <element signature="e#24476#24589#1" expanded="false" />
+            <element signature="e#24971#25056#0" expanded="false" />
+            <element signature="e#25089#25158#0" expanded="false" />
+            <element signature="e#25197#25534#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29193547" vertical-offset="1094" max-vertical-offset="3145">
-          <caret line="528" column="0" selection-start-line="528" selection-start-column="0" selection-end-line="528" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.7706767" vertical-offset="1188" max-vertical-offset="4182">
+          <caret line="574" column="18" selection-start-line="574" selection-start-column="18" selection-end-line="574" selection-end-column="18" />
           <folding>
-            <element signature="e#2638#6924#0" expanded="false" />
-            <element signature="e#2638#3895#1" expanded="false" />
-            <element signature="e#7089#7768#0" expanded="false" />
-            <element signature="e#7808#10366#0" expanded="false" />
-            <element signature="e#7808#8115#1" expanded="false" />
-            <element signature="e#10401#11047#0" expanded="false" />
-            <element signature="e#11075#11693#0" expanded="false" />
-            <element signature="e#11075#11246#1" expanded="false" />
-            <element signature="e#11758#17624#0" expanded="false" />
-            <element signature="e#17686#24840#0" expanded="false" />
-            <element signature="e#17686#18652#1" expanded="false" />
-            <element signature="e#24869#25209#0" expanded="false" />
-            <element signature="e#25256#25665#0" expanded="false" />
-            <element signature="e#25714#28985#0" expanded="false" />
-            <element signature="e#25714#26247#1" expanded="false" />
-            <element signature="e#29056#32124#0" expanded="false" />
-            <element signature="e#32153#36513#0" expanded="false" />
-            <element signature="e#32153#32923#1" expanded="false" />
-            <element signature="e#36553#37467#0" expanded="false" />
-            <element signature="e#36553#37083#1" expanded="false" />
-            <element signature="e#37522#39756#0" expanded="false" />
-            <element signature="e#37522#37707#1" expanded="false" />
-            <element signature="e#39833#41581#0" expanded="false" />
-            <element signature="e#41632#44208#0" expanded="false" />
-            <element signature="e#41632#42184#1" expanded="false" />
-            <element signature="e#44266#45421#0" expanded="false" />
-            <element signature="e#45457#46637#0" expanded="false" />
+            <element signature="e#292#5954#0" expanded="false" />
+            <element signature="e#292#1549#1" expanded="false" />
+            <element signature="e#6119#6798#0" expanded="false" />
+            <element signature="e#6838#9396#0" expanded="false" />
+            <element signature="e#6838#7145#1" expanded="false" />
+            <element signature="e#9431#10077#0" expanded="false" />
+            <element signature="e#10103#10721#0" expanded="false" />
+            <element signature="e#10103#10274#1" expanded="false" />
+            <element signature="e#10786#16652#0" expanded="false" />
+            <element signature="e#16681#17021#0" expanded="false" />
+            <element signature="e#17083#24237#0" expanded="false" />
+            <element signature="e#17083#18049#1" expanded="false" />
+            <element signature="e#24284#24693#0" expanded="false" />
+            <element signature="e#24742#28013#0" expanded="false" />
+            <element signature="e#24742#25275#1" expanded="false" />
+            <element signature="e#33576#35328#0" expanded="false" />
+            <element signature="e#35378#36395#0" expanded="false" />
+            <element signature="e#35378#35563#1" expanded="false" />
+            <element signature="e#36446#39058#0" expanded="false" />
+            <element signature="e#36446#36998#1" expanded="false" />
+            <element signature="e#39184#46350#0" expanded="false" />
+            <element signature="e#46460#48435#0" expanded="false" />
+            <element signature="e#48510#54312#0" expanded="false" />
+            <element signature="e#48510#48910#1" expanded="false" />
+            <element signature="e#54369#59543#0" expanded="false" />
+            <element signature="e#54369#56267#1" expanded="false" />
+            <element signature="e#59587#62605#0" expanded="false" />
+            <element signature="e#59587#60815#1" expanded="false" />
+            <element signature="e#62645#64719#0" expanded="false" />
+            <element signature="e#62645#63082#1" expanded="false" />
+            <element signature="e#64759#65673#0" expanded="false" />
+            <element signature="e#64759#65289#1" expanded="false" />
+            <element signature="e#65724#69130#0" expanded="false" />
+            <element signature="e#65724#66174#1" expanded="false" />
+            <element signature="e#69188#70876#0" expanded="false" />
+            <element signature="e#70942#72446#0" expanded="false" />
           </folding>
         </state>
       </provider>

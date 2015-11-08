@@ -43,8 +43,13 @@ if '__main__' == __name__:
         #DO FRAME OPERATIONS:
         shapeArray, edgedFrame = objTracker.getShapes(sides=4, threshHold = cv2.THRESH_OTSU, returnFrame = True)
 
+
+
+
         #SET FRAMES FOR THE WINDOWS:
         vid.windowFrame["Main"]     = objTracker.drawShapes(shapeArray)
+
+
 
 
         #DISPLAY THINGS

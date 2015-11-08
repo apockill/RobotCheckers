@@ -788,11 +788,11 @@ class DAction(object):
         return self.__str__()
 
     def __str__(self):
-        # return "%s :: <%d , %d> -> <%d , %d> { %s }" % (self.type, self.source[0], \
-        #                                          self.source[1], self.destination[0], \
-        #                                          self.destination[1], \
-        #                                          str(self.next))
-        return str([list(self.source), list(self.destination)])
+        return "%s :: <%d , %d> -> <%d , %d> { %s }" % (self.type, self.source[0], \
+                                                        self.source[1], self.destination[0], \
+                                                        self.destination[1], \
+                                                        str(self.next))
+        #return str([list(self.source), list(self.destination)], list(self.next))
 
 
 if '__main__' == __name__:

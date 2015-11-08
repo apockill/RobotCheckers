@@ -2,6 +2,7 @@ import Common
 
 __author__ = 'AlexThiel'
 import serial
+import serial.tools.list_ports
 import math
 from ast import literal_eval
 from time import sleep
@@ -15,12 +16,18 @@ From that, I got that the "stretch" from stretch=0 to the base of the robot is:
     4.625"*24.18= 111.84 'stretch' from the base of the robot.
 """
 
-ser1 = serial.Serial('COM4', 9600, timeout=0)
+#FIND THE ROBOTS ARDUINO PORT AND CREATE ser1 TO CONNECT TO IT TODO: MAKE A HANDSHAKE WITH THE ARDUINO TO CONFIRM IT IS A UARM
+ports = list(serial.tools.list_ports.comports())
+for intex, port in enumerate(ports):
+    if "FTDIBUS" in port[2]:
+        print "Found arduino on port: ", port[0]
+        ser1 = serial.Serial(port[0], 9600, timeout=0)  #Create connection
+
 
 #ROBOT CONSTANTS
 stretchMin              = 0
 stretchMax              = 210.0
-heightMin               = -55
+heightMin               = -80
 heightMax               = 150.0
 rotationMin             = -90.0
 rotationMax             = 90.0
@@ -28,8 +35,8 @@ handRotMin              = -84
 handRotMax              = 74
 handAngleOpen           = 25.0
 handAngleClose          = 70.0
-stationaryTolerance     = 50     #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"
-stretchDistFromBase     = 111.84 #How far in "stretch units" the arm is from the pivot of the robot when stretch is 0
+stationaryTolerance     = 50      #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"
+stretchDistFromBase     = 140     #How far in "stretch units" the arm is from the pivot of the robot when stretch is 0, OPTIMIZED FOR HEIGHT=150, will not work well otherwise
 
 #Position Variables
 """ CARTESIAN COORDINATES:
@@ -59,48 +66,6 @@ home = {'rotation': 0.0, 'stretch': stretchMax / 2, 'height': heightMax, 'wrist'
 
 
 
-
-
-def setPosition(toRotation, toStretch, toHeight, toWrist):
-    pos['rotation'] = toRotation
-    pos['stretch'] = toStretch
-    pos['height'] = toHeight
-    pos['wrist'] = toWrist
-    moveTo()
-
-
-def setGrabber(value):
-    sleep(.1)
-    pos['grabber'] = value
-    sendVariable('c', int(value))
-    sleep(.03)
-    #print "setGrabber(", locals().get("args"), ") Robot returned ", getOutput("grabber"), "about the grabber."
-
-
-def setPolarPosition(x, y):
-    """
-
-    :param x: does stuff
-    :param y: oes other stuff
-    Polar equations:
-        R = sqrt(x^2+y^2)
-        theta = tan^-1(abs(y/x))
-    """
-    radius = (x ** 2.0 + y ** 2.0) ** .5  #R = sqrt(x^2+y^2)
-    theta  = math.degrees(math.atan2(y, x ))
-
-    pos['rotation'] = -theta
-    pos['stretch']  = radius - stretchDistFromBase
-
-    moveTo()
-
-
-def sendVariable(name, value):
-    sleep(.03)
-    #ser1.write('%s:%s' % (name, int(round(value)) ) )
-    ser1.write('%s:%s' % (name, round(value, 2) ))
-
-
 def moveTo(**kwargs):
     """General command for moving robot
     ALL THIS FUNCTION DOES IS TELL THE ROBOT TO MOVE TO THE CURRENT POS POSITION.
@@ -120,16 +85,20 @@ def moveTo(**kwargs):
             x
             y
     """
+
     #ser1.write(chr(0xFF) + chr(0xAA) + chr(pos['rotation'] >> 8 & 0xff) + chr(pos['rotation'] & 0xff) + chr(pos['stretch'] >> 8 & 0xff) + chr(pos['stretch'] & 0xff) + chr(pos['height'] >> 8 & 0xff) + chr(pos['height'] & 0xff) + chr(pos['wrist'] >> 8 & 0xff) + chr(pos['wrist'] & 0xff) + chr(pos['grabber']))
     relative = kwargs.get('relative', True)             #A 'relative' is when I send moveTo(rotation = 3) and the robot moves 3, instead of moving to POSITION 3. DEFAULTS TRUE
-    waitFor  = kwargs.get('waitForRobot', False)    #A variable meant to wait for the robot to respond to a message before continuing anything else.
+    waitFor  = kwargs.get('waitForRobot', False)    #A variable meant to wait for the robot to respond to a message before continuing anything else.    #HANDLE ANY CARTESIAN COORDINATE COMMANDS
 
-    #HANDLE ANY CARTESIAN COORDINATE COMMANDS
     if any(coords in kwargs for coords in ('x', 'y')):  #If either x or y are in kwargs, then do cartesian coordinate calculations on pos
         if relative:
-            setPolarPosition(kwargs.get('x', 0) + pos['x'], kwargs.get('y', 0) + pos['y'])
+            pos['rotation'], pos['stretch'] = convertToPolar(kwargs.get('x', 0) + pos['x'],                           #X value
+                                                             kwargs.get('y', 0) + pos['y'],                           #Y value
+                                                             kwargs.get('stretchDistFromBase', stretchDistFromBase))  #Stretch from the pivot of the robot to the 0 point of stretch
         else:  #For things that are not relative, it is expected for there to be both an X and a Y value
-            setPolarPosition(kwargs['x'], kwargs['y'])
+            pos['rotation'], pos['stretch'] = convertToPolar(kwargs.get('x', 0),
+                                                             kwargs.get('y', 0),
+                                                             kwargs.get('stretchDistFromBase', stretchDistFromBase))
 
     #HANDLE ANY OTHER COMMANDS, INCLUDING POLAR COMMANDS
     for name, value in kwargs.items():  #Cycles through any variable that might have been in the kwargs. This is any position command!
@@ -149,8 +118,8 @@ def moveTo(**kwargs):
         sendVariable('h', pos['height'  ])
         sendVariable('w', pos['wrist'   ])
 
-        pos['x'] =  (pos['stretch'] + stretchDistFromBase) * math.cos(math.radians(pos['rotation']))
-        pos['y'] = (-pos['stretch'] - stretchDistFromBase) * math.sin(math.radians(pos['rotation']))
+        pos['x'], pos['y'] = convertToCartesian(pos['rotation'], pos['stretch'], kwargs.get('stretchDistFromBase', stretchDistFromBase))
+
         #print "moveTo(): x:", int(pos['x']), " y: ", int(pos['y'])
         #print "moveTo(XXX): Position: ", pos
     except:
@@ -163,6 +132,47 @@ def moveTo(**kwargs):
     else:
         sleep(.1)
 
+
+
+def setPosition(toRotation, toStretch, toHeight, toWrist):
+    pos['rotation'] = toRotation
+    pos['stretch'] = toStretch
+    pos['height'] = toHeight
+    pos['wrist'] = toWrist
+    moveTo()
+
+def setGrabber(value):
+    sleep(.1)
+    pos['grabber'] = value
+    sendVariable('c', int(value))
+    sleep(.03)
+    #print "setGrabber(", locals().get("args"), ") Robot returned ", getOutput("grabber"), "about the grabber."
+
+def convertToCartesian(rot, str, distFromBase):
+    pos['x'] =  (pos['stretch'] + distFromBase) * math.cos(math.radians(pos['rotation']))
+    pos['y'] = (-pos['stretch'] - distFromBase) * math.sin(math.radians(pos['rotation']))
+
+    x =  (str + distFromBase) * math.cos(math.radians(rot))
+    y = (-str - distFromBase) * math.sin(math.radians(rot))
+
+    return x, y
+
+def convertToPolar(x, y, distFromBase):
+    #  Returns rotation, stretch
+    radius = (x ** 2.0 + y ** 2.0) ** .5
+    theta  = math.degrees(math.atan2(y, x ))
+
+    rotation = -theta
+    stretch  = radius - distFromBase
+
+    return rotation, stretch
+
+
+
+def sendVariable(name, value):
+    sleep(.03)
+    #ser1.write('%s:%s' % (name, int(round(value)) ) )
+    ser1.write('%s:%s' % (name, round(value, 2) ))
 
 def waitForRobot():
     """
@@ -228,6 +238,7 @@ def constrainPos(position):  #Make sure that the pos function is within all limi
     pos         = {'rotation': rotation, 'stretch': stretch, 'height': height, 'wrist': wrist, 'grabber': position["grabber"], 'touch': position["touch"], 'x': position["x"], 'y': position["y"]}
 
 
+
 def getOutput(outputType):
     """
         Type is an integer, which sends for certain information from the arduino.
@@ -262,7 +273,6 @@ def getOutput(outputType):
         print "ERROR: getOutput(", locals().get("args"), "): Could not perform literal_eval() on value ", read, ". Continuing."
         return None
 
-
 def getPosArgsCopy(**kwargs):
     currentPosition = {}
     #If no kwargs sent over, then record all positional arguments.
@@ -275,4 +285,5 @@ def getPosArgsCopy(**kwargs):
 
 
     return currentPosition
+
 

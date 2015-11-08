@@ -33,9 +33,10 @@ TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad')
     quad - target boundary quad (4 points deliniating the size of the object) [[x,y], [x,y], [x,y], [x,y]]
     center - center of the boundary quad [x,y]
 """
-ShapeTarget   = namedtuple('ShapeTarget', 'vertices, area, center')  #Any shape with x amount of sides
+ShapeTarget   = namedtuple('ShapeTarget', 'vertices, area, center, perimeter')  #Any shape with x amount of sides
 
 CircleTarget  = namedtuple('CircleTarget', 'radius, area, center, color')
+
 
 class Video:  #Handles basic video functions
 
@@ -61,8 +62,9 @@ class Video:  #Handles basic video functions
         #SET UP VARIABLES
         frameForWindow = kwargs.get("frame", self.frame)
         if frameForWindow is None:
-            self.getVideo()
-            frameForWindow = self.frame  #In case this is the first window opened, and no frames have been read yet.
+            blankFrame = np.zeros((640, 480, 3), np.uint8)
+            #self.getVideo()
+            frameForWindow = blankFrame  #In case this is the first window opened, and no frames have been read yet.
 
         xPos = kwargs.get("xPos", 20)
         yPos = kwargs.get("yPos", 20)
@@ -81,15 +83,22 @@ class Video:  #Handles basic video functions
         if not self.paused:
             for i in range(numberOfFrames):
                 ret, newFrame = self.cap.read()
-                try:  #CHECK IF CAP SENT AN IMAGE BACK. If not, this will throw an error, and the "frame" image will not be replaced
-                    self.frame = newFrame.copy()                    #If it is indeed a frame, put it into self.frame, which all the programs use.
-                    self.previousFrames.append(self.frame.copy())   #Add the frame to the cache of 10 frames in previousFrames
-                except:
-                    print "ERROR: getVideo(XXX): Frame not captured."
+
+                if ret:  #If there was no frame captured
+                    try:  #CHECK IF CAP SENT AN IMAGE BACK. If not, this will throw an error, and the "frame" image will not be replaced
+                        self.frame = newFrame.copy()                    #If it is indeed a frame, put it into self.frame, which all the programs use.
+                        self.previousFrames.append(self.frame.copy())   #Add the frame to the cache of 10 frames in previousFrames
+                    except:
+                        print "ERROR: getVideo(XXX): Frame has no attribute copy."
+                else:
+                    print "getVideo(): Error while capturing frame. Attempting to reconnect..."
+                    cv2.waitKey(1000)
+                    self.cap = cv2.VideoCapture(1)
+                    self.getVideo(**kwargs)
+                    return
 
                 #self.frame= cv2.Canny(self.frame,100,200)
-                if not ret:  #If there was no frame captured
-                    print "getVideo(", locals().get("args"), "): Error while capturing frame"
+
 
 
         #HANDLE RECORDING OF FRAMES. RECORDS ONLY 10 OF THE PREVIOUS FRAMES
@@ -119,8 +128,8 @@ class Video:  #Handles basic video functions
         if not successWidth or not successHeight:
             print "Video.setResolution(): Error in setting resolution using cap.set()"
 
-        if originalWidth == finalWidth or originalHeight == finalHeight:
-            print "Video.setResolution(): Error in setting resolution, original and final sizes were =="
+        if not width == finalWidth or not height == finalHeight:
+            print "Video.setResolution(): Error in setting resolution. Final width: ", finalWidth, " Final Height: ", finalHeight
 
     def resizeFrame(self, frameToResize, finalWidth):
         if frameToResize.shape[1] == finalWidth:
@@ -216,17 +225,17 @@ class ObjectTracker:
         :param kwargs:
         :return:
         """
-        frameToAnalyze    = kwargs.get('frameToAnalyze', self.vid.frame.copy())
-        bilateralConstant = kwargs.get('bilateralConstant', 17)
-        threshHoldMethod  = kwargs.get('threshHold', cv2.THRESH_BINARY)
-        returnContours    = kwargs.get('returnContours', False)
-        contourMethod     = kwargs.get('contourMethod', cv2.RETR_EXTERNAL)  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
+        frameToAnalyze    = kwargs.get('frameToAnalyze',    self.vid.frame.copy())
+        bilateralConstant = kwargs.get('bilateralConstant', 10)
+        thresholdMethod  = kwargs.get('threshold',          cv2.THRESH_BINARY)
+        returnContours    = kwargs.get('returnContours',    False)
+        contourMethod     = kwargs.get('contourMethod',     cv2.RETR_EXTERNAL)  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
 
         gray = cv2.cvtColor(frameToAnalyze, cv2.COLOR_BGR2GRAY)
         gray = cv2.bilateralFilter(gray, bilateralConstant, bilateralConstant, 27)  #Blurs photo while maintaining edge integrity. Up the 2nd number for more lag but accuracy
         #self.vid.windowFrame["Main"] = gray
-        ret, gray = cv2.threshold(gray, 140, 255, threshHoldMethod)                 #Use a threshold on the image (black and white)
-        edged = cv2.Canny(gray, 100, 130)                                           #Gets edged version of photo. 2nd and 3rd numbers are the threshholds (100,130 for optimal)
+        ret, gray = cv2.threshold(gray, 127, 255, thresholdMethod)                  #Use a threshold on the image (black and white)
+        edged = cv2.Canny(gray, 100, 130)                                           #Gets edged version of photo. 2nd and 3rd numbers are the thresholds (100,130 for optimal)
         cnts, _ = cv2.findContours(edged.copy(), contourMethod, cv2.CHAIN_APPROX_SIMPLE  )
         cv2.drawContours(edged, cnts, -1, (255, 255, 255), 3)
 
@@ -242,19 +251,30 @@ class ObjectTracker:
         frameToDraw: What frame to draw on top of.
         """
 
+        color       = kwargs.get('color', (0, 255, 0))
         frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
 
         for shapeTarget in shapeTargets:
-            cv2.circle(frameToDraw, tuple(shapeTarget.center), 10, (0, 0, 255), -1)
-            cv2.polylines(frameToDraw, [np.asarray(shapeTarget.vertices)], True, (0, 255, 0), 4)
+            if hasattr(shapeTarget, 'center'):
+                cv2.circle(frameToDraw, tuple(shapeTarget.center), 10, (0, 0, 255), -1)
+                cv2.polylines(frameToDraw, [np.asarray(shapeTarget.vertices)], True, color, 4)
 
         return frameToDraw
 
     def drawCircles(self, circleTargets, **kwargs):
+        """
+
+        :param circleTargets: a list of circleTargets should be sent in.
+        :param kwargs:
+        :return:
+        """
+
         frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
 
-        for circle in circleTargets:            cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (255, 255, 255), 3, 3)  #Draw outline of circle
-            #cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
+        for circle in circleTargets:
+            if hasattr(circle, "center"):
+                cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (255, 255, 255), 3, 3)  #Draw outline of circle
+                #cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
 
         return frameToDraw
 
@@ -304,18 +324,23 @@ class ObjectTracker:
         """
 
         #SETUP:
-        bilateralConstant = kwargs.get('bilateralConstant', 20)
+        bilateralConstant = kwargs.get('bilateralConstant', 13)
         returnFrame       = kwargs.get('returnFrame',       False)
-        periTolerance     = kwargs.get('peri',              .05)                 #Percent "closeness" to being flat edged
+        periTolerance     = kwargs.get('peri',              .05)                #Percent "closeness" to being flat edged
+
         minArea           = kwargs.get('minArea',           10)
         maxArea           = kwargs.get('maxArea',           100000000)
+        minPerimeter      = kwargs.get('minPerimeter',      10)
+        maxPerimeter      = kwargs.get('maxPerimeter',      100000000)
+
         frameToAnalyze    = kwargs.get('frameToAnalyze',    self.vid.frame.copy())
-        threshHoldMethod  = kwargs.get('threshHold',        cv2.THRESH_BINARY)
+        thresholdMethod  = kwargs.get('threshold',          cv2.THRESH_BINARY)
         contourMethod     = kwargs.get('contourMethod',     cv2.RETR_EXTERNAL)  #RETR_EXTERNAL makes sure that only 'outmost' contours are counted
+        deleteSimilar     = kwargs.get('deleteSimilar',     True)               #Deletes squares that are almost the same coordinates. Might cause lag
 
         ################################GET SHAPE CONTOUR ARRAYS##############################################
         #Get edged version of image
-        cnts, edged = self.drawEdged(frameToAnalyze = frameToAnalyze, bilateralConstant = bilateralConstant, threshHold = threshHoldMethod,
+        cnts, edged = self.drawEdged(frameToAnalyze = frameToAnalyze, bilateralConstant = bilateralConstant, threshold = thresholdMethod,
                                      returnContours = True, contourMethod = contourMethod)
 
         #Find contours in the edged image, keep only the largest ones (the [:x] in sorted cnts line)
@@ -328,11 +353,12 @@ class ObjectTracker:
         #RECORD ALL CONTOURS WITH ONLY 'sides' SIDES
         shapesDetected = []                                  #Array of all 'shape' contours found in the image so far
         for c in cnts:
-            peri = cv2.arcLength(c, True)                    # approximate the contour
-            approx = cv2.approxPolyDP(c, periTolerance * peri, True)   #This is how precise you want it to look at the contours. (Aka, the curvature of 2%)
+            peri = cv2.arcLength(c, True)                              #  Perimeter of the contour
+            approx = cv2.approxPolyDP(c, periTolerance * peri, True)   #  This is how precise you want it to look at the contours. (Aka, the curvature of 2%)
             if len(approx) == sides:
-                if  minArea < cv2.contourArea(approx) < maxArea:        #Get rid of small anomalies that were mistakenly recognized as contours (size)
+                if  minArea < cv2.contourArea(approx) < maxArea and minPerimeter < peri < maxPerimeter:        #  Get rid of small anomalies that were mistakenly recognized as contours (size)
                     shapesDetected.append(approx)
+
 
         if len(shapesDetected) == 0:  #If no shapes detected, end function.
             if returnFrame:
@@ -350,23 +376,32 @@ class ObjectTracker:
 
 
         ##############################GET RID OF DUPLICATE OBJECTS BY COMPARING COORDINATES#########################
-        tolerance = 5  #How many pixels two coordinates in a shape must be away in order to be considered different shapes
+        tolerance = 2  #How many pixels two coordinates in a shape must be away in order to be considered different shapes
         shapeTargets = []  #Creates an array of ShapeTargets
 
         for shape in range(len(shapeArray)):  #Gets rid of weird overlapping shapes and also finished making the shapeTargets array
+
             similarCoords = 0  #Keeps track of how many coordinates were within the tolerance
-            for otherShape in range(shape + 1, len(shapeArray)):
-                for coordShape in range(len(shapeArray[shape])):
-                    for coordOtherShape in range(len(shapeArray[otherShape])):
-                        shapeX = shapeArray[shape][coordShape][0]
-                        shapeY = shapeArray[shape][coordShape][1]
-                        otherShapeX = shapeArray[otherShape][coordOtherShape][0]
-                        otherShapeY = shapeArray[otherShape][coordOtherShape][1]
-                        if (shapeX - tolerance) < otherShapeX < (shapeX + tolerance):  #not within tolerance
-                            if (shapeY - tolerance) < otherShapeY < (shapeY + tolerance):
-                                similarCoords += 1
-            if similarCoords < 120:
-                shapeTargets.append(ShapeTarget(vertices = shapeArray[shape], area = cv2.contourArea(shapesDetected[shape]), center = np.sum(shapeArray[shape], axis = 0) / len(shapeArray[shape])))
+            if deleteSimilar:
+                for otherShape in range(shape + 1, len(shapeArray)):
+                    for coordShape in range(len(shapeArray[shape])):
+                        for coordOtherShape in range(len(shapeArray[otherShape])):
+                            shapeX = shapeArray[shape][coordShape][0]
+                            shapeY = shapeArray[shape][coordShape][1]
+                            otherShapeX = shapeArray[otherShape][coordOtherShape][0]
+                            otherShapeY = shapeArray[otherShape][coordOtherShape][1]
+                            if (shapeX - tolerance) < otherShapeX < (shapeX + tolerance):  #not within tolerance
+                                if (shapeY - tolerance) < otherShapeY < (shapeY + tolerance):
+                                    similarCoords += 1
+
+            if similarCoords < 3 or not deleteSimilar:
+
+                shapeTargets.append(ShapeTarget(vertices  = shapeArray[shape],
+                                                area      = cv2.contourArea(shapesDetected[shape]),
+                                                center    = np.sum(shapeArray[shape], axis          = 0) / len(shapeArray[shape]),
+                                                perimeter = cv2.arcLength(shapesDetected[shape], True)))
+
+
 
         if returnFrame:
             return (shapeTargets, edged)
@@ -375,12 +410,12 @@ class ObjectTracker:
     def getCircles(self, **kwargs):
         frameToAnalyze = kwargs.get('frameToAnalyze', self.vid.frame.copy())
         minRadius      = kwargs.get('minRadius', 1)
-
+        maxRadius       = kwargs.get('maxRadius', 100)
         gray = cv2.cvtColor(frameToAnalyze.copy(), cv2.COLOR_BGR2GRAY)
         gray = cv2.medianBlur(gray, 5)
 
-        circles = cv2.HoughCircles(gray, 3, 1, 20, np.array([]), param1= 100, param2=30, minRadius=minRadius, maxRadius=100)
-
+        circles = cv2.HoughCircles(gray,       3,  1,       20, np.array([]), param1=100, param2=30, minRadius=int(minRadius), maxRadius=int(maxRadius))
+        #         cv2.HoughCircles(image, method, dp, minDist[,     circles[,    param1[,   param2[,               minRadius[, maxRadius]]]]])
         if not circles is None:
             circles = circles[0]
         else:
@@ -405,7 +440,8 @@ class ObjectTracker:
 
     def bruteGetFrame(self, getFunc, **kwargs):
         #Wait for new frame
-        maxAttempts = kwargs.get("attempts", 15)
+        maxAttempts = kwargs.get("maxAttempts", 15)
+
         for a in range(maxAttempts):
             #Get function value and test the validity
             try:
@@ -413,13 +449,14 @@ class ObjectTracker:
             except:
                 values = []
 
-            if len(values) > 0:
+            if len(values):
                 return values
-            print "bruteGetFrame(", locals().get("args"), "): Trying again..."
+            #print "bruteGetFrame(", locals().get("args"), "): Trying again..."
+
             #If validity false (empty array), get a new frame then try it again
             lastFrame = self.vid.frameCount
             while self.vid.frameCount == lastFrame:
-                cv2.waitKey(1)
+                pass
 
 
 
@@ -539,8 +576,10 @@ class ObjectTracker:
 
         #SET UP VARIABLES
         screenDimensions = self.vid.getDimensions()
-        coords = kwargs.get("nearestTo", [screenDimensions[0] / 2, screenDimensions[1] / 2])
-        #shapeTargets = self.getShapes(sides)
+        coords           = kwargs.get("nearestTo", [screenDimensions[0] / 2, screenDimensions[1] / 2])
+        maxDist          = kwargs.get('maxDist', 100000)    #For cases where you want it to return an empty list if nothing within maxDist was found near coords
+        returnNearest = kwargs.get("returnNearest", False)  #If true, it will return only the first index of the array
+
 
         #SORT THE SHAPES IN THE ARRAY BY HOW FAR THEY ARE FROM THE "COORDS" VARIABLE
         shapeTargets = sorted(shapeArray, key = lambda s: (s.center[0] - coords[0]) ** 2 + (s.center[1] - coords[1]) ** 2)
@@ -548,8 +587,25 @@ class ObjectTracker:
             #print "getNearestShape(", locals().get("args"), "): No shapes found"
             return []
 
-        return shapeTargets  #Return the nearest shape
+        shapesWithinDist = []
 
+        for index, shape in enumerate(shapeTargets):
+            distFromCoords = ((shape.center[0] - coords[0]) ** 2 + (shape.center[1] - coords[1]) ** 2) ** .5
+
+            if distFromCoords < maxDist:
+                shapesWithinDist.append(shape)
+                #print "dist: ", distFromCoords
+            #else:
+                #print "REMOVED! Maxdist: ", maxDist, "dist: ", distFromCoords
+
+        if len(shapesWithinDist) == 0:
+            return []
+
+
+        if returnNearest:
+            return shapesWithinDist[0]  #Return nearest shape
+        else:
+            return shapesWithinDist     #Return shapes in order from nearest to furthest
 
 
 

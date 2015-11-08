@@ -1,7 +1,9 @@
 import Robot
-
+from time import sleep
 
 
 if '__main__' == __name__:
-    Robot.moveTo(relative = False, waitForRobot = True, **Robot.home)
-    #Robot.moveTo(stretch = 200, height = 0, relative = False, waitForRobot = True)
+    sleep(3)
+
+    while True:
+        Robot.moveTo(stretch=float(raw_input('stretch?:')), relative=False)
