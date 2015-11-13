@@ -38,10 +38,10 @@ def focusOnTarget(getTargetCoords, **kwargs):
     tolerance     = kwargs.get("tolerance",     15)
     maxMoves      = kwargs.get("maxMoves",      1000)
     jump          = kwargs.get("jump",          0)      #jump several incriments at once when far from the target area
-    waitTime      = kwargs.get("wait",          .1)     #Miliseconds to wait between moves
+    waitTime      = kwargs.get("wait",          0)     #Miliseconds to wait between moves
     targetSamples = kwargs.get('targetSamples', 1)
 
-    sign        = lambda x: (1, -1)[x < 0]  #sign(x) will return the sign of a number'
+    sign        = lambda x: (1.0, -1.0)[x < 0]  #sign(x) will return the sign of a number'
     moveCount   = 0                         #The amount of moves that it took to focus on the object
 
     while True:  #Robot arm will slowly approach the target
@@ -55,60 +55,64 @@ def focusOnTarget(getTargetCoords, **kwargs):
             avgCoords = [n / targetSamples for n in avgCoords]
 
         except NameError as e:  #IF TARGET NOT FOUND, THROW AN ERROR
-            print "ERROR: focusOnTarget(", locals().get("args"), "): error (", e, "). Object not found. Leaving Function..."
-            raise  #RE-Raise the exception for some other program to figure out
+            print "ERROR: focusOnTarget(): error (", e, "). Object not found. Leaving Function..."
+            return
+            #raise  #RE-Raise the exception for some other program to figure out
 
 
         #CALCULATE THE DISTANCE FROM THE TARGETFOCUS TO THE TARGET COORDINATES
         distance = ((coords[0] - targetFocus[0]) ** 2 + (coords[1] - targetFocus[1]) ** 2) ** 0.5  #For debugging
-        xMove = float(0)
-        yMove = float(0)
+        xMove = 0.0
+        yMove = 0.0
         yDist = targetFocus[0] - coords[0]
         xDist = targetFocus[1] - coords[1]
 
         #FIGURE OUT WHAT DIRECTION TO MOVE, AND HOW MUCH
         if abs(xDist) > tolerance:
-            xMove  = sign(xDist) * 1
+            xMove  = sign(xDist) * 1.0
             xMove += sign(xDist) * jump * (abs(xDist) > tolerance * 5)  #If far from the target, then move a little faster
-            xMove += (xDist / ppX)   * (abs(xDist) > tolerance     and not ppX == -1)  #If a pp? setting was sent in kwArgs, then perform it.
+            xMove += (xDist / ppX)   * (abs(xDist) > tolerance * 2     and not ppX == -1)  #If a pp? setting was sent in kwArgs, then perform it.
 
         if abs(yDist) > tolerance:
             yMove  = sign(yDist) * .5
             yMove += sign(yDist) * jump * (abs(yDist) > tolerance * 5)
-            yMove += (yDist / ppY)   * (abs(yDist) > tolerance     and not ppY == -1)
+            yMove += (yDist / ppY)   * (abs(yDist) > tolerance * 2     and not ppY == -1)
 
+        #print xMove, xDist, yMove, yDist
 
         #PERFORM THE MOVE
-        if not (int(xMove) == 0 and int(yMove) == 0):
+        if not (abs(xDist) < tolerance and abs(yDist) < tolerance):
             moveCount += 1
             Robot.moveTo(rotation = -yMove, stretch = xMove)  #TODO: make a variable that flips these around according to orientation of camera
             #print Robot.getPosArgsCopy()
-            if yDist < tolerance * 2 or xDist < tolerance * 1.25:  #Slow down a bit when approaching the target
-                sleep(.3)
+            if yDist < tolerance * 1.5 or xDist < tolerance * 1.5:  #Slow down a bit when approaching the target
+               sleep(.1 + waitTime)
             else:
-                sleep(.1)
+               sleep(waitTime)
 
             if Robot.pos["stretch"] == Robot.stretchMax or Robot.pos["stretch"] == Robot.stretchMin:
-                if yMove == 0:  #If the robot can still focus more on the rotation
-                    print "focusOnTarget(): Object out of Stretching reach, but Rotation was focused"
+                print "stretch at max or min"
+                if abs(yDist) < tolerance:  #If the robot can still focus more on the rotation
+                    print "focusOnTarget():\tObject out of Stretching reach, but Rotation was focused"
                     break
 
                 if Robot.pos["rotation"] == Robot.rotationMax or Robot.pos["rotation"] == Robot.rotationMin:
-                    print "focusOnTarget(): Object out of BOTH Stretching and Rotation Reach. Quiting Targeting..."
+                    print "focusOnTarget():\tObject out of BOTH Stretching and Rotation Reach. Quiting Targeting..."
                     break
 
             if Robot.pos["rotation"] == Robot.rotationMax or Robot.pos["rotation"] == Robot.rotationMin:
-                if xMove == 0:  #If the robot can still focus more on the rotation
-                    print "focusOnTarget(): Object out of Rotating reach, but Stretch was focused"
+                print "rot at max or min"
+                if abs(xDist) < tolerance:  #If the robot can still focus more on the rotation
+                    print "focusOnTarget():\tObject out of Rotating reach, but Stretch was focused"
                     break
 
 
             if moveCount >= maxMoves:
-                print "focusOnTarget(): ERROR: Robot moved ", moveCount, " which is over the move limit."
+                print "focusOnTarget():\tERROR: Robot moved ", moveCount, " which is over the move limit."
                 break
 
         else:
-            print "focusOnTarget(", locals().get("args"), "): Object Targeted in ", moveCount, "moves.", " Final distance from target: ", distance
+            print "focusOnTarget():\tObject Targeted in ", moveCount, "moves.", " Final distance from target: ", distance, 'xDist: ', xDist, 'yDist: ', yDist, 'tolerance: ', tolerance
             break
 
 def focusOnCoord(coords, **kwargs):  #Arguments: targetFocus (The pixel location where you want the target to be alligned. Default is the center of the screen
@@ -189,7 +193,7 @@ def waitTillStill(**kwargs):
     timer = Common.Timer(maxTime)  #Will wait one second max before continuing
     while objTracker.getMovement() > maxMovement:
         if timer.timeIsUp():
-            print "waitTillStill(", locals().get("args"), "): Timer has timed out. Consider lowering acceptableMovement. Continuing...", objTracker.getMovement()
+            print "waitTillStill():\tTimer has timed out. Consider lowering acceptableMovement. Continuing...", objTracker.getMovement()
             break
 
 def getAngle(quad):
@@ -241,7 +245,7 @@ def stackJenga():
                     Robot.moveTo(rotation = -10)
                     waitTillStill()
                 else:
-                    print "stackJenga(", locals().get("args"), "): No shapes found after one sweep."
+                    print "stackJenga():\tNo shapes found after one sweep."
                     searchPos = originalSearchPos.copy()
                     Robot.moveTo(rotation = -15, stretch = V.stretchMax / 2.5, height = V.heightMax, relative = False)  #Go back and sweep again
             searchPos = {"rotation": Robot.pos["rotation"], "stretch": V.stretchMax / 2.5, "height": V.heightMax}
@@ -318,7 +322,7 @@ def isObjectGrabbed():
     movement = objTracker.getMovement()
 
     Robot.moveTo(wrist = currentWrist, relative = False)
-    print "isObjectGrabbed(", locals().get("args"), "): Movement = ", movement
+    print "isObjectGrabbed():\tMovement = ", movement
     return movement
 
 def pickUpBlock(movConstant, objectLastSeen, **kwargs):
@@ -340,9 +344,9 @@ def pickUpBlock(movConstant, objectLastSeen, **kwargs):
     getShapeCenter = lambda: objTracker.bruteGetFrame(lambda: objTracker.getNearestShape(4).center)                 #This function is used a lot, so it was useful to save as a variable.
 
     #CHECK IF THIS FUNCTION HAS BEEN RUN RECURSIVELY MORE THAN THE SET LIMIT, AND QUIT IF IT HAS
-    print "pickUpPiece(", locals().get("args"), "): Attempt number: ", attempts
+    print "pickUpPiece():\tAttempt number: ", attempts
     if attempts == 3:  #If max attempts have been hit
-        print "pickUpPiece(", locals().get("args"), "): Too many recursive attempts. Raising error"
+        print "pickUpPiece():\tToo many recursive attempts. Raising error"
         raise Exception("BlockNotGrabbed")
 
 
@@ -353,14 +357,14 @@ def pickUpBlock(movConstant, objectLastSeen, **kwargs):
     waitTillStill()
     sleep(.1)
     if len(objTracker.getShapes(4)) == 0:  #If no objects in view
-        print "pickUpPiece(", locals().get("args"), "): No objects seen at start. Raising error..."
+        print "pickUpPiece():\tNo objects seen at start. Raising error..."
         raise NameError("ObjNotFound")
 
 
     #BEGIN FOCUSING PROCESS UNTIL ROBOT IS AT 0 HEIGHT AND COMPLETELY FOCUSED ON OBJECT
     try:
         if Robot.pos["height"] == 150:
-            print "pickUpBlock(", locals().get("args"), "): Focus at height 150"
+            print "pickUpBlock():\tFocus at height 150"
             objectLastSeen = Robot.getPosArgsCopy(dontRecord = ["wrist, grabber, height"])
             focusOnTarget(getShapeCenter, **heightSettings["150"])  #Tries many times (brute) to get the nearest shapes .center coords & focus
             objectLastSeen = Robot.getPosArgsCopy(dontRecord = ["wrist, grabber, height"])
@@ -368,20 +372,20 @@ def pickUpBlock(movConstant, objectLastSeen, **kwargs):
             waitTillStill()
 
         if Robot.pos["height"] == 70:
-            print "pickUpBlock(", locals().get("args"), "): Focus at height 70"
+            print "pickUpBlock():\tFocus at height 70"
             focusOnTarget(getShapeCenter, **heightSettings["70"])
             objectLastSeen = Robot.getPosArgsCopy(dontRecord = ["wrist, grabber, height"])
             Robot.moveTo(height = 0, relative = False)
             waitTillStill()
 
         if Robot.pos["height"] == 0:
-            print "pickUpBlock(", locals().get("args"), "): Focus at height 0"
+            print "pickUpBlock():\tFocus at height 0"
             focusOnTarget(getShapeCenter,  tolerance = 7, **heightSettings["0"])
             objectLastSeen = Robot.getPosArgsCopy(dontRecord = ["wrist, grabber, height"])
 
         shape = objTracker.bruteGetFrame(lambda: objTracker.getNearestShape(4)).vertices
     except NameError as e:
-        print "ERROR: pickUpBlock(", locals().get("args"), "): ", e
+        print "ERROR: pickUpBlock():\t", e
         pickUpBlock(movConstant, objectLastSeen, attempts = attempts + 1)
         return False
         #raise Exception("PickupFailed")
@@ -391,12 +395,12 @@ def pickUpBlock(movConstant, objectLastSeen, **kwargs):
     angle = getAngle(shape)  #Get angle of object in camera
     if (angle > 50 or angle < -50) and attemptRefocus:
         try:
-            print "pickUpBlock(", locals().get("args"), "): Performing re-focusing manuever on block of angle: ", angle
+            print "pickUpBlock():\tPerforming re-focusing manuever on block of angle: ", angle
             targetFocus = [screenDimensions[0] / 3.5, screenDimensions[1] / 2]
             focusOnTarget(lambda: objTracker.bruteGetFrame(lambda: objTracker.getNearestShape(4, nearestTo = targetFocus).center),  tolerance = 8, targetFocus = targetFocus, **heightSettings["0"])
             objectLastSeen = Robot.getPosArgsCopy(dontRecord = ["wrist, grabber, height"])
         except NameError as e:  #Since it failed, try again but this time send the function a "normalPickup = True", so it won't attempt to do it again
-            print "ERROR: pickUpBlock(", locals().get("args"), "): ", e, " when trying to RE-FOCUS on a >50 <-50 block"
+            print "ERROR: pickUpBlock():\t", e, " when trying to RE-FOCUS on a >50 <-50 block"
             pickUpBlock(movConstant, objectLastSeen, attempts = attempts + 1, attemptRefocus = False)
             return False
 
@@ -428,16 +432,16 @@ def pickUpBlock(movConstant, objectLastSeen, **kwargs):
     Robot.moveTo(wrist = 20, relative = False)
     timer = Common.Timer(.4)
     highestMovement = 0
-    while not timer.timeIsUp():  #Gets the highest measured movement in .3 seconds, to DEFINITELY catch the wrist moving. Eliminates problems.
+    while not timer.timeIsUp(): #Gets the highest measured movement in .3 seconds, to DEFINITELY catch the wrist moving. Eliminates problems.
         newMovement = objTracker.getMovement()
         if newMovement > highestMovement: highestMovement = newMovement
         if highestMovement > movConstant + 1.5: break
-    print "pickUpBlock(", locals().get("args"), "): highestMovement: ", highestMovement
+    print "pickUpBlock():\thighestMovement: ", highestMovement
 
 
     #IF MOVEMENT IS < MOVCONSTANT, THEN NO OBJECT WAS PICKED UP. RE-RUN FUNCTION.
     if highestMovement < movConstant + 3:
-        print "pickUpBlock(", locals().get("args"), "): Failed to suck in object. Retrying..."
+        print "pickUpBlock():\tFailed to suck in object. Retrying..."
         pickUpBlock(movConstant, objectLastSeen, attempts = attempts + 1, attemptRefocus = not attemptRefocus)
         return False
 
@@ -465,7 +469,7 @@ def placeBlockAtPosition(layer, position):
     #SET UP VARIABLES
     currentPosition = Robot.getPosArgsCopy()  #Back up the position in case of error
     heightForLayer = {"1": -32, "2": -15, "3": 3, "4": 24, "5": 40.5}
-    print "placeBlockAtPosition(", locals().get("args"), "): Current pos: ", currentPosition
+    print "placeBlockAtPosition():\tCurrent pos: ", currentPosition
 
     #PICK THE RELEVANT MOVEMENTS FOR EACH LAYER/POSITION, AND PERFORM IT
     if not layer % 2:  #IF THIS IS THE VERTICAL LAYER
@@ -511,23 +515,48 @@ def placeBlockAtPosition(layer, position):
 ########### Checkers FUNCTIONS ###########
 def playCheckers():
     global streamVideo
-    print "playCheckers(): Beginning Checkers!"
+    global blurThreshold   #Set below using getMotionAndBlur()
+    print "playCheckers():\tBeginning Checkers!"
     streamVideo = True
-    #cornerInfo = getBoardCorners()  #Get the location of the boards corners at two different robot heights
 
-    cornerInfo =  [{'corners': [{'y':  -33.58238318627188, 'x': 172.76638428678885}, {'y': 114.53631117107041, 'x':  141.4405649851687}, {'y': 153.9866725937722,  'x': 289.60681045772805}, {'y': -0.0, 'x': 321.0}], 'distFromBase': 143, 'height': 100},
-                   {'corners': [{'y': -33.964001177024976, 'x': 174.7296386536842},  {'y': 117.63013257263668, 'x': 140.18613309077298}, {'y': 149.81686491405043, 'x':  294.0321529821614}, {'y': -0.0, 'x': 324.0}], 'distFromBase': 161, 'height': 40},
-                   {'corners': [{'y':  -33.58238318627188, 'x': 172.76638428678885}, {'y': 118.91570779200975, 'x': 141.71822197701093}, {'y': 161.44160354203024, 'x': 291.24836247741877}, {'y': -0.0, 'x': 329.0}], 'distFromBase': 172, 'height': 8},
-                   {'corners': [{'y':  -33.16680193438369, 'x': 188.09828082533173}, {'y': 128.55752193730785, 'x': 153.20888862379562}, {'y': 171.62260556720332, 'x':  309.6153763273461}, {'y': 18.16057681630151, 'x': 346.52444855983714}], 'distFromBase': 191, 'height': -6},
-                   {'corners': [{'y':  -33.16680193438369, 'x': 188.09828082533173}, {'y': 127.2754516241584,  'x': 146.41365856321778}, {'y': 164.3150469750618,  'x':  309.0316575006244}, {'y': 6.055985033737379, 'x': 346.94715021926777}], 'distFromBase': 191, 'height': -15}]
-    cornerInfoHigh    = cornerInfo[0]
-    cornerInfoLow     = cornerInfo[-1]
-    #groundFormula     = getGroundFormula(cornerInfoLow['corners'])
-    groundFormula     = lambda stretch: -0.0994149347433  * stretch + -45.0
 
-    redThreshold = 0     #Used to measure what piece is pink and what piece is green. This constant is set later on using getAverageColor()
-    firstLoop    = True  #This will tell the robot to calibrate the average color on the first round of the game.
-    AI = CheckersAI.DraughtsBrain({'PIECE':     15,  #Checkers AI class. These values decide how the AI will play
+    allCornerInfo = [{'corners': [{'y': -31.380957489747797, 'x':   169.316495082513}, {'y': 121.24646587222513, 'x': 134.65784237650385}, {'y': 153.26339379538624, 'x': 282.27605658702333}, {'y': 8.486566641412477,  'x': 324.0889047570757}],  'distFromBase': 140.20000000000002, 'height': 100},
+                     {'corners': [{'y': -30.509984816079662, 'x': 173.03072220424497}, {'y': 120.5180436255562,  'x': 138.64014988692324}, {'y': 155.4106082165545,   'x': 286.2307335940022}, {'y': 11.296967082599565, 'x': 323.50281070608133}], 'distFromBase': 160.70000000000002, 'height': 37},
+                     {'corners': [{'y': -36.196466422930555, 'x': 186.21467670002187}, {'y': 126.42257488647077, 'x':  145.4325361089282}, {'y': 167.3395772230447,   'x': 308.2011614105513}, {'y': 14.948364050100649, 'x': 342.3738255361027}],  'distFromBase': 185.70000000000002, 'height': 5},
+                     {'corners': [{'y': -37.207754098426236, 'x': 191.41730077229448}, {'y': 129.24362871112993, 'x': 148.67778730388608}, {'y': 169.8685186524206,   'x': 312.8588921076597}, {'y': 15.48488251469428,  'x': 354.66211866155953}], 'distFromBase': 191.0,              'height': -6},
+                     {'corners': [{'y': -29.58175733910766,  'x': 186.77186520654058}, {'y': 127.99711655604798, 'x': 147.24383910146284}, {'y': 164.66748816559087,  'x': 303.2797855796443}, {'y': 14.965811805046783, 'x': 342.7734448247354}],  'distFromBase': 189.10000000000002, 'height': -15}]
+
+    ppXYInfo      = [{'xSamples': 4, 'ppY': 0.675, 'ppX': -1.1250000000000002, 'ySamples': 4, 'height': 100},
+                     {'xSamples': 4, 'ppY': -29.0, 'ppX':   4.241806220095693, 'ySamples': 2, 'height': 37},
+                     {'xSamples': 4, 'ppY': -17.0, 'ppX':  4.7444444444444445, 'ySamples': 2, 'height': 5},
+                     {'xSamples': 3, 'ppY':   3.0, 'ppX':   7.266666666666667, 'ySamples': 2, 'height': -6},
+                     {'xSamples': 2, 'ppY': -32.0, 'ppX':   4.208333333333334, 'ySamples': 1, 'height': -15}]
+    avgMotion, avgBlur = 4.97039, 525.226
+
+    #RUN CALIBRATION FUNCTIONS
+    avgMotion, avgBlur  = getMotionAndBlur()
+    blurThreshold       = avgBlur / 3.85       #Its important to set the thresholds first, before other functions run
+    motionThreshold     = avgMotion * 2.5      #that use them (such as getBoardCorners()
+    #ppXYInfo, allCornerInfo       = getBoardCorners()    #Get the location of the boards corners at two different robot heights
+    #groundFormula      = getGroundFormula(cornerInfoLow['corners'])
+    groundFormula       = lambda stretch: -0.0994149347433  * stretch + -45.0
+
+
+    #SET UP VARIABLES
+    cornerInfoHigh = allCornerInfo[0]
+    cornerInfoLow  = allCornerInfo[-1]
+    ppXYInfoHigh   = ppXYInfo[0]
+    ppXYInfoLow    = ppXYInfo[-1]
+    jumpFormula    = getJumpFormula(allCornerInfo)
+    kingLocation   = [8, 2.5]   #Where the kings are stored relative to the boards grid.
+    dumpLocation   = [-3, 2.5]  #Where captured pieces are thrown away
+
+
+
+    colorThreshold = 0     #Used to measure what piece is pink and what piece is green. This constant is set later on using getAvgColor()
+    kingThreshold  = 0
+    firstLoop      = True  #This will tell the robot to calibrate the average color on the first round of the game.
+    AI = CheckersAI.DraughtsBrain({'PIECE':    15,  #Checkers AI class. These values decide how the AI will play
                                    'KING':     30,
                                    'BACK':      3,
                                    'KBACK':     3,
@@ -535,61 +564,90 @@ def playCheckers():
                                    'KCENTER':   7,
                                    'FRONT':     6,
                                    'KFRONT':    3,
-                                   'MOB':     6}, 7)
+                                   'MOB':       6}, 11)
 
     while not exitApp:
-        #stitchedFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
+        #MOVE ROBOT OUT OF WAY FOR HUMAN TO MAKE THEIR MOVE
+        Robot.moveTo(relative=False, waitForRobot=True, stretch=0, height = 150)
+        Robot.moveTo(relative=False, waitForRobot=True, rotation=-75)
+        cv2.waitKey(3000)
 
-        #GET A STITCHED IMAGE THAT IS AN OVERVIEW OF THE BOARD AREA
-        stitchedFrame = getBoardOverview(cornerInfoHigh, finalImageWidth = 1000)
-        #cv2.imwrite('F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png', stitchedFrame)
+        #WAIT FOR PERSON TO WAVE HAND IN FRONT OF CAMERA BEFORE STARTING MOVE (GIVE PLAYER TIME TO MAKE THEIR MOVE)
+        print "playCheckers():\tWaiting for player to signal!"
+        while objTracker.getMovement() < motionThreshold: pass
+        Robot.moveTo(relative=False, waitForRobot=True, stretch=0, height = 150)
 
 
-        #FIND THE BOARD IN THE STITCHED IMAGE
-        shapeArray, edgedFrame = objTracker.getShapes(sides=4, peri=0.05,  minArea= (stitchedFrame.shape[0] * stitchedFrame.shape[1]) / 4,
-                                                      threshHold=cv2.THRESH_OTSU, frameToAnalyze=stitchedFrame, returnFrame = True)
-        if len(shapeArray) == 0:  #Make sure that the board was correctly found. If not, restart the loop and try again.
-            print "__playCheckers()___: No board Found"
-            continue
+        stitchedFrame = None
+        while stitchedFrame is None:
+            #stitchedFrame = cv2.imread("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png")
 
-        #cv2.imwrite("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png", stitchedFrame)
+            #GET A STITCHED IMAGE THAT IS AN OVERVIEW OF THE BOARD AREA
+            stitchedFrame = getBoardOverview(cornerInfoHigh, finalImageWidth = 1000)
+            cv2.imwrite('F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png', stitchedFrame)  #TODO: REMOVE THIS, ITS FOR DEBUGGING ONLY
+
+
+            #FIND THE BOARD IN THE STITCHED IMAGE
+            shapeArray, edgedFrame = objTracker.getShapes(sides=4, peri=0.05,  minArea= (stitchedFrame.shape[0] * stitchedFrame.shape[1]) / 4,
+                                                          threshHold=cv2.THRESH_OTSU, frameToAnalyze=stitchedFrame, returnFrame = True)
+            if len(shapeArray) == 0:  #Make sure that the board was correctly found. If not, restart the loop and try again.
+                print "playCheckers():\tNo board Found"
+                stitchedFrame = None
+
+            cv2.imwrite("F:\Google Drive\Projects\Git Repositories\RobotStorage\RobotArm\stitched.png", stitchedFrame)
 
 
         #ISOLATE THE BOARD AND FIND THE CIRCLES IN IT
-        warped      = objTracker.getTransform(shapeArray[0], frameToAnalyze=stitchedFrame, transformHeight=600, transformWidth=600)  #Isolate board
-        circleArray = objTracker.getCircles(frameToAnalyze = warped, minRadius = 40)  #Get circles on screen
+        boardFrame  = objTracker.getTransform(shapeArray[0], frameToAnalyze=stitchedFrame, transformHeight=600, transformWidth=600)  #Isolate board
+        circleArray = objTracker.getCircles(frameToAnalyze = boardFrame, minRadius = 40)  #Get circles on screen
 
 
         #GET THE BOARD STATE
-        if firstLoop: redThreshold = getAverageColor(circleArray)[2]  #  If this is the first time being run, get the average color of the pieces on board
-        boardState, warped         = getBoardState(warped, circleArray, [600, 600], redThreshold)  #Find and label all circles with team, color, and location
-
-
-        #SET FRAMES FOR THE WINDOWS:
-        vid.windowFrame["Main"]        = objTracker.drawShapes([shapeArray[0]], frameToDraw=stitchedFrame)
-        vid.windowFrame["Perspective"] = objTracker.drawCircles(circleArray,    frameToDraw=warped)
+        if firstLoop:
+            colorThreshold = getAvgColor(circleArray)[0]  #  If this is the first time being run, get the average color of the pieces on board
+            kingThreshold = getHighestSTD(circleArray, boardFrame) * 2
+            firstLoop = False
+            print "playCheckers():\tColorThreshold: ", colorThreshold, " KingThreshold: ", kingThreshold
+        boardState, boardFrame     = getBoardState(boardFrame, circleArray, [600, 600], colorThreshold, kingThreshold)  #Find and label all circles with team, color, and location
 
 
         #GET BEST MOVE FROM ROBOT
-        move                = AI.best_move(board=boardState)  #Get the best possible move for the robot to perform
-        print move
-        # move                = AI.best_move(board=boardState)  #Get the best possible move for the robot to perform
-        # columnFrom, rowFrom = list(move.source[::-1])
-        # columnTo,     rowTo = list(move.destination[::-1])
-        # print "playCheckers(): Move From [", columnFrom, rowFrom, "] to [", columnTo, rowTo, "]"
-        #
-        #
-        # #PICK UP THE PIECE AND MOVE IT TO THE CORRECT LOCATION
-        # pickupLocation = pickUpPiece(columnFrom, rowFrom, cornerInfoLow, groundFormula)  #Pick up piece
-        #
-        #
-        # placePiece(columnFrom, rowFrom, columnTo, rowTo, cornerInfoLow, groundFormula, pickupLocation)  #Place piece
+        move        = AI.best_move(board=boardState)  #Get the best possible move for the robot to perform
+        moveFrom    = move.getSource()
+        moveTo      = move.getDestination()
+        moveCapture = move.getCapture()
+        print 'playCheckers():\t Move from: ', moveFrom, ' Move to: ', moveTo, ' Capture: ', moveCapture
 
 
-        #WAIT FOR PERSON TO WAVE HAND IN FRONT OF CAMERA BEFORE RESTARTING THE CYCLE
-        raw_input("Press ENTER to continue:")
+        #SET FRAMES FOR THE WINDOWS:
+        boardFrame  = drawMove(moveFrom, moveTo, moveCapture, circleArray, boardFrame)  #DRAW WHAT PIECE IS MOVING WHERE
+        vid.windowFrame["Perspective"] = boardFrame
 
-def getBoardState(frame, circleArray, screenDimensions, redThreshold):
+
+        #CHECK IF THE MOVE PRODUCED A NEW KING FOR THE ROBOT
+        if moveTo[1] == 0 and not boardState[moveFrom[1]][moveFrom[0]] == 3:
+            newKing = True
+        else:
+            print "NO NEW KING!"
+            newKing = False
+
+
+        #MOVE ALL THE APPROPRIATE PIECES
+        pickUpPiece(moveFrom, cornerInfoLow, ppXYInfoLow, groundFormula, jumpFormula, precision = 11)
+        if newKing:
+            placePiece(dumpLocation, cornerInfoLow, groundFormula, jumpFormula)
+            pickUpPiece(kingLocation, cornerInfoLow, ppXYInfoLow, groundFormula, jumpFormula)
+
+        placePiece(moveTo, cornerInfoLow, groundFormula, jumpFormula)
+
+            #Move captured piece
+        if moveCapture is not None:
+            pickUpPiece(moveCapture, cornerInfoLow, ppXYInfoLow, groundFormula, jumpFormula, precision = 11)
+            placePiece(dumpLocation, cornerInfoLow, groundFormula, jumpFormula)
+
+
+
+def getBoardState(frame, circleArray, screenDimensions, colorThreshold, kingThreshold):
     global boardSize
 
     board = [[0 for i in range(boardSize)] for j in range(boardSize)]
@@ -599,10 +657,10 @@ def getBoardState(frame, circleArray, screenDimensions, redThreshold):
 
     frameToDraw = frame.copy()
 
-    for column in range(boardSize):
-        for row in range(boardSize):
+    for row in range(boardSize):
+        for column in range(boardSize):
            # print "row: ", row, "column: ", column, "squareSize: ", squareSize
-            location = [squareSize * row + squareSize / 2, squareSize * column + squareSize / 2]
+            location = [squareSize * column + squareSize / 2, squareSize * row + squareSize / 2]
            # print location
             if len(circleArray) == 0: continue
 
@@ -611,22 +669,34 @@ def getBoardState(frame, circleArray, screenDimensions, redThreshold):
 
 
             if dist(nearest.center, location) < squareSize / 2:
-                fromX = int(nearest.center[0] - nearest.radius / 2)
-                toX   = int(nearest.center[0] + nearest.radius / 2)
-                fromY = int(nearest.center[1] - nearest.radius / 2)
-                toY   = int(nearest.center[1] + nearest.radius / 2)
 
-                if nearest.color[2] > redThreshold:
-                    board[column][row] = 1  #IF IS RED PIECE
-                    color = (0, 0, 255)
+                pieceColor = objTracker.bgr2hsv(nearest.color)[0]
+                if pieceColor > colorThreshold:
+                    if getCircleSTD(nearest, frame) < kingThreshold:
+                        board[row][column] = 2  #IF IS GREEN PIECE
+                        color = (0, 255, 0)
+                    else:
+                        board[row][column] = 4  #IF IS GREEN PIECE
+                        color = (255, 255, 0)
                 else:
-                    board[column][row] = 2  #IF IS GREEN PIECE
-                    color = (0, 255, 0)
+                    if getCircleSTD(nearest, frame) < kingThreshold:
+                        board[row][column] = 1  #IF IS RED PIECE
+                        color = (0, 0, 255)
+                    else:
+                        board[row][column] = 3  #IF IS RED PIECE
+                        color = (0, 255, 255)
+                print "PieceColor: ", pieceColor
 
-                cv2.rectangle(frameToDraw, tuple([fromX, fromY]), tuple([toX, toY]), color, 3)
-                cv2.putText(frameToDraw, str(row) + "," + str(column), (nearest.center[0] - 25, nearest.center[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, 0)
+
+                objTracker.drawCircles([nearest], frameToDraw=frameToDraw, color=color)
+
+                #cv2.rectangle(frameToDraw, tuple([fromX, fromY]), tuple([toX, toY]), color, 3)
+                cv2.putText(frameToDraw, str(column) + "," + str(row), (nearest.center[0] - 25, nearest.center[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, 0)
                 del circleArray[0]
         #print board[column]
+
+    cv2.imshow('main', frameToDraw)
+    cv2.waitKey(10)
     return board, frameToDraw
 
 def getBoardOverview(cornerInfo, **kwargs):
@@ -637,7 +707,7 @@ def getBoardOverview(cornerInfo, **kwargs):
 
     corners = cornerInfo['corners']
     finalWidth = kwargs.get("finalImageWidth", -1)
-    Robot.moveTo(height=150)
+    Robot.moveTo(height=150, relative=False)
 
     #Location of the top middle of the board and the bottom middle of the board
     picturePositions = [getSquarePosition(2.5, 1, corners),
@@ -647,6 +717,14 @@ def getBoardOverview(cornerInfo, **kwargs):
     for index, position in enumerate(picturePositions):
         Robot.moveTo(stretchDistFromBase=cornerInfo['distFromBase'], relative = False, **position)
         sleep(1.5)
+        while objTracker.getBlur() < blurThreshold:  #GET A NON BLURRY IMAGE
+            print "getBoardOverview():\t Blur of ", objTracker.getBlur(), "is too blurry, Shaking camera. "
+            Robot.moveTo(stretch=-50, height=-80)
+            Robot.moveTo(stretch=50, height=80)
+            sleep(2.5)
+
+
+
         images_array.append(vid.frame)
 
     final_img = ImageStitching.stitchImages(images_array[0], images_array[1:], 0)
@@ -675,7 +753,6 @@ def getSquarePosition(column, row, corners):
     global boardSize
 
     #For simplicity, get the bottom Right (bR) bottom Left (bL) and so on for each corner.
-    dist   = lambda p1, p2: ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** .5
     ptDist = lambda d, a, b: [a[0] + ((b[0] - a[0]) / dist(a, b)) * d, a[1] + ((b[1] - a[1]) / dist(a, b)) * d]
 
     #GET [x,y] FORMAT COORDINATES FOR EACH CORNER OF THE CHECKERBOARD
@@ -708,214 +785,184 @@ def getSquarePosition(column, row, corners):
 
     finalCoords = {'x': ptTop[0] + (t * s1_x), 'y': ptTop[1] + (t * s1_y)}
 
-    #print "getSquarePosition(): bottomL: ", lenBot, " topL: ", lenTop, " rightL: ", lenRit, " leftL: ", lenLef
-    #print "getSquarePosition(): topPoint: ", ptTop, " botPoint: ", ptBot, " lefPoint: ", ptLef, " ritPoint: ", ptRit
-    #print "getSquarePosition(): topLeft: ", tL, " topRight: ", tR, " bottomRight: ", bR, " bottomLeft: ", bL
+    #print "getSquarePosition():\tbottomL: ", lenBot, " topL: ", lenTop, " rightL: ", lenRit, " leftL: ", lenLef
+    #print "getSquarePosition():\ttopPoint: ", ptTop, " botPoint: ", ptBot, " lefPoint: ", ptLef, " ritPoint: ", ptRit
+    #print "getSquarePosition():\ttopLeft: ", tL, " topRight: ", tR, " bottomRight: ", bR, " bottomLeft: ", bL
 
-    print "getSquarePosition(): For Row: ", row, " Col: ", column, " FinalCoords: ", finalCoords
+    #print "getSquarePosition():\tFor Row: ", row, " Col: ", column, " FinalCoords: ", finalCoords
     return finalCoords
 
+def drawMove(moveFrom, moveTo, capture, circleArray, boardFrame):
+    frameToDraw = boardFrame.copy()
+
+    imgWidth = boardFrame.shape[0]  #Get height of image (which should be square)
+    squareSize = imgWidth / boardSize
+
+    fromLoc = [squareSize * moveFrom[0] + squareSize / 2, squareSize * moveFrom[1] + squareSize / 2]
+    toLoc   = [squareSize * moveTo[0]   + squareSize / 2, squareSize * moveTo[1] + squareSize / 2]
+
+    circleFrom = sorted(circleArray, key = lambda c: (c.center[0] - fromLoc[0]) ** 2 + (c.center[1] - fromLoc[1]) ** 2)[0]
+    circleTo   = sorted(circleArray, key = lambda c: (c.center[0] -   moveTo[0]) ** 2 + (c.center[1] -   moveTo[1]) ** 2)[0]
+    if capture is not None:
+        capLoc = [squareSize * capture[0] + squareSize / 2, squareSize * capture[1] + squareSize / 2]
+        circleCapture = sorted(circleArray, key = lambda c: (c.center[0] - capture[0]) ** 2 + (c.center[1] - capture[1]) ** 2)[0]
+        frameToDraw = objTracker.drawCircles([circleCapture], frameToDraw=frameToDraw, color=(0, 0, 255))
+
+
+    frameToDraw = objTracker.drawCircles([circleFrom, circleTo], frameToDraw=frameToDraw, color=(255, 255, 255))
+
+
+    cv2.arrowedLine(frameToDraw, tuple(fromLoc), tuple(toLoc), (255, 255, 255), thickness=3)
+    return frameToDraw
 
 #   #PICKUP AND PLACING FUNCTIONS
-def pickUpPiece(column, row, cornerInfo, groundHeightFormula, attempts=0, **kwargs):
-    global camDistFromGrabber
-    global boardLength
-    global boardSize
-
+def pickUpPiece(coords, cornerInfo, ppXYInfo, groundHeightFormula, jumpStretchFormula, **kwargs):
     global averageArea   #TODO: delete later, for testing only
 
-    #SET UP VARIABLES
-        #Coordinate math functions
-
-    attempts            = attempts  #How many times the program has attempted to pick up this piece
-    maxAttempts         = 3
-
-    #column  = 3
-    #row     = 4
-
-    #DETERMINE MATHEMATICALLY THE "STRETCH" DIST BETWEEN THE CAMERA AND THE SUCKER
-        #GET [x,y] FORMAT COORDINATES FOR EACH CORNER OF THE CHECKERBOARD
-    corners = cornerInfo['corners']
-    bR = [float(corners[0]["x"]), float(corners[0]["y"])]
-    bL = [float(corners[1]["x"]), float(corners[1]["y"])]
-    tR = [float(corners[3]["x"]), float(corners[3]["y"])]
-    tL = [float(corners[2]["x"]), float(corners[2]["y"])]
-        #GET LENGTH OF EACH SIDE
-    dist   = lambda  p1, p2: ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** .5
-    avgLen            = (dist(bR, bL) + dist(tR, tL) + dist(bR, tR) + dist(bL, tL)) / 4
-    stretchPerInch    = avgLen / boardLength
-    stretchFromSucker = stretchPerInch * camDistFromGrabber
-
-
-    #CHECK IF THIS FUNCTION HAS BEEN RUN RECURSIVELY MORE THAN THE SET LIMIT, AND QUIT IF IT HAS
-    if attempts >= maxAttempts:
-        print "pickUpPiece(", locals().get("args"), "): Too many recursive attempts. Raising error"
-        raise Exception("PieceNotGrabbed")
-
-
-
+    precision = kwargs.get('precision', 9)
     #GET ROBOT INTO POSITION AND CHECK IF THE OBJECT IS STILL THERE. QUIT IF IT IS NOT.
-    Robot.moveTo(stretchDistFromBase=cornerInfo['distFromBase'], relative=False, **getSquarePosition(column, row, corners))
+    #Robot.moveTo(stretchDistFromBase=location['distFromBase'], relative=False, **getSquarePosition(location[0], location[1], corners))
+    location                        = getSquarePosition(coords[0], coords[1], cornerInfo['corners'])
+    location['height']              = cornerInfo['height']
+    location['stretchDistFromBase'] = cornerInfo['distFromBase']
+
+    Robot.moveTo(relative=False, **location)
     sleep(.2)
 
 
 
-    #BEGIN FOCUSING PROCESS UNTIL ROBOT IS AT finalHeight HEIGHT AND COMPLETELY FOCUSED ON OBJECT
-    stretchBefore  = Robot.pos["stretch"]
-    rotationBefore = Robot.pos['rotation']
-    avgRadius      = 0
-    settings = [{'height': cornerInfo['height'] + 15, 'jump': 0, 'focusTolerance': 2, 'wait':  0, 'avgSampleSize':  50, 'targetSamples':   8},
-                {'height':      cornerInfo['height'], 'jump': 0, 'focusTolerance': 6, 'wait':  0, 'avgSampleSize':  70, 'targetSamples':   1},
-                {'height': cornerInfo['height'] - 15, 'jump': 0, 'focusTolerance': 2, 'wait':  0, 'avgSampleSize': 100, 'targetSamples':  15}]
-                #{'height':                    0, 'jump': 1, 'focusTolerance': 6, 'wait':  0, 'avgSampleSize':  30, 'targetSamples':  1},
-                #{'height':                  -30, 'jump': 0, 'focusTolerance': 5, 'wait':  0, 'avgSampleSize': 100, 'targetSamples': 10}]
+    #SETUP UP VARIABLES FOR THE NEXT SECTION
+                     #Each dictionary in this array is a 'setting' for the robot to use when focusing in on the piece. It will
+                     #focus on the piece and move down each time for each setting. Meanwhile, it will record the 'focused' pos
+                     #for each setting inside of focusPos (it records height, stretch, and rotation.
+    settings  = [{'height': location['height'] + 15, 'focusTolerance':     precision,  'avgSampleSize':  25, 'targetSamples':  4},
+                 #{'height':      location['height'], 'focusTolerance': 6,  'avgSampleSize':  50, 'targetSamples':   1},
+                 {'height': location['height'] - 15, 'focusTolerance': precision + 3,  'avgSampleSize': 25,  'targetSamples':  4}]
+    focusPos  = []
+    avgRadius = (screenDimensions[0] / 10)  #Default value to start searching for the piece
 
 
+    #IN THIS SECTION, THE ROBOT WILL FOCUS ON THE PIECE FOR EACH SETTING IN SETTINGS[], AND RECORD THE FOCUSED POSITION ON FOCUS POSTION.
+    #ON THE FINAL POSITION IT SHOULD BE PRETTY CLOSE TO THE OBJECT. IT WILL THEN CALCULATE THE CORRECT JUMP TO REACH THE OBJECT,
+    #AND PERFORM THE PICKUP MANUEVER.
     for index, s in enumerate(settings):
         Robot.moveTo(height=s['height'], relative=False)
-        sleep(.25)
+        sleep(1)
 
+        #Get the average radius of the piece, which will be used to focusTarget on the piece accurately
         totalRadius = 0
         i = 0
-        averageRadius = (screenDimensions[0]/10)  #Default value to start searching for the piece
-        searchTolerance = 0.99  #It will search for the circle nearest to the center and find its average radius. This search tolerance will widen each time it doesn't find the target.
-        while i < s['avgSampleSize']:
-        #for i in range(s['avgSampleSize']):  #Get average radius for nearestCircle at this height (Not proud of the code here....)
+        searchTolerance = 0.7  #It will search for the circle nearest to the center and find its average radius. This search tolerance will widen each time it doesn't find the target.
+        print 'pickUpPiece():\t Getting average radius of circle target. Starting searchTolerance: ', searchTolerance, ' Starting radius: ', avgRadius
 
-            #GET THE AVERAGE RADIUS FOR THE CHECKER PIECE AT THIS HEIGHT-
-            #THIS WILL BE USED TO BETTER RECOGNIZE IT DURING THE FOCUSONTARGET() FUNCTION
+        while i < s['avgSampleSize']:
 
             getAllPieces = lambda: objTracker.getCircles(minRadius=avgRadius * searchTolerance, maxRadius=avgRadius / searchTolerance)
 
             try:
-                newRadius = objTracker.bruteGetFrame(lambda: [objTracker.sortShapesByDistance(getAllPieces(), returnNearest=True).radius], maxAttempts=10)[0]
+                while objTracker.getBlur() < blurThreshold:
+                    print "pickUpPiece():\t Blur of ", objTracker.getBlur(), "is too blurry, Shaking camera. "
+                    Robot.moveTo(rotation=2,  height=30, stretch=-15)
+                    sleep(.1)
+                    Robot.moveTo(rotation=-2, height=-30, stretch=15)
+                    sleep(3)
+                newRadius = objTracker.bruteGetFrame(lambda: [objTracker.sortShapesByDistance(getAllPieces(), returnNearest=True).radius], maxAttempts=5)[0]
                 totalRadius +=  newRadius
                 #print 'avgRadius right now', newRadius
 
             except NameError as e:
                 #Loosen the searchTolerance and try again
-                print 'pickUpPiece(): ERROR: ', e, ' Could not find target when getting avgRadius. Curr. iteration: ', i, ' Curr. avgRadius: ', totalRadius / (i + 1), 'Curr. searchTolerance: ', searchTolerance
+                print 'pickUpPiece():\t Could not find circle. Broadening search.. Curr. iteration: ', i, ' Curr. avgRadius: ', totalRadius / (i + 1), 'Curr. searchTolerance: ', searchTolerance
                 i -= 1
                 searchTolerance *= .9
 
-            #WAIT FOR NEW FRAME
+            #WAIT FOR NEW FRAME FOR THE NEXT SAMPLE
             lastFrame = vid.frameCount
             while lastFrame == vid.frameCount: pass
-
             i += 1
 
         avgRadius = totalRadius / s['avgSampleSize']
         averageArea = avgRadius
-        print "pickUpPiece(): Updated avgRadius: ", avgRadius
+        print "pickUpPiece():\t Updated avgRadius: ", avgRadius
 
 
-
-        #SET UP THE CHECKER-PIECE FINDING ALGORITHMS FOR FOCUSONTARGET()
+        #Set up the function for finding the checkerpiece for the focusOnTarget function
         getAllPiecesAccurate = lambda: objTracker.getCircles(minRadius=avgRadius * .8, maxRadius=avgRadius / .8)
         getNearestPiece      = lambda: objTracker.bruteGetFrame(lambda: objTracker.sortShapesByDistance(getAllPiecesAccurate(), returnNearest=True).center, maxAttempts=100)
+        #Focus on the target for this setting, then record the final position on focusPos
+        focusOnTarget(getNearestPiece, tolerance=s['focusTolerance'], targetSamples = s['targetSamples'])#, ppX = ppXYInfo['ppX'] * 2.5)
+        focusPos.append(Robot.getPosArgsCopy(onlyRecord=['height', 'rotation', 'stretch']))
 
-        focusOnTarget(getNearestPiece, tolerance=s['focusTolerance'], jump=s['jump'], wait=s['wait'], targetSamples = s['targetSamples'])
+
 
 
     lastSeenPos       = Robot.getPosArgsCopy()
     pickupHeight      = groundHeightFormula(Robot.pos['stretch']) + 2  #The plus 2 makes it so the sucker isn't firmly pressed against the ground/piece, but more lightly so.
 
     print "pickupHeight = ", pickupHeight
-    stretchAfter      = Robot.pos["stretch"]
-    rotationAfter     = Robot.pos['rotation']
-    stretchPerHeight  = (stretchBefore  - stretchAfter)  / (settings[0]['height'] - settings[-1]['height'])
-    rotationPerHeight = (rotationBefore - rotationAfter) / (settings[0]['height'] - settings[-1]['height'])
+    stretchPerHeight  = (focusPos[0]['stretch']   - focusPos[-1]['stretch'])  / (focusPos[0]['height']  - focusPos[-1]['height'])
+    rotationPerHeight = (focusPos[0]['rotation']  - focusPos[-1]['rotation']) / (focusPos[0]['height']  - focusPos[-1]['height'])
     stretchAdjust     = (Robot.pos["height"] - pickupHeight) * stretchPerHeight
     rotationAdjust    = (Robot.pos["height"] - pickupHeight) * rotationPerHeight
 
     #NOW THAT CAMERA IS CENTERED ON OBJECT, JUMP OVER IT AND MOVE DOWN
-    print "stretchBefore: ", stretchBefore, "stretchAfter: ", stretchAfter, "stretchPerHeight: ", stretchPerHeight
-    print "rhBefore: ", rotationBefore, "rAfter: ", rotationAfter, "rPerHeight: ", rotationPerHeight
+    print "stretchBefore: ",  focusPos[0]['stretch'], "\tstretchAfter: ", focusPos[-1]['stretch'],  "\tstretchPerHeight: ", stretchPerHeight
+    print "     rhBefore: ", focusPos[0]['rotation'], "\t      rAfter: ", focusPos[-1]['rotation'], "\t      rPerHeight: ", rotationPerHeight
 
-    sleep(.1)
 
-    print "Moving an adjuststretch of: ", stretchAdjust, "Moving an adjustRotate of: ", rotationAdjust
-    #Robot.moveTo(stretch=stretchFromSucker + stretchAdjust, rotationAdjust=rotationAdjust)
-    Robot.moveTo(stretch=stretchFromSucker, rotation=rotationAdjust * 2)
+    stretchFromSucker = jumpStretchFormula(pickupHeight)
+    print "Moving an adjuststretch of: ", stretchAdjust, "Moving an adjustRotate of: ", rotationAdjust, "Moving a stretchFromSucker of: ", stretchFromSucker
+    Robot.moveTo(stretch=stretchFromSucker)
 
-    print "moving height"
     sleep(.1)
     Robot.moveTo(height=pickupHeight, relative=False)
 
 
     #PICK UP THE PIECE
     pickupLocation = Robot.getPosArgsCopy(onlyRecord=['rotation', 'stretch'])
+    #x = raw_input('Press Enter to continue')
     Robot.setGrabber(True)
     sleep(.5)
 
 
-    #CHECK TO SEE IF THE PIECE HAS BEEN PICKED UP
+    #CHECK TO SEE IF THE PIECE HAS BEEN PICKED UP BY SEEING IF THERE ARE ANY CIRCLES WHERE THE PIECE USED TO BE
     Robot.moveTo(height=20)
     sleep(.1)
     Robot.moveTo(relative=False, **lastSeenPos)
-    sleep(1)
+    sleep(.1)
 
     getAllPiecesAccurate = lambda: objTracker.getCircles(minRadius=avgRadius * .8, maxRadius=avgRadius / .8)
     getNearestPiece      = lambda: objTracker.bruteGetFrame(lambda: objTracker.sortShapesByDistance(getAllPiecesAccurate(), returnNearest=True).center, maxAttempts=10)
     try:  #See if there is a piece there
         getNearestPiece()
-        print "pickUpPiece(): Failed to pick up piece"
+        print "pickUpPiece():\t ERROR: Failed to pick up piece"
     except NameError as e:  #If no piece is found, an error is thrown- meaning that the robot has successfully found the piece
-        print "pickUpPiece(): Successfully picked up piece"
+        print "pickUpPiece():\t Successfully picked up piece"
 
-    return stretchFromSucker
+def placePiece(coords, cornerInfo, groundHeightFormula, jumpStretchFormula):
 
-def placePiece(columnFrom, rowFrom, columnTo, rowTo, cornerInfo, groundHeightFormula, stretchToSucker):
-    # print "From: ", columnFrom, rowFrom, " To:", columnTo, rowTo, " pickupLocation: ", pickupLocationPolar
-    #
-    # corners = cornerInfo['corners']
-    #
-    # print 'Corners: ', corners
-    # pickupLocXY = {'x': 0, 'y': 0}
-    # pickupLocXY['x'], pickupLocXY['y'] = Robot.convertToCartesian(pickupLocationPolar['rotation'], pickupLocationPolar['stretch'], cornerInfo['distFromBase'])
-    #
-    # print "newPickupLocation: ", pickupLocXY
-    #
-    # posFromCalc = getSquarePosition(columnFrom, rowFrom, corners)
-    # posToCalc   = getSquarePosition(columnTo,     rowTo, corners)
-    #
-    # print 'posFrom calculated: ', posFromCalc
-    # print 'posTo calculated: ',   posToCalc
-    #
-    # toFromDiff = {'x': posToCalc['x'] - posFromCalc['x'], 'y': posToCalc['y'] - posFromCalc['y']}
-    #
-    # print 'toFromDiff: ', toFromDiff
-    #
-    # adjustedMove = {'x': toFromDiff['x'] + pickupLocXY['x'], 'y': toFromDiff['y'] + pickupLocXY['y']}
-    # print 'adjustedMove: ', adjustedMove
+    location                        = getSquarePosition(coords[0], coords[1], cornerInfo['corners'])
+    location['height']              = cornerInfo['height']
+    location['stretchDistFromBase'] = cornerInfo['distFromBase']
 
-    print " To:", columnTo, rowTo, " stretchToSucker: ", stretchToSucker
-
-    corners = cornerInfo['corners']
-
-    print 'Corners: ', corners
-
-    posToCalc   = getSquarePosition(columnTo,     rowTo, corners)
-
-    print 'posTo calculated: ',   posToCalc
-
-
+    dropRotation, dropStretch = Robot.convertToPolar(location['x'], location['y'], location['stretchDistFromBase'])
 
     #DROP PIECE IN CORRECT LOCATION
+    dropoffHeight = groundHeightFormula(dropStretch) + 15
+    jumpStretch   = jumpStretchFormula(dropoffHeight)
+
+    print 'dropoffHeight: ', dropoffHeight, ' jumpstretch: ', jumpStretch
     Robot.moveTo(height=0, relative=False)
     sleep(.1)
-    Robot.moveTo(stretchDistFromBase=cornerInfo['distFromBase'], relative=False, **posToCalc)
-    Robot.moveTo(stretch=stretchToSucker)
+    Robot.moveTo(relative=False, **location)
+    Robot.moveTo(stretch=jumpStretch)
     sleep(.5)
 
-    dropOffHeight = groundHeightFormula(Robot.pos['stretch']) + 2
-    print "dropoff height: ", dropOffHeight
-
-    Robot.moveTo(height = (dropOffHeight * 3) / 5)
+    Robot.moveTo(height = (dropoffHeight * 3) / 5)
     sleep(.2)
-    Robot.moveTo(height = (dropOffHeight * 1) / 5)
+    Robot.moveTo(height = (dropoffHeight * 1) / 5)
     sleep(.2)
-    Robot.moveTo(height = (dropOffHeight * 1) / 5)
+    Robot.moveTo(height = (dropoffHeight * 1) / 5)
     sleep(.2)
     Robot.setGrabber(0)
     Robot.moveTo(height = 5)
@@ -924,120 +971,6 @@ def placePiece(columnFrom, rowFrom, columnTo, rowTo, cornerInfo, groundHeightFor
     sleep(.1)
     Robot.moveTo(height = 15)
     sleep(.1)
-    Robot.setGrabber(False)
-
-def getPlacementLocation(column, row, corners, groundHeightFormula):
-    """
-    This function finds and focuses on an empty square at (column, row) that the robot will be
-    moving the piece to later on. It is usefull because that way the robot can later pick up the
-    piece and immediately move to the correct placement location, minimizing the time that the
-    robots pump is turned on.
-
-    :param column:
-    :param row:
-    :param cornersLow:
-    :return:
-    """
-
-    global camDistFromGrabber
-    global boardLength
-    global boardSize
-    global averageArea   #TODO: delete later, for testing only
-
-    #SET UP VARIABLES
-        #Coordinate math functions
-    dist   = lambda  p1, p2: ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** .5
-    ptDist = lambda d, a, b: [a[0] + ((b[0] - a[0]) / dist(a, b)) * d, a[1] + ((b[1] - a[1]) / dist(a, b)) * d]
-
-
-    #DETERMINE MATHEMATICALLY THE "STRETCH" DIST BETWEEN THE CAMERA AND THE SUCKER
-        #GET [x,y] FORMAT COORDINATES FOR EACH CORNER OF THE CHECKERBOARD
-    bR = [float(corners[0]["x"]), float(corners[0]["y"])]
-    bL = [float(corners[1]["x"]), float(corners[1]["y"])]
-    tR = [float(corners[3]["x"]), float(corners[3]["y"])]
-    tL = [float(corners[2]["x"]), float(corners[2]["y"])]
-        #GET LENGTH OF EACH SIDE
-    avgLen            = (dist(bR, bL) + dist(tR, tL) + dist(bR, tR) + dist(bL, tL)) / 4
-    stretchPerInch    = avgLen / boardLength
-    stretchFromSucker = stretchPerInch * camDistFromGrabber
-
-    print    "stretchPerInch: ", stretchPerInch
-    print "stretchFromSucker: ", stretchFromSucker
-
-
-    #GET ROBOT INTO POSITION OVER SQUARE, HIGH UP
-    Robot.moveTo(relative=False, **getSquarePosition(column, row, corners))
-    sleep(.2)
-
-
-
-    #BEGIN FOCUSING PROCESS UNTIL ROBOT IS AT finalHeight HEIGHT AND COMPLETELY FOCUSED ON OBJECT
-    stretchBefore  = Robot.pos["stretch"]
-    rotationBefore = Robot.pos['rotation']
-    #avgArea        = 0
-    settings = [#{'height': 150, 'jump': 4, 'focusTolerance': 8, 'wait': 0,  'avgSampleSize':  100, 'targetSamples': 1, 'maxDist':400},
-                {'height':  0, 'jump': 3, 'focusTolerance': 15, 'wait': 0,  'avgSampleSize':  100, 'targetSamples': 1, 'maxDist': 300},
-                #{'height':  -15, 'jump': 0, 'focusTolerance': 10, 'wait': 0,  'avgSampleSize':  100, 'targetSamples': 1, 'maxDist':350},
-                {'height': -30, 'jump': 0, 'focusTolerance': 8, 'wait': .1, 'avgSampleSize':  100, 'targetSamples': 1, 'maxDist': 300}]
-
-    for index, s in enumerate(settings):
-        Robot.moveTo(height=s['height'], relative=False)
-        sleep(.25)
-
-        #GET THE AVERAGE RADIUS FOR THE CHECKER PIECE AT THIS HEIGHT-
-        #THIS WILL BE USED TO BETTER RECOGNIZE IT DURING THE FOCUSONTARGET() FUNCTION
-        # if avgArea == 0:
-        #     #getAllPiecesAccurate = lambda: objTracker.getShapes(4, minArea=averageArea * .1, maxArea=averageArea * (1 / .1), bilateralConstant=1)
-        #       #  getNearestPiece      = lambda: [objTracker.sortShapesByDistance(getAllPiecesAccurate(), returnNearest=True, deleteSimilar=False)]
-        #
-        #     getAllPieces = lambda: objTracker.getShapes(4, minArea=900 * .5, maxArea= 900 * (1 / .5))
-        # else:
-        #     getAllPieces = lambda: objTracker.getShapes(4, minArea=avgArea * .7, maxArea=avgArea * (1 / .7))
-
-        #GET AVERAGE AREA FOR SQUARE IN THE SPOT RIGHT NOW, TO FINE TUNE TRACKING
-        # totalArea = 0
-        # for i in range(s['avgSampleSize']):
-        #    totalArea += objTracker.bruteGetFrame(lambda: [objTracker.sortShapesByDistance(getAllPieces(), returnNearest=True).area], maxAttempts=100)[0]
-        #    print 'avgArea right now', totalArea / (i + 1)
-        # avgArea   = totalArea / s['avgSampleSize']
-        # averageArea = avgArea  #TODO: DELETE LATER, USES GLOBAL VARIABLES TO COMMUNICATE WITH MAIN THREAD
-
-        #print "getPlacementLocation(): Updated avgArea: ", avgArea
-
-        #SET UP THE CHECKER-PIECE FINDING ALGORITHMS FOR FOCUSONTARGET()
-        getAllSquares        = lambda: objTracker.getShapes(4)  #, minArea=avgArea * .8, maxArea=avgArea * (1 / .8))
-        getNearestPiece      = lambda: objTracker.bruteGetFrame(lambda: objTracker.sortShapesByDistance(getAllSquares(), returnNearest=True, maxDist=300).center, maxAttempts=100)
-
-        focusOnTarget(getNearestPiece, tolerance=s['focusTolerance'], jump=s['jump'], wait=s['wait'], targetSamples = s['targetSamples'])
-
-
-    lastSeenPos       = Robot.getPosArgsCopy()
-    pickupHeight      = groundHeightFormula(Robot.pos['stretch'])
-    print "pickupHeight = ", pickupHeight
-    stretchAfter      = Robot.pos["stretch"]
-    rotationAfter     = Robot.pos['rotation']
-    stretchPerHeight  = (stretchAfter  - stretchBefore)  / (settings[0]['height'] + settings[-1]['height'])
-    rotationPerHeight = (rotationAfter - rotationBefore) / (settings[0]['height'] + settings[-1]['height'])
-    stretchAdjust     = -(Robot.pos["height"] - pickupHeight) * stretchPerHeight
-    rotationAdjust    = (Robot.pos["height"] - pickupHeight) * rotationPerHeight
-
-    #NOW THAT CAMERA IS CENTERED ON OBJECT, JUMP OVER IT AND MOVE DOWN
-    print "stretchBefore: ", stretchBefore, "stretchAfter: ", stretchAfter, "stretchPerHeight: ", stretchPerHeight
-    print "rhBefore: ", rotationBefore, "rAfter: ", rotationAfter, "rPerHeight: ", rotationPerHeight
-    print "Moving an adjuststretch of: ", stretchAdjust, "Moving an adjustRotate of: ", rotationAdjust
-    sleep(.1)
-    placementLocation = Robot.getPosArgsCopy()
-    placementLocation['stretch']  += stretchFromSucker + stretchAdjust
-    placementLocation['rotation'] += rotationAdjust
-    placementLocation['height']    = pickupHeight + 30
-
-
-    print "getPlacementLocation(): Location: ", placementLocation
-    Robot.moveTo(relative=False, **placementLocation)
-    Robot.moveTo(height=-25)
-    sleep(5)
-
-    return placementLocation
 
 
 #   #CALIBRATION FUNCTIONS
@@ -1072,16 +1005,16 @@ def getBoardCorners():
 
 
     #This defines the settings the robot should use when targeting the markers at different heights.
-    setting = [{'height': 100, 'jump': 2, 'tolerance': 6, 'wait': .1},
-               {'height':  40, 'jump': 1, 'tolerance': 7, 'wait': 0},
-               {'height':   8, 'jump': 0, 'tolerance': 6, 'wait': 0},
-               {'height':  -6, 'jump': 0, 'tolerance': 5, 'wait': 0},
-               {'height': -15, 'jump': 0, 'tolerance': 4, 'wait': 0}]
+    setting = [{'height': 100, 'tolerance': 7},
+               {'height':  37, 'tolerance': 6},
+               {'height':  5, 'tolerance':  5},
+               {'height':  -6, 'tolerance': 5},
+               {'height': -15, 'tolerance': 4}]
 
     tolerance       = 0.3                       #Find 4 shapes (a marker) that are [tolerance]% different
-    cornerPositions = [{'corners': [], 'height': 0, 'distFromBase':0} for i in range(0, len(setting))]            #Corner positions at each height. There are 4 heights, thus 4 sets of 4 corners.
+    cornerPositions = [{'corners': [], 'height': 0, 'distFromBase':0} for i in range(0, len(setting))]  #Corner positions at each height. There are 4 heights, thus 4 sets of 4 corners.
     cornerPosPolar  = [{'corners': [], 'height': 0, 'distFromBase':0} for i in range(0, len(setting))]
-    markerArea      = {}                        #The area of the marker square at different heights
+    ppXY            = [{'height': 0, 'ppX': 0, 'ppY': 0, 'xSamples': 0, 'ySamples': 0}              for i in range(0, len(setting))]  #Pixels per 'X' movement. This is a parameter for focusOnTarget that increases speed.
 
 
 
@@ -1090,92 +1023,167 @@ def getBoardCorners():
         Robot.moveTo(relative = False, **searchPositions[index])
         sleep(.25)
 
-        #cornerPositions.append({'corners': [], 'height': 0})
-        #cornerPosPolar.append( {'corners': [], 'height': 0})
 
         for i, s in enumerate(setting):  #For each height find the marker, focus on it, and record the position of the corners
-            Robot.moveTo(height=s['height'], relative=False)
-            sleep(1)
+            Robot.moveTo(height=s['height'], relative=False, waitForRobot=True)
 
-            markerArea[s['height']] = getMarkerPerimeter(tolerance)
+            #WAIT FOR CAMERA TO FOCUS
+            while objTracker.getBlur() < blurThreshold:
+                    Robot.moveTo(rotation=2,  height=10, stretch=-16)
+                    Robot.moveTo(rotation=-2, height=-10, stretch=16)
+                    sleep(3)
 
-            markerCoordinate = lambda: getMarker(markerArea[s['height']], tolerance)
-            focusOnTarget(markerCoordinate, tolerance=s['tolerance'], jump=s['jump'], wait=s['wait'])
+            #Find the marker and set up a function for finding it
+            markerArea = getMarkerPerimeter(tolerance)
+            markerCoordinate = lambda: getMarker(markerArea, tolerance)
 
+            #For calculating the ppX and ppY, you have to record the position of the robot and the
+            #position of the target on camera before and after the manuver
+            posBefore    = Robot.getPosArgsCopy(onlyRecord=['rotation', 'stretch'])
+            coordsBefore = markerCoordinate()
+
+            #Actually focus on the marker
+            focusOnTarget(markerCoordinate, tolerance=s['tolerance'])
+
+
+            #DO CALCULATIONS FOR PPX AND PPY
+            posAfter = Robot.getPosArgsCopy(onlyRecord=['rotation', 'stretch'])
+            coordsAfter = markerCoordinate()
+            rotDifference     = (posAfter['rotation'] - posBefore['rotation'])
+            strDifference     = (posAfter['stretch']  - posBefore['stretch'])
+            xDifference       = float((coordsAfter[1] - coordsBefore[1]))
+            yDifference       = float((coordsAfter[0] - coordsBefore[0]))
+            #print 'rotD', rotDifference, 'strD', strDifference, 'xD', xDifference, 'yD', yDifference
+            if not strDifference == 0 and not xDifference == 0: #This ensures that only good samples are considered
+                ppXY[i]['ppX'] += (xDifference / strDifference)
+                ppXY[i]['xSamples'] += 1
+            if not rotDifference == 0 and not yDifference == 0:
+                ppXY[i]['ppY'] += (yDifference / rotDifference)
+                ppXY[i]['ySamples'] += 1
+
+            ppXY[i]['height'] = s['height']
+            #print 'ppXY so far: ', ppXY
+
+
+            #RECORD THE CORNER POSITION
             cornerPosPolar[i]['height'] = s['height']
             cornerPosPolar[i]['corners'].append(Robot.getPosArgsCopy(onlyRecord=["rotation", "stretch"]))
 
 
 
-    #CONVERT CORNERPOSPOLAR TO CARTESIAN BY FILLING OUT CORNERPOSITIONS
+    #CONVERT CORNERPOSPOLAR TO CARTESIAN BY FILLING OUT CORNERPOSITIONS AND AVERAGE PPXY
     for index, height in enumerate(cornerPosPolar):
         cornerPositions[index]['height']       = cornerPosPolar[index]['height']
         cornerPositions[index]['distFromBase'] = getStretchFromBase(cornerPosPolar[index]['corners'])
 
+        #AVERAGE THE PPX AND PPY VALUES
+        if not ppXY[index]['xSamples'] == 0:
+            ppXY[index]['ppX'] /= ppXY[index]['xSamples']
+
+            #If there wasn't enough samples, make it -1 so focusOnTarget will ignore the value
+            if ppXY[index]['xSamples'] < 2:
+                ppXY[index]['ppX'] = -1
+
+        if not ppXY[index]['ySamples'] == 0:
+            ppXY[index]['ppY'] /= ppXY[index]['ySamples']
+
+            if ppXY[index]['ySamples'] < 2:
+                ppXY[index]['ppY'] = -1
+
+        #CONVERT ALL THE CORNERPOSPOLAR TO CARTESIAN
         for i, corner in enumerate(cornerPosPolar[index]['corners']):
             cartesian = Robot.convertToCartesian(corner['rotation'], corner['stretch'], cornerPositions[index]['distFromBase'])
             cartesianDictionary = {'x': cartesian[0], 'y': cartesian[1]}
             cornerPositions[index]['corners'].append(cartesianDictionary)
 
 
-    print "getBoardCorners(): Polar Corners: ", cornerPosPolar
-    print "getBoardCorners(): Corners: ", cornerPositions
+    print "getBoardCorners():\t ppXY: ", ppXY
+    print "getBoardCorners():\t Polar Corners: ", cornerPosPolar
+    print "getBoardCorners():\t Corners: ", cornerPositions
 
-    return cornerPositions
+    return ppXY, cornerPositions
 
-def getStretchFromBase(polarCorners):
+def getAvgColor(circleArray):
     """
-    The purpose of this function is difficult to explain, but I'll give it a try. A problem I ran into with cartesian coordinates was that the uArm's 0 stretch point
-    was not exactly 0 distance from the pivot of the robot. To find the exact distance in "stretch" units, I modified the Robot.convertCartesian functions to use a
-    distFromBase and add that on. However, this distance from the base must be found- and even worse, its different at different heights!!!
+    The pieces on the board are determined to be one side or another by their color. Since color can be be read differently
+    in different lightings, this function can be used to calibrate at the start of the game.
 
-    How to fix this? You use the checker board corners. We know the corners at various heights, in 'stretch, rotation' form. We know that the checkerboard is
-    completely square, thus the cartesian coordinates must reflect this fact. By testing many values (0 to 250) of possible distFromBase and comparing how
-    'square' the cartesian coordinates are, you can find the optimal distFromBase.
+    What it does is it takes the average color of each circle and returns it. This is then used to find the "midpoint"
+    for determining if one piece is from player A or player B. It must only be run when there is an equal number
+    of each type of piece on the board, or it will skew the results.
+    """
+    avgColor = [0, 0, 0]
+    for circle in circleArray:
+        hsv = objTracker.bgr2hsv(circle.color)  #Convert form bgr to hsv
+        avgColor = [avgColor[0] + hsv[0],
+                    avgColor[1] + hsv[1],
+                    avgColor[2] + hsv[2]]
+    avgColor = [avgColor[0] / len(circleArray), avgColor[1] / len(circleArray), avgColor[2] / len(circleArray)]
+    print "getAvgColor():\t ", avgColor
+    return avgColor
 
-    This function returns this optimal distFromBase for any set of corners at a certain height.
-
-    polarCorners should be in this format:
-        polarCorners = [{'stretch':  0, 'rotation': 12}, {'stretch':  6, 'rotation': -39}, {'stretch': 157, 'rotation': -27}, {'stretch': 157, 'rotation': 1}]
-
-        The values will be different, of course.
+def getMotionAndBlur(**kwargs):
+    """
+    Get a sample of frames and analyze them for the average Motion and the average blur in the image
+    :return:
     """
 
-    #polarCorners = [{'stretch':  0, 'rotation': 12}, {'stretch':  6, 'rotation': -39}, {'stretch': 157, 'rotation': -27}, {'stretch': 157, 'rotation': 1}]
+    global blurThreshold
+    sample    = kwargs.get('sample', 35)
+    avgMotion = 0
+    avgBlur   = 0
 
-                    #[{'stretch':  0, 'rotation': 12}, {'stretch':  6, 'rotation': -39}, {'stretch': 157, 'rotation': -27}, {'stretch': 157, 'rotation': 1}]
+    print "getMotionAndBlur():\tGetting average motion and average blur. ", sample, "samples."
 
-    dist   = lambda p1, p2: ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** .5
 
-    #GET [rotation,stretch] FORMAT COORDINATES FOR EACH CORNER OF THE CHECKERBOARD
-    bR = [float(polarCorners[0]["rotation"]), float(polarCorners[0]["stretch"])]
-    bL = [float(polarCorners[1]["rotation"]), float(polarCorners[1]["stretch"])]
-    tR = [float(polarCorners[3]["rotation"]), float(polarCorners[3]["stretch"])]
-    tL = [float(polarCorners[2]["rotation"]), float(polarCorners[2]["stretch"])]
+    #MOVE TO POSITION
+    Robot.moveTo(relative=False, **Robot.home)
+    Robot.moveTo(height = 100, relative=False)
+    sleep(2)
 
-    bestDist = 0      #Best value of testDist so far
-    bestDev  = 10000  #Lowest standard deviation so far
+    #MAKE SURE THE CAMERA IS FOCUSED. IF IT IS NOT, SHAKE IT A BIT AND WAIT
+    while objTracker.getBlur() < 120:
+        print "getMotionAndBlur():\t Frame too blurry, Shaking camera..."
+        Robot.moveTo(height=-35, rotation=2, stretch=-30)
+        Robot.moveTo(height=35, rotation=-2, stretch=30)
+        sleep(2.5)
 
-    for testDist in range(0, 250):  #Try each stretch value from 0 to 200 to see which one will make each side equal to eachother in polar coordinates
 
-        bRCart = list(Robot.convertToCartesian(bR[0], bR[1], testDist))
-        bLCart = list(Robot.convertToCartesian(bL[0], bL[1], testDist))
-        tRCart = list(Robot.convertToCartesian(tR[0], tR[1], testDist))
-        tLCart = list(Robot.convertToCartesian(tL[0], tL[1], testDist))
+    #READ -SAMPLE- FRAMES AND GET THE AVERAGE, THEN RETURN IT
+    for s in range(0, sample):
+        avgMotion += objTracker.getMovement()
+        avgBlur   += objTracker.getBlur()
+        #Get new frame
+        lastFrame = vid.frameCount
+        while lastFrame == vid.frameCount: pass
 
-        bRbL = dist(bRCart, bLCart)
-        bLtL = dist(bLCart, tLCart)
-        tLtR = dist(tLCart, tRCart)
-        tRbR = dist(tRCart, bRCart)
+    avgMotion /= sample
+    avgBlur   /= sample
 
-        stDev = np.std([bRbL, bLtL, tLtR, tRbR], axis=0)
+    print 'getMotionAndBlur():\tAvgMotion: ', avgMotion, 'AvgBlur: ', avgBlur
+    return avgMotion, avgBlur
 
-        if stDev < bestDev:
-            bestDev  = stDev
-            bestDist = testDist
-            #print "Distances of each side with testDist of ", testDist, " : ", bRbL, bLtL, tLtR, tRbR, "stDev: ", stDev
+def getHighestSTD(circleArray, boardFrame):
+    """
+    To determine whether a piece on the board is a king or a normal piece, I used the standard deviation of the colors of the piece.
+    This is because the kings are marked with a big black "K" on the center of the piece, which would make the standard
+    deviation of the colors go up radically.
 
-    return bestDist
+    By getting the average std at the start of a game of all the pieces (that are, obviously, not kings yet) I can use it as a
+    threshold to identify which pieces are indeed kings later in the game.
+    """
+    avgStd = 0
+    highest = 0
+    for i, circle in enumerate(circleArray):
+        std = getCircleSTD(circle, boardFrame)
+        if std > highest:
+            highest = std
+        avgStd +=  std
+
+    avgStd /= len(circleArray)
+    #print "highestSTD: ", highest
+    #print "avgSTD: ", avgStd
+    return highest
 
 def getGroundFormula(cornersLow):
     """
@@ -1219,31 +1227,140 @@ def getGroundFormula(cornersLow):
     Robot.moveTo(stretch = 0, relative=False)
     sleep(.5)
 
-    slope = (groundHeight['top']['height'] - groundHeight['bottom']['height']) / (groundHeight['top']['stretch'] - groundHeight['bottom']['stretch'])
+    slope = (groundHeight['top']['height']  - groundHeight['bottom']['height']) / \
+            (groundHeight['top']['stretch'] - groundHeight['bottom']['stretch'])
+
     intercept = groundHeight['bottom']['height'] - slope * groundHeight['bottom']['stretch']
 
-    print "getGroundFormula(): GroundHeight: ", groundHeight
-    print "getGroundFormula(): Final formula:  lambda stretch:", slope, " * stretch +", intercept
+    print "getGroundFormula():\t GroundHeight: ", groundHeight
+    print "getGroundFormula():\t Final formula:  lambda stretch:", slope, " * stretch +", intercept
     return lambda stretch: slope * stretch + intercept
 
-def getAverageColor(circleArray):
+def getStretchFromBase(polarCorners):
     """
-    The pieces on the board are determined to be one side or another by their color. Since color can be be read differently
-    in different lightings, this function can be used to calibrate at the start of the game.
+    The purpose of this function is difficult to explain, but I'll give it a try. A problem I ran into with cartesian coordinates was that the uArm's 0 stretch point
+    was not exactly 0 distance from the pivot of the robot. To find the exact distance in "stretch" units, I modified the Robot.convertCartesian functions to use a
+    distFromBase and add that on. However, this distance from the base must be found- and even worse, its different at different heights!!!
 
-    What it does is it takes the average color of each circle and returns it. This is then used to find the "midpoint"
-    for determining if one piece is from player A or player B. It must only be run when there is an equal number
-    of each type of piece on the board, or it will skew the results.
+    How to fix this? You use the checker board corners. We know the corners at various heights, in 'stretch, rotation' form. We know that the checkerboard is
+    completely square, thus the cartesian coordinates must reflect this fact. By testing many values (0 to 250) of possible distFromBase and comparing how
+    'square' the cartesian coordinates are, you can find the optimal distFromBase.
+
+    This function returns this optimal distFromBase for any set of corners at a certain height.
+
+    polarCorners should be in this format:
+        polarCorners = [{'stretch':  0, 'rotation': 12}, {'stretch':  6, 'rotation': -39}, {'stretch': 157, 'rotation': -27}, {'stretch': 157, 'rotation': 1}]
+
+        The values will be different, of course.
     """
-    avgColor = [0, 0, 0]
-    for circle in circleArray:
-        avgColor = [avgColor[0] + circle.color[0],
-                    avgColor[1] + circle.color[1],
-                    avgColor[2] +  circle.color[2]]
-    avgColor = [avgColor[0] / len(circleArray), avgColor[1] / len(circleArray), avgColor[2] / len(circleArray)]
-    print "getAverageColor(): ", avgColor
-    return avgColor
 
+    #polarCorners = [{'stretch':  0, 'rotation': 12}, {'stretch':  6, 'rotation': -39}, {'stretch': 157, 'rotation': -27}, {'stretch': 157, 'rotation': 1}]
+
+                    #[{'stretch':  0, 'rotation': 12}, {'stretch':  6, 'rotation': -39}, {'stretch': 157, 'rotation': -27}, {'stretch': 157, 'rotation': 1}]
+
+    #GET [rotation,stretch] FORMAT COORDINATES FOR EACH CORNER OF THE CHECKERBOARD
+    bR = [float(polarCorners[0]["rotation"]), float(polarCorners[0]["stretch"])]
+    bL = [float(polarCorners[1]["rotation"]), float(polarCorners[1]["stretch"])]
+    tR = [float(polarCorners[3]["rotation"]), float(polarCorners[3]["stretch"])]
+    tL = [float(polarCorners[2]["rotation"]), float(polarCorners[2]["stretch"])]
+
+    bestDist = 0      #Best value of testDist so far
+    bestDev  = 10000  #Lowest standard deviation so far
+    step     = .1     #How accurate you want to be
+
+    for testDist in range(0, int(250 / step)):  #Try each stretch value from 0 to 200 to see which one will make each side equal to eachother in polar coordinates
+
+        bRCart = list(Robot.convertToCartesian(bR[0], bR[1], testDist * step))
+        bLCart = list(Robot.convertToCartesian(bL[0], bL[1], testDist * step))
+        tRCart = list(Robot.convertToCartesian(tR[0], tR[1], testDist * step))
+        tLCart = list(Robot.convertToCartesian(tL[0], tL[1], testDist * step))
+
+        bRbL = dist(bRCart, bLCart)
+        bLtL = dist(bLCart, tLCart)
+        tLtR = dist(tLCart, tRCart)
+        tRbR = dist(tRCart, bRCart)
+
+        stDev = np.std([bRbL, bLtL, tLtR, tRbR], axis=0)
+
+        if stDev < bestDev:
+            bestDev  = stDev
+            bestDist = testDist * step
+            #print "Distances of each side with testDist of ", testDist, " : ", bRbL, bLtL, tLtR, tRbR, "stDev: ", stDev
+
+    return bestDist
+
+def getJumpFormula(allCornerInfo):
+    """
+    This function returns a function that when height is plugged into it, it will return how far the camera is from the
+    sucker of the robot in 'stretch' units.
+
+    TThis function can be used as such:
+
+        stretchJumpFormula = getJumpFormula(allCornerInfo)
+        jumpStretch = stretchJumpFormula(height)
+        Robot.move(stretch = jumpStretch)
+
+    The reason for this is that the amount the robot moves per unit of 'stretch' changes depending on the height of the robot.
+    This function will help with that.
+
+    :param allCornerInfo: The information given by getBoardCorners()
+    :return:
+    """
+
+    global camDistFromGrabber
+    global boardLength
+
+    firstLastCornerInfo = [allCornerInfo[0], allCornerInfo[-1]]
+    data = [[0, 0], [0, 0]]  #Will be filled out below, and has this information: [[height, stretch], [height2, stretch2]
+
+    for i, cornerSet in enumerate(firstLastCornerInfo):
+        #DETERMINE MATHEMATICALLY THE "STRETCH" DIST BETWEEN THE CAMERA AND THE SUCKER
+            #GET [x,y] FORMAT COORDINATES FOR EACH CORNER OF THE CHECKERBOARD
+        corners = cornerSet['corners']
+        bR = [float(corners[0]["x"]), float(corners[0]["y"])]
+        bL = [float(corners[1]["x"]), float(corners[1]["y"])]
+        tR = [float(corners[3]["x"]), float(corners[3]["y"])]
+        tL = [float(corners[2]["x"]), float(corners[2]["y"])]
+            #GET LENGTH OF EACH SIDE
+        avgLen            = (dist(bR, bL) + dist(tR, tL) + dist(bR, tR) + dist(bL, tL)) / 4
+        stretchPerInch    = avgLen / boardLength
+        stretchFromSucker = stretchPerInch * camDistFromGrabber
+        data[i] = [cornerSet['height'], stretchFromSucker]
+
+    slope     = (data[0][1] - data[1][1]) / (data[0][0] - data[1][0])
+    intercept = data[1][1] - slope * data[1][0]
+
+
+    print "getJumpFormula():\tFinal formula:  lambda height:", slope, " * height +", intercept
+
+    #return lambda height: height * slope + intercept
+    return lambda height: data[1][1]
+
+def getCircleSTD(circle, frame):
+    """
+    Used in getHighestStd and getBoardState, this will help assist in telling "King" Pieces apart from normal ones.
+
+    It returns the average standard deviation of the colors.
+    """
+    analyzeFrame = frame.copy()
+    fromX = int(circle.center[0] - circle.radius / 2)
+    toX   = int(circle.center[0] + circle.radius / 2)
+    fromY = int(circle.center[1] - circle.radius / 2)
+    toY   = int(circle.center[1] + circle.radius / 2)
+
+    circleSample = analyzeFrame[fromY:toY, fromX:toX]
+
+    #cnts, edged = objTracker.drawEdged(frameToAnalyze=circleSample, returnContours=True, contourMethod=cv2.RETR_LIST)
+    #cv2.imshow('main', circleSample)
+    #cv2.waitKey(1000)
+    std = cv2.meanStdDev(circleSample)[1]
+    avgStd = (std[0] + std[1] + std[2]) / 3  #Add the average std of all colors to the total average
+    #print 'avgStd: ', avgStd
+    return avgStd[0]
+
+
+
+#   #OTHER
 def getMarkerPerimeter(tolerance, **kwargs):
     """
     This function searches for 4 nearby squares that are of similar size.
@@ -1259,9 +1376,6 @@ def getMarkerPerimeter(tolerance, **kwargs):
 
     #print "CompareRange: ", compareRange
     #  TODO: Make sure that if it doesn't see 4 small blocks, that it doesn't confuse the big ones as the markers
-
-    global streamVideo
-    streamVideo = False
 
     avgPerimeter    = 0    #The average pixel area of the markers.
     similarShapeSets = []  #Records sets of 4 shapes that are similar in size, later to be whittled down more.
@@ -1280,12 +1394,10 @@ def getMarkerPerimeter(tolerance, **kwargs):
                     similarShapes.append(shapeToCompare)
 
 
-            if len(similarShapes) == 4:  #If more than 3 shapes have been found of similar size
+            if len(similarShapes) >= 4:  #If more than 4 shapes have been found of similar size
                 similarShapeSets.append(similarShapes)
 
             #print "similar: ",    similarShapes, "\n"
-
-        vid.windowFrame["Main"] = objTracker.drawShapes(shapeArray)
 
         if len(similarShapeSets) >= 1:
             similarShapeSets = sorted(similarShapeSets, key = lambda ss: sum(ss[i].perimeter for i in range(len(ss))) / len(ss))  #Sort by perimeter smallest to largest
@@ -1296,12 +1408,12 @@ def getMarkerPerimeter(tolerance, **kwargs):
             #print "similarShapeSets Sorted", similarShapeSets,
             #print "Difference between areas: ", sizeRange, "\n"
 
-            if len(similarShapeSets[0]) == 4 and (sizeRange > 1.5 or attempts > accuracyAttempts):  #if have passed accuracyAttempts, stop trying to compare the size
+            if len(similarShapeSets[0]) >= 4 and (sizeRange > 1.5 or attempts > accuracyAttempts):  #if have passed accuracyAttempts, stop trying to compare the size
                 avgPerimeter = sum([s.perimeter for i, s in enumerate(similarShapeSets[0])]) / len(similarShapeSets[0])
-                print "getMarkerPerimeter(): avgPerimeter of markers found to be: ", avgPerimeter
+                print "getMarkerPerimeter():\t avgPerimeter of markers found to be: ", avgPerimeter, " sizeRange: ", sizeRange
 
         if avgPerimeter == 0:  #If the 4 markers were never identified
-            #print "getMarkerPerimeter(): ERROR: Marker not found! Trying again..."
+            #print "getMarkerPerimeter():\t ERROR: Marker not found! Trying again..."
             #WAIT FOR NEW FRAME
             lastFrame = vid.frameCount
             while lastFrame == vid.frameCount:
@@ -1309,14 +1421,12 @@ def getMarkerPerimeter(tolerance, **kwargs):
 
         attempts += 1
 
-    streamVideo = True
-
     return avgPerimeter
 
 def getMarker(avgPerimeter, tolerance, **kwargs):
 
 
-    maxAttempts = kwargs.get("maxAttempts", 100)
+    maxAttempts = kwargs.get("maxAttempts", 1000)
 
     squaresInMarker = 4  #The camera must detect exactly 4 squares of the same size to consider it to be a marker
     attempts = 0
@@ -1353,13 +1463,14 @@ def getMarker(avgPerimeter, tolerance, **kwargs):
     markerCentroid = tuple(objTracker.getShapesCentroid(shapes))
 
     if len(markerCentroid) == 0:
-        print "getMarker:(): ERROR: No marker centroid detected"
+        print "getMarker:():\t ERROR: No marker centroid detected"
         raise NameError("ObjNotFound")
 
     return markerCentroid
 
-
-
+def dist(p1, p2):
+    #Return the distance between two points of format p1 = [x,y] and p2 = [x,y]
+    return ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** .5
 
 
 
@@ -1368,7 +1479,7 @@ def getMarker(avgPerimeter, tolerance, **kwargs):
 ########### MAIN THREADS ###########
 def runRobot():
     #SET UP VARIABLES AND RESET ROBOT POSITION
-    print 'runRobot(', locals().get('args'), '): Setting up Robot Thread....'
+    print 'runRobot():\t Setting up Robot Thread....'
     #global exitApp
     global keyPressed  #Is set in the main function, because CV2 can only read keypresses in the main function. Is a character.
 
@@ -1423,7 +1534,8 @@ if '__main__' == __name__:
     global boardLength
     global boardSize
 
-    camDistFromGrabber = 1.45  #(inches) Horizontal inches from the camera to the sucker of the robot. Used later for picking up checker pieces  #TODO: put in setup somewhere
+
+    camDistFromGrabber = 1.4   #(inches) Horizontal inches from the camera to the sucker of the robot. Used later for picking up checker pieces  #TODO: put in setup somewhere
     boardLength        = 6.5   #(inches) Side length of board in inches
     boardSize          = 6     #Squares per side of board
 
@@ -1451,7 +1563,8 @@ if '__main__' == __name__:
         if streamVideo:
             markedUpFrame = vid.frame.copy()
             if True:
-                getAllPieces    = lambda: objTracker.getCircles(minRadius = averageArea * .85, maxRadius = averageArea / .85)
+                pass
+                getAllPieces    = lambda: objTracker.getCircles(minRadius = averageArea * .7, maxRadius = averageArea / .7)
                 getNearestPiece = lambda: [objTracker.sortShapesByDistance(getAllPieces(), returnNearest = True)]
                 cv2.circle(markedUpFrame, (int(screenDimensions[0] / 2), int(screenDimensions[1] / 2)), 6, (0, 255, 0), 3, 255)  #Draw center of screen
                 markedUpFrame = objTracker.drawCircles(getNearestPiece(), frameToDraw = markedUpFrame)

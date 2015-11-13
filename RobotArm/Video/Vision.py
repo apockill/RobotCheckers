@@ -43,7 +43,7 @@ class Video:  #Handles basic video functions
     def __init__(self, **kwargs):
         recordFrames = kwargs.get('recordFrames', 2)
 
-        print "Video.__init(", locals().get("args"), "): Setting up video capture..."
+        print "Video.__init():\tSetting up video capture..."
         self.cap = cv2.VideoCapture(1)
         self.frame = None
         self.previousFrames = []  #Useful for some object recognition purposes. Keeps only stock frames
@@ -91,7 +91,7 @@ class Video:  #Handles basic video functions
                     except:
                         print "ERROR: getVideo(XXX): Frame has no attribute copy."
                 else:
-                    print "getVideo(): Error while capturing frame. Attempting to reconnect..."
+                    print "getVideo():\tError while capturing frame. Attempting to reconnect..."
                     cv2.waitKey(1000)
                     self.cap = cv2.VideoCapture(1)
                     self.getVideo(**kwargs)
@@ -126,10 +126,10 @@ class Video:  #Handles basic video functions
         finalHeight    = self.cap.get(cv.CV_CAP_PROP_FRAME_HEIGHT)
 
         if not successWidth or not successHeight:
-            print "Video.setResolution(): Error in setting resolution using cap.set()"
+            print "Video.setResolution():\tError in setting resolution using cap.set()"
 
         if not width == finalWidth or not height == finalHeight:
-            print "Video.setResolution(): Error in setting resolution. Final width: ", finalWidth, " Final Height: ", finalHeight
+            print "Video.setResolution():\tError in setting resolution. Final width: ", finalWidth, " Final Height: ", finalHeight
 
     def resizeFrame(self, frameToResize, finalWidth):
         if frameToResize.shape[1] == finalWidth:
@@ -158,7 +158,7 @@ class ObjectTracker:
 
     def __init__(self, video, **kwargs):
 
-        print "ObjTracker.__init__(", locals().get("args"), "): Setting up objectTracker..."
+        print "ObjTracker():\tSetting up objectTracker..."
 
         minMatchCount =  kwargs.get("minPointsToMatch", 10)       #Number of keypoints that must match for an object to be "recognized"
         trackingPoints = kwargs.get("pointsToTrack", 500)         #Number of keypoints to find per frame
@@ -171,7 +171,7 @@ class ObjectTracker:
 
     def onRect(self, rect):
         self.tracker.addTarget(self.vid.frame, rect)
-        print "onRect(", locals().get("args"), "): tracker.targets: ", self.tracker.targets[len(self.tracker.targets) - 1]
+        print "onRect():\ttracker.targets: ", self.tracker.targets[len(self.tracker.targets) - 1]
         self.vid.paused = not self.vid.paused  #unpause video after drawing rectangle
 
 
@@ -251,8 +251,8 @@ class ObjectTracker:
         frameToDraw: What frame to draw on top of.
         """
 
-        color       = kwargs.get('color', (0, 255, 0))
         frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
+        color       = kwargs.get('color', (0, 255, 0))
 
         for shapeTarget in shapeTargets:
             if hasattr(shapeTarget, 'center'):
@@ -268,12 +268,12 @@ class ObjectTracker:
         :param kwargs:
         :return:
         """
-
         frameToDraw = kwargs.get('frameToDraw', self.vid.frame.copy())
+        color       = kwargs.get('color', (0, 255, 0))
 
         for circle in circleTargets:
             if hasattr(circle, "center"):
-                cv2.circle(frameToDraw, tuple(circle.center), circle.radius, (255, 255, 255), 3, 3)  #Draw outline of circle
+                cv2.circle(frameToDraw, tuple(circle.center), circle.radius, color, 3, 3)  #Draw outline of circle
                 #cv2.circle(frameToDraw, tuple(circle.center),             2, (0, 255, 0), 3, 2)  #Draw center of circle
 
         return frameToDraw
@@ -408,13 +408,14 @@ class ObjectTracker:
         return shapeTargets
 
     def getCircles(self, **kwargs):
-        frameToAnalyze = kwargs.get('frameToAnalyze', self.vid.frame.copy())
-        minRadius      = kwargs.get('minRadius', 1)
+        frameToAnalyze  = kwargs.get('frameToAnalyze', self.vid.frame.copy())
+        minRadius       = kwargs.get('minRadius', 1)
         maxRadius       = kwargs.get('maxRadius', 100)
+        strictness      = kwargs.get('strictness', 30)
         gray = cv2.cvtColor(frameToAnalyze.copy(), cv2.COLOR_BGR2GRAY)
         gray = cv2.medianBlur(gray, 5)
 
-        circles = cv2.HoughCircles(gray,       3,  1,       20, np.array([]), param1=100, param2=30, minRadius=int(minRadius), maxRadius=int(maxRadius))
+        circles = cv2.HoughCircles(gray,       3,  1,       20, np.array([]), param1=100, param2=strictness, minRadius=int(minRadius), maxRadius=int(maxRadius))
         #         cv2.HoughCircles(image, method, dp, minDist[,     circles[,    param1[,   param2[,               minRadius[, maxRadius]]]]])
         if not circles is None:
             circles = circles[0]
@@ -439,7 +440,13 @@ class ObjectTracker:
         return circleArray
 
     def bruteGetFrame(self, getFunc, **kwargs):
-        #Wait for new frame
+        """
+        This function recieves a function (getFunc) that is supposed to return a value (usually coordinates of a target).
+        It then will, for maxAttempts, run that function and test if it is returning a value (anything but an empty list).
+        If it gets a value it will return it immediately, if it doesn't it will get new camera frames and try again until
+        maxAttempts is reaches, when it will then raise an error.
+==
+        """
         maxAttempts = kwargs.get("maxAttempts", 15)
 
         for a in range(maxAttempts):
@@ -451,7 +458,7 @@ class ObjectTracker:
 
             if len(values):
                 return values
-            #print "bruteGetFrame(", locals().get("args"), "): Trying again..."
+            #print "bruteGetFrame():\tTrying again..."
 
             #If validity false (empty array), get a new frame then try it again
             lastFrame = self.vid.frameCount
@@ -460,7 +467,7 @@ class ObjectTracker:
 
 
 
-        print "bruteGetFrame(", locals().get("args"), "): All attempts failed, raising Error"
+        print "bruteGetFrame():\tFailed at", maxAttempts, "attempts. Raising Error..."
         raise NameError("ObjNotFound")
 
     def getMovement(self, **kwargs):
@@ -475,7 +482,7 @@ class ObjectTracker:
 
         #GET TWO CONSECUTIVE FRAMES
         if self.vid.previousFrames < 10:
-            print "getMovement(", locals().get("args"), "): Not enough frames in self.vid.previousFrames"
+            print "getMovement():\tNot enough frames in self.vid.previousFrames"
             return 0    #IF PROGRAM IS RUN BEFORE THE PROGRAM HAS EVEN 10 FRAMES
 
 
@@ -486,6 +493,17 @@ class ObjectTracker:
         if returnFrame:
             return avgDifference, movementImg
         return  avgDifference
+
+    def getBlur(self, **kwargs):
+        """
+        Returns a number that stands for how blurry the image is. Unintuitively, lower numbers mean
+        more blurry. A number of 100 is a good threshold to tell if an image is blurry or not.
+        :param kwargs:
+        :return:
+        """
+
+        frameToAnalyze = kwargs.get('frameToAnalyze', self.vid.frame.copy())
+        return cv2.Laplacian(frameToAnalyze, cv2.CV_64F).var()
 
     def getTransform(self, shapeTarget, **kwargs):
 
@@ -521,6 +539,71 @@ class ObjectTracker:
             return []
 
 
+
+    #Color Operations
+    def hsv2bgr(self, colorHSV):
+        isList = colorHSV is tuple
+
+        h, s, v = colorHSV[0], colorHSV[1], colorHSV[2]
+
+        h = float(h)
+        s = float(s)
+        v = float(v)
+        h60 = h / 60.0
+        h60f = math.floor(h60)
+        hi = int(h60f) % 6
+        f = h60 - h60f
+        p = v * (1 - s)
+        q = v * (1 - f * s)
+        t = v * (1 - (1 - f) * s)
+        r, g, b = 0, 0, 0
+        if hi == 0: r, g, b = v, t, p
+        elif hi == 1: r, g, b = q, v, p
+        elif hi == 2: r, g, b = p, v, t
+        elif hi == 3: r, g, b = p, q, v
+        elif hi == 4: r, g, b = t, p, v
+        elif hi == 5: r, g, b = v, p, q
+        r, g, b = int(r * 255), int(g * 255), int(b * 255)
+
+        if isList:
+            return [b, g, r]
+        else:
+            return b, g, r
+
+    def bgr2hsv(self, colorBGR):
+        """
+        Input: A tuple OR list of the format (h, s, v)
+        OUTPUT: A tuple OR list (depending on what was sent in) of the fromat (r, g, b)
+        """
+        isList = colorBGR is list
+
+        r, g, b = colorBGR[2], colorBGR[1], colorBGR[0]
+
+        r, g, b = r / 255.0, g / 255.0, b / 255.0
+        mx = max(r, g, b)
+        mn = min(r, g, b)
+        df = mx - mn
+        if mx == mn:
+            h = 0
+        elif mx == r:
+            h = (60 * ((g - b) / df) + 360) % 360
+        elif mx == g:
+            h = (60 * ((b - r) / df) + 120) % 360
+        elif mx == b:
+            h = (60 * ((r - g) / df) + 240) % 360
+        if mx == 0:
+            s = 0
+        else:
+            s = df/mx
+        v = mx
+
+        if isList:
+            return [h, s, v]
+        else:
+            return h, s, v
+
+
+
     #COORDINATE MATH FUNCTIONS
     def getShapesCentroid(self, shapeArray):
         """
@@ -536,7 +619,7 @@ class ObjectTracker:
         coords = self.getTargetCoords(target)  #coordinate array
         if len(coords) == 0:  #If it could not get target center
             return []
-        
+
         xyAvg = np.sum(coords, axis = 0) / len(coords)
         return xyAvg[0], xyAvg[1]
 
@@ -584,7 +667,7 @@ class ObjectTracker:
         #SORT THE SHAPES IN THE ARRAY BY HOW FAR THEY ARE FROM THE "COORDS" VARIABLE
         shapeTargets = sorted(shapeArray, key = lambda s: (s.center[0] - coords[0]) ** 2 + (s.center[1] - coords[1]) ** 2)
         if len(shapeTargets) == 0:  #If no shapes found
-            #print "getNearestShape(", locals().get("args"), "): No shapes found"
+            #print "getNearestShape():\tNo shapes found"
             return []
 
         shapesWithinDist = []
@@ -594,9 +677,7 @@ class ObjectTracker:
 
             if distFromCoords < maxDist:
                 shapesWithinDist.append(shape)
-                #print "dist: ", distFromCoords
-            #else:
-                #print "REMOVED! Maxdist: ", maxDist, "dist: ", distFromCoords
+
 
         if len(shapesWithinDist) == 0:
             return []

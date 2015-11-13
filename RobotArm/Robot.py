@@ -35,7 +35,6 @@ handRotMin              = -84
 handRotMax              = 74
 handAngleOpen           = 25.0
 handAngleClose          = 70.0
-stationaryTolerance     = 50      #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"
 stretchDistFromBase     = 140     #How far in "stretch units" the arm is from the pivot of the robot when stretch is 0, OPTIMIZED FOR HEIGHT=150, will not work well otherwise
 
 #Position Variables
@@ -120,7 +119,7 @@ def moveTo(**kwargs):
 
         pos['x'], pos['y'] = convertToCartesian(pos['rotation'], pos['stretch'], kwargs.get('stretchDistFromBase', stretchDistFromBase))
 
-        #print "moveTo(): x:", int(pos['x']), " y: ", int(pos['y'])
+        #print "moveTo():\tx:", int(pos['x']), " y: ", int(pos['y'])
         #print "moveTo(XXX): Position: ", pos
     except:
         print "moveTo(", locals().values(), "): Failed to send moveTo command to Robot!"
@@ -130,7 +129,8 @@ def moveTo(**kwargs):
         #sleep(.075)  #Give the robot time to process the inputs (not proven to be necessary...)
         waitForRobot()
     else:
-        sleep(.1)
+        pass
+        #sleep(.1)
 
 
 
@@ -182,22 +182,24 @@ def waitForRobot():
         If it gets 2 that are within a certain tolerance,
         it stops.
     """
-    stillMoving  = True
-    initialPos   = getOutput('all')
+    stationaryTolerance = 35      #When checking if the robot is moving, then each servo must be within -this variable- between two readings. If not, the robot is "not stationary"
+    stillMoving         = True
+    initialPos          = getOutput('all')
+
     if initialPos is None:      #IF ROBOT NOT CONNECTED
-        print "waitForRobot(", locals().get("args"), "): NoneType was returned from getOutput() while obtaining initialPos. Continuing."
+        print "waitForRobot():\tNoneType was returned from getOutput() while obtaining initialPos. Continuing."
         return
     timer = Common.Timer(3)  #Wait 3 seconds for a response
 
     while stillMoving:
         finalPos   = getOutput('all')
         if finalPos is None:    #IF ROBOT NOT CONNECTED
-            print "waitForRobot(", locals().get("args"), "): NoneType was returned from getOutput() while obtaining finalPos. Continuing."
+            print "waitForRobot():\tNoneType was returned from getOutput() while obtaining finalPos. Continuing."
             return
 
         #Timer Functions: Shouldn't actually be necessary, since the only part to fail would be getOutput(). Remove?
         if timer.timeIsUp():
-            print "waitForRobot(", locals().get("args"), "): Robot still moving after ", timer.currentTime, "seconds. Continuing."
+            print "waitForRobot():\tRobot still moving after ", timer.currentTime, "seconds. Continuing."
             return
 
         #ACTUALLY DO THE MOVEMENT DETECTION...
@@ -223,16 +225,16 @@ def constrainPos(position):  #Make sure that the pos function is within all limi
     wrist       = clamp(wrist, handRotMin, handRotMax)
 
     if not rotation == position["rotation"] and not position["rotation"] == -.1:
-        print "constrainPos(", locals().get("args"), "): Constrained rotation to", rotation, "from ", position["rotation"]
+        print "constrainPos():\tConstrained rotation to", rotation, "from ", position["rotation"]
         
     if not stretch == position["stretch"] and not position["stretch"] == -.1:
-        print "constrainPos(", locals().get("args"), "): Constrained stretch to", stretch, "from ", position["stretch"]
+        print "constrainPos():\tConstrained stretch to", stretch, "from ", position["stretch"]
     
     if not height == position["height"] and not position["height"] == -.1:
-        print "constrainPos(", locals().get("args"), "): Constrained height to", height, "from ", position["height"]
+        print "constrainPos():\tConstrained height to", height, "from ", position["height"]
     
     if not wrist == position["wrist"] and not position["wrist"] == -.1:
-        print "constrainPos(", locals().get("args"), "): Constrained wrist to", wrist, "from ", position["wrist"]
+        print "constrainPos():\tConstrained wrist to", wrist, "from ", position["wrist"]
 
 
     pos         = {'rotation': rotation, 'stretch': stretch, 'height': height, 'wrist': wrist, 'grabber': position["grabber"], 'touch': position["touch"], 'x': position["x"], 'y': position["y"]}
@@ -259,7 +261,7 @@ def getOutput(outputType):
         #TIMER/ERROR HANDLING FUNCTIONS:
         timer.wait(.1)
         if timer.timeIsUp():
-            print "getOutput(", locals().get("args"), "): No response heard from robot in", timer.currentTime, "seconds. Continuing."
+            print "getOutput():\tNo response heard from robot in", timer.currentTime, "seconds. Continuing."
             return None
 
         #RUN ACTUAL CODE
@@ -270,7 +272,7 @@ def getOutput(outputType):
     try:
         return literal_eval(read)  #when it works put ser1.inWaiting() in () of readline
     except Exception:
-        print "ERROR: getOutput(", locals().get("args"), "): Could not perform literal_eval() on value ", read, ". Continuing."
+        print "ERROR: getOutput():\tCould not perform literal_eval() on value ", read, ". Continuing."
         return None
 
 def getPosArgsCopy(**kwargs):
@@ -281,7 +283,7 @@ def getPosArgsCopy(**kwargs):
 
     for key in pos.keys():  #Go over every key in position, and see if it is mentioned in the **args. If it is, remove it.
         if key in onlyRecord and not key in dontRecord:
-            currentPosition[key] = int(pos[key])
+            currentPosition[key] = pos[key]
 
 
     return currentPosition

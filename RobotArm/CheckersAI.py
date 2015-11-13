@@ -132,7 +132,7 @@ class DraughtsBrain(object):
         if len(newBoard) > 0:
             self.board = DBoard(board=newBoard)
 
-        if len(self.board.all_move(self.turn)) == 0 :
+        if len(self.board.all_move(self.turn)) == 0:
             self.gameover = True
             self.winner = self._switch_player(self.turn)
             return None
@@ -231,14 +231,27 @@ class DBoard(object):
             #board = [item for sublist in presetBoard for item in sublist]
             for row in range(len(presetBoard)):
                 for column in range(len(presetBoard)):
-                    if presetBoard[row][column] == 2:
-                        new_piece = DPiece(self, row, column, 'DARK')
-                        self.dark_pieces.append(new_piece)
-                        self.set_bitmap(row, column, new_piece)
+                    #SET NORMAL PIECE
                     if presetBoard[row][column] == 1:
                         new_piece = DPiece(self, row, column, 'LIGHT')
                         self.light_pieces.append(new_piece)
                         self.set_bitmap(row, column, new_piece)
+                    if presetBoard[row][column] == 2:
+                        new_piece = DPiece(self, row, column, 'DARK')
+                        self.dark_pieces.append(new_piece)
+                        self.set_bitmap(row, column, new_piece)
+
+                    #SET KINGS
+                    if presetBoard[row][column] == 3:
+                        new_piece = DPiece(self, row, column, 'LIGHT', isKing=True)
+                        self.light_pieces.append(new_piece)
+                        self.set_bitmap(row, column, new_piece)
+                    if presetBoard[row][column] == 4:
+                        new_piece = DPiece(self, row, column, 'DARK', isKing=True)
+                        self.dark_pieces.append(new_piece)
+                        self.set_bitmap(row, column, new_piece)
+
+
                 print presetBoard[row]
         else:
             # Add 6 Dark Piece in starting position.
@@ -508,7 +521,7 @@ class DPiece(object):
     This class represent a Draughts Piece.
     '''
 
-    def __init__(self, board, row, column, color):
+    def __init__(self, board, row, column, color, **kwargs):
         '''
         Constructor
 
@@ -517,11 +530,11 @@ class DPiece(object):
         @param column: Starting Column.
         @param color: Piece color (LIGHT or DARK).
         '''
+        self.is_king = kwargs.get('isKing', False)
         self.boardSize = 6
         self.startingRows = 2
         self.board = board
         self.position = (row, column)
-        self.is_king = False
         self.color = color
 
     def promote(self):
@@ -717,7 +730,7 @@ class DAction(object):
         * UNDO : Undo Move
     '''
 
-    def __init__(self, type, source, destination, captured=None, promote=False):
+    def __init__(self, type, source, destination, captured=None, promote=False, **kwargs):
         '''
         Constructor
 
@@ -727,12 +740,14 @@ class DAction(object):
             @param destination: Tuple (row,column) of ending position.
             @param captured: Captured piece (if type is CAPTURE).
         '''
+        self.capturedPiece = kwargs.get('capuredPiece', None)
         self.type = type
         self.source = source
         self.destination = destination
         self.captured = captured
         self.promote = promote
         self.next = None # Next Capture if `CAPTURE` is a Chain-Capture.
+
 
     def _append_capture(self, action):
         '''
@@ -745,6 +760,22 @@ class DAction(object):
         while p.next :
             p = p.next
         p.next = action
+
+
+
+    def getSource(self):
+        return list(self.source)[::-1]
+
+    def getDestination(self):
+        return list(self.destination)[::-1]
+
+    def getCapture(self):
+        if self.captured is None:
+            return None
+        else:
+            return list(self.captured.position)[::-1]
+
+
 
     def undo(self):
         '''
@@ -788,9 +819,9 @@ class DAction(object):
         return self.__str__()
 
     def __str__(self):
-        return "%s :: <%d , %d> -> <%d , %d> { %s }" % (self.type, self.source[0], \
-                                                        self.source[1], self.destination[0], \
-                                                        self.destination[1], \
+        return "%s :: <%d , %d> -> <%d , %d> { %s }" % (self.type, self.source[0],
+                                                        self.source[1], self.destination[0],
+                                                        self.destination[1],
                                                         str(self.next))
         #return str([list(self.source), list(self.destination)], list(self.next))
 
