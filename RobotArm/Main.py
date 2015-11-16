@@ -535,8 +535,8 @@ def playCheckers():
 
     #RUN CALIBRATION FUNCTIONS
     avgMotion, avgBlur  = getMotionAndBlur()
-    blurThreshold       = avgBlur / 3.85       #Its important to set the thresholds first, before other functions run
-    motionThreshold     = avgMotion * 2.5      #that use them (such as getBoardCorners()
+    blurThreshold       = avgBlur / 4          #Its important to set the thresholds first, before other functions run
+    motionThreshold     = avgMotion * 3.25     #that use them (such as getBoardCorners()
     #ppXYInfo, allCornerInfo       = getBoardCorners()    #Get the location of the boards corners at two different robot heights
     #groundFormula      = getGroundFormula(cornerInfoLow['corners'])
     groundFormula       = lambda stretch: -0.0994149347433  * stretch + -45.0
@@ -564,7 +564,7 @@ def playCheckers():
                                    'KCENTER':   7,
                                    'FRONT':     6,
                                    'KFRONT':    3,
-                                   'MOB':       6}, 11)
+                                   'MOB':       6}, 15)
 
     while not exitApp:
         #MOVE ROBOT OUT OF WAY FOR HUMAN TO MAKE THEIR MOVE
@@ -612,7 +612,7 @@ def playCheckers():
 
 
         #GET BEST MOVE FROM ROBOT
-        move        = AI.best_move(board=boardState)  #Get the best possible move for the robot to perform
+        move        = AI.best_move(board=boardState[:])  #Get the best possible move for the robot to perform
         moveFrom    = move.getSource()
         moveTo      = move.getDestination()
         moveCapture = move.getCapture()
@@ -625,8 +625,12 @@ def playCheckers():
 
 
         #CHECK IF THE MOVE PRODUCED A NEW KING FOR THE ROBOT
-        if moveTo[1] == 0 and not boardState[moveFrom[1]][moveFrom[0]] == 3:
-            newKing = True
+        if moveTo[1] == 0:
+            if not boardState[moveFrom[1]][moveFrom[0]] == 3:
+                newKing = True
+            else:
+                newKing = False
+                print "playCheckers(): No new king, only king returning to end."
         else:
             print "NO NEW KING!"
             newKing = False
@@ -695,8 +699,6 @@ def getBoardState(frame, circleArray, screenDimensions, colorThreshold, kingThre
                 del circleArray[0]
         #print board[column]
 
-    cv2.imshow('main', frameToDraw)
-    cv2.waitKey(10)
     return board, frameToDraw
 
 def getBoardOverview(cornerInfo, **kwargs):
@@ -717,11 +719,7 @@ def getBoardOverview(cornerInfo, **kwargs):
     for index, position in enumerate(picturePositions):
         Robot.moveTo(stretchDistFromBase=cornerInfo['distFromBase'], relative = False, **position)
         sleep(1.5)
-        while objTracker.getBlur() < blurThreshold:  #GET A NON BLURRY IMAGE
-            print "getBoardOverview():\t Blur of ", objTracker.getBlur(), "is too blurry, Shaking camera. "
-            Robot.moveTo(stretch=-50, height=-80)
-            Robot.moveTo(stretch=50, height=80)
-            sleep(2.5)
+        focusCamera()
 
 
 
@@ -792,6 +790,43 @@ def getSquarePosition(column, row, corners):
     #print "getSquarePosition():\tFor Row: ", row, " Col: ", column, " FinalCoords: ", finalCoords
     return finalCoords
 
+
+#   #GENERAL USE FUNCTIONS
+def focusCamera(**kwargs):
+    """
+    This function moves the camera closer to the ground forcing it (hopefully) to refocus.
+    It then goes back up and tests the blurriness of the camera.
+    """
+
+    attempts = 0
+    maxAttempts = 5
+
+    if 'blurThreshold' in globals():  #Check that blurThreshold has been defined
+        threshold = kwargs.get("threshold", blurThreshold)
+    else:
+        threshold = kwargs.get("threshold", 0)
+
+    height = Robot.pos['height']
+    heightToDrop = 0
+    if height >= 100:
+        heightToDrop = -100
+    elif 0 < height < 100:
+        heightToDrop = -50
+    else:
+        heightToDrop = -20
+
+    while objTracker.getBlur() < threshold and attempts < maxAttempts:  #If the image is too blurry still, keep attempting to focus
+        Robot.moveTo(height=heightToDrop)
+        sleep(1.5)
+        Robot.moveTo(height=-heightToDrop)
+        sleep(2.5)
+        attempts += 1
+
+
+    if not attempts < maxAttempts: print "focusCamera(): Attempts over ", attempts, " giving up on focusing... Threshold: ", threshold
+
+
+#   #DRAW FUNCTIONS
 def drawMove(moveFrom, moveTo, capture, circleArray, boardFrame):
     frameToDraw = boardFrame.copy()
 
@@ -799,23 +834,26 @@ def drawMove(moveFrom, moveTo, capture, circleArray, boardFrame):
     squareSize = imgWidth / boardSize
 
     fromLoc = [squareSize * moveFrom[0] + squareSize / 2, squareSize * moveFrom[1] + squareSize / 2]
-    toLoc   = [squareSize * moveTo[0]   + squareSize / 2, squareSize * moveTo[1] + squareSize / 2]
+    toLoc   = [squareSize * moveTo[0]   + squareSize / 2, squareSize * moveTo[1]   + squareSize / 2]
+
 
     circleFrom = sorted(circleArray, key = lambda c: (c.center[0] - fromLoc[0]) ** 2 + (c.center[1] - fromLoc[1]) ** 2)[0]
-    circleTo   = sorted(circleArray, key = lambda c: (c.center[0] -   moveTo[0]) ** 2 + (c.center[1] -   moveTo[1]) ** 2)[0]
+    #circleTo   = sorted(circleArray, key = lambda c: (c.center[0] -   toLoc[0]) ** 2 + (c.center[1] -   toLoc[1]) ** 2)[0]
     if capture is not None:
+        capLoc  = [squareSize * capture[0]  + squareSize / 2, squareSize * capture[1]  + squareSize / 2]
         capLoc = [squareSize * capture[0] + squareSize / 2, squareSize * capture[1] + squareSize / 2]
-        circleCapture = sorted(circleArray, key = lambda c: (c.center[0] - capture[0]) ** 2 + (c.center[1] - capture[1]) ** 2)[0]
+        circleCapture = sorted(circleArray, key = lambda c: (c.center[0] - capLoc[0]) ** 2 + (c.center[1] - capLoc[1]) ** 2)[0]
         frameToDraw = objTracker.drawCircles([circleCapture], frameToDraw=frameToDraw, color=(0, 0, 255))
 
 
-    frameToDraw = objTracker.drawCircles([circleFrom, circleTo], frameToDraw=frameToDraw, color=(255, 255, 255))
+    frameToDraw = objTracker.drawCircles([circleFrom], frameToDraw=frameToDraw, color=(255, 255, 255))
 
 
     cv2.arrowedLine(frameToDraw, tuple(fromLoc), tuple(toLoc), (255, 255, 255), thickness=3)
     return frameToDraw
 
-#   #PICKUP AND PLACING FUNCTIONS
+
+#   #PICKUP/PLACEMENT FUNCTIONS
 def pickUpPiece(coords, cornerInfo, ppXYInfo, groundHeightFormula, jumpStretchFormula, **kwargs):
     global averageArea   #TODO: delete later, for testing only
 
@@ -860,12 +898,7 @@ def pickUpPiece(coords, cornerInfo, ppXYInfo, groundHeightFormula, jumpStretchFo
             getAllPieces = lambda: objTracker.getCircles(minRadius=avgRadius * searchTolerance, maxRadius=avgRadius / searchTolerance)
 
             try:
-                while objTracker.getBlur() < blurThreshold:
-                    print "pickUpPiece():\t Blur of ", objTracker.getBlur(), "is too blurry, Shaking camera. "
-                    Robot.moveTo(rotation=2,  height=30, stretch=-15)
-                    sleep(.1)
-                    Robot.moveTo(rotation=-2, height=-30, stretch=15)
-                    sleep(3)
+                focusCamera()
                 newRadius = objTracker.bruteGetFrame(lambda: [objTracker.sortShapesByDistance(getAllPieces(), returnNearest=True).radius], maxAttempts=5)[0]
                 totalRadius +=  newRadius
                 #print 'avgRadius right now', newRadius
@@ -1028,10 +1061,7 @@ def getBoardCorners():
             Robot.moveTo(height=s['height'], relative=False, waitForRobot=True)
 
             #WAIT FOR CAMERA TO FOCUS
-            while objTracker.getBlur() < blurThreshold:
-                    Robot.moveTo(rotation=2,  height=10, stretch=-16)
-                    Robot.moveTo(rotation=-2, height=-10, stretch=16)
-                    sleep(3)
+            focusCamera()
 
             #Find the marker and set up a function for finding it
             markerArea = getMarkerPerimeter(tolerance)
@@ -1138,16 +1168,10 @@ def getMotionAndBlur(**kwargs):
 
     #MOVE TO POSITION
     Robot.moveTo(relative=False, **Robot.home)
-    Robot.moveTo(height = 100, relative=False)
+    Robot.moveTo(height = 15, relative=False)
     sleep(2)
 
-    #MAKE SURE THE CAMERA IS FOCUSED. IF IT IS NOT, SHAKE IT A BIT AND WAIT
-    while objTracker.getBlur() < 120:
-        print "getMotionAndBlur():\t Frame too blurry, Shaking camera..."
-        Robot.moveTo(height=-35, rotation=2, stretch=-30)
-        Robot.moveTo(height=35, rotation=-2, stretch=30)
-        sleep(2.5)
-
+    focusCamera(threshold=210)
 
     #READ -SAMPLE- FRAMES AND GET THE AVERAGE, THEN RETURN IT
     for s in range(0, sample):
@@ -1535,7 +1559,7 @@ if '__main__' == __name__:
     global boardSize
 
 
-    camDistFromGrabber = 1.4   #(inches) Horizontal inches from the camera to the sucker of the robot. Used later for picking up checker pieces  #TODO: put in setup somewhere
+    camDistFromGrabber = 1.675 #(inches) Horizontal inches from the camera to the sucker of the robot. Used later for picking up checker pieces  #TODO: put in setup somewhere
     boardLength        = 6.5   #(inches) Side length of board in inches
     boardSize          = 6     #Squares per side of board
 
