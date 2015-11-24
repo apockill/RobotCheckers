@@ -3,6 +3,7 @@ This is the code for my checkers playing robot arm!
 It uses openCV, python, and a uArm Metal with a camera attached to the end of the arm, pointing down. 
 Tutorial will be made soon!
 
+Check it out in action here: https://www.youtube.com/watch?v=wIeP1g6ww_g
 
 Credits to:
 
