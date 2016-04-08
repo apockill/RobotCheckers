@@ -27,7 +27,7 @@ for intex, port in enumerate(ports):
 #ROBOT CONSTANTS
 stretchMin              = 0
 stretchMax              = 210.0
-heightMin               = -80
+heightMin               = -100
 heightMax               = 150.0
 rotationMin             = -90.0
 rotationMax             = 90.0
@@ -35,7 +35,7 @@ handRotMin              = -84
 handRotMax              = 74
 handAngleOpen           = 25.0
 handAngleClose          = 70.0
-stretchDistFromBase     = 140     #How far in "stretch units" the arm is from the pivot of the robot when stretch is 0, OPTIMIZED FOR HEIGHT=150, will not work well otherwise
+stretchDistFromBase     = 157.4     #How far in "stretch units" the arm is from the pivot of the robot when stretch is 0, OPTIMIZED FOR HEIGHT=150, will not work well otherwise
 
 #Position Variables
 """ CARTESIAN COORDINATES:

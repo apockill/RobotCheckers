@@ -78,10 +78,10 @@ def focusOnTarget(getTargetCoords, **kwargs):
             yMove += sign(yDist) * jump * (abs(yDist) > tolerance * 5)
             yMove += (yDist / ppY)   * (abs(yDist) > tolerance * 2     and not ppY == -1)
 
-        print "(x,y) move: ", xMove, yMove," (x,y) Dist: ", xDist, yDist, " Tolerance: ", tolerance
+        #print "(x,y) move: ", xMove, yMove," (x,y) Dist: ", xDist, yDist, " Tolerance: ", tolerance
 
         #PERFORM THE MOVE
-        if not (abs(xDist) < tolerance and abs(yDist) < tolerance):
+        if not (abs(xDist) <= tolerance and abs(yDist) <= tolerance):
             moveCount += 1
             Robot.moveTo(rotation = -yMove, stretch = xMove)  #TODO: make a variable that flips these around according to orientation of camera
             #print Robot.getPosArgsCopy()
@@ -519,17 +519,25 @@ def playCheckers():
     print "playCheckers():\tBeginning Checkers!"
     streamVideo = True
 
-    allCornerInfo = [{'corners': [{'y': -41.972018918482874, 'x': 184.6128341478034},  {'y': 111.52539890583479, 'x': 147.98033756199985}, {'y': 152.0544435459012,  'x': 302.5572020482049},  {'y': -4.934192457477108, 'x': 339.1830450141577}], 'distFromBase': 154.3,  'height': 100},
-                     {'corners': [{'y': -36,                 'x': 174.5993467309843},  {'y': 109.14998136887112, 'x': 147.50773392325937}, {'y': 147.77390766522245, 'x': 290.02262362331373}, {'y': -3.572950570828457, 'x': 327.387773929495}],   'distFromBase': 166.5, 'height':  37},
-                     {'corners': [{'y': -44.42989761657374,  'x': 201.10998137167255}, {'y': 121.99579037334762, 'x': 158.98800939436353}, {'y': 154.00209457831087, 'x': 330.25855759615524}, {'y': -0.0, 'x': 363.4}],                            'distFromBase': 195.5, 'height':   5},
-                     {'corners': [{'y': -36.10085759999442,  'x': 194.78279718841944}, {'y': 123.32014951791244, 'x': 155.03467587246323}, {'y': 152.15862505048878, 'x': 311.9714134704409},  {'y': 3.1075192909709584, 'x': 356.08644080315145}], 'distFromBase': 191.1, 'height':  -6},
-                     {'corners': [{'y': -41.53086900143339,  'x': 199.1986171540355},  {'y': 118.55853582603964, 'x': 156.600958599777},   {'y': 152.57652616058105, 'x': 318.5839365574957},  {'y': -4.100538062572259,  'x': 360.2864712647001}],  'distFromBase': 196.5, 'height': -15}]
+    # allCornerInfo = [{'corners': [{'y': -55.56196647117473, 'x': 130.895790160937}, {'y': 67.56051244619569, 'x': 119.41280148295422}, {'y': 80.4062219363613, 'x': 247.46490553999894}, {'y': -25.316793803425668, 'x': 240.87320305819577}], 'distFromBase': 78.2, 'height': 100},
+    #                  {'corners': [{'y': -59.62759187491232, 'x': 133.9257640904053}, {'y': 71.69687035106483, 'x': 126.72378932884942}, {'y': 87.4491633052434, 'x': 261.3579993748286}, {'y': -53.94896305329356, 'x': 265.1676250703965}], 'distFromBase': 90.60000000000001, 'height': 20},
+    #                  {'corners': [{'y': -61.21386478290793, 'x': 137.48859137521143}, {'y': 72.6324751152614, 'x': 128.3774651511352}, {'y': 74.55990474849827, 'x': 260.02128875131524}, {'y': -55.52396973518942, 'x': 272.90903023690106}], 'distFromBase': 91.5, 'height': 0},
+    #                  {'corners': [{'y': -61.62060142598373, 'x': 138.40213683285404}, {'y': 72.14005155515794, 'x': 127.5071094551953}, {'y': 94.30043773354028, 'x': 266.2962212335404}, {'y': -55.52396973518942, 'x': 272.90903023690106}], 'distFromBase': 100.5, 'height': -15},
+    #                  {'corners': [{'y': -60.808397402812766, 'x': 146.80445771604346}, {'y': 67.55695788488968, 'x': 127.0561586123996}, {'y': 84.94877175367303, 'x': 261.4454363295377}, {'y': -56.20182071220788, 'x': 276.24077423261184}], 'distFromBase': 98.9, 'height': -35}]
 
-    ppXYInfo      = [{'xSamples': 3, 'ppY': -1, 'ppX': 2.458974358974359, 'ySamples': 1, 'height': 100},
-                     {'xSamples': 4, 'ppY': 6.7, 'ppX': 5.0015262515262515, 'ySamples': 4, 'height': 37},
-                     {'xSamples': 3, 'ppY': -18.933333333333334, 'ppX': -2.801587301587302, 'ySamples': 3, 'height': 5},
-                     {'xSamples': 4, 'ppY': -23.866666666666664, 'ppX': 4.196428571428571, 'ySamples': 3, 'height': -6},
-                     {'xSamples': 2, 'ppY': -1, 'ppX': 5.875, 'ySamples': 1, 'height': -15}]
+    allCornerInfo = [{'corners': [{'y': -60.876968021935895, 'x': 133.58231456467655}, {'y': 66.57106760303932, 'x': 125.20196866739586}, {'y': 90.06109062127139, 'x': 254.32467429666974}, {'y': -53.988836640177, 'x': 265.36361001132065}], 'distFromBase': 85.80000000000001, 'height': 100},
+                     {'corners': [{'y': -63.116311532279575, 'x': 138.49610542740987}, {'y': 64.88096997701011, 'x': 122.0233573331037}, {'y': 82.87835789136089, 'x': 255.07335767036017}, {'y': -53.86921587952668, 'x': 264.77565518854817}], 'distFromBase': 90.2, 'height': 10},
+                     {'corners': [{'y': -60.669621400607774, 'x': 133.1273339292383}, {'y': 66.33633182164638, 'x': 124.7604948709664}, {'y': 84.81553465708113, 'x': 253.4869130366171}, {'y': -50.62162647339734, 'x': 260.4256917686653}], 'distFromBase': 88.30000000000001, 'height': -15},
+                     {'corners': [{'y': -62.95043423521709, 'x': 138.13212091905928}, {'y': 71.00122352662973, 'x': 130.76798636410047}, {'y': 93.3991592136091, 'x': 263.7510892075915}, {'y': -53.96078389248687, 'x': 277.6041674789994}], 'distFromBase': 100.80000000000001, 'height': -35},
+                     {'corners': [{'y': -61.188494721420284, 'x': 144.15106005065218}, {'y': 70.90579177457782, 'x': 130.59222294156808}, {'y': 93.66620470099612, 'x': 264.5052024004653}, {'y': -46.147310598645475, 'x': 275.76545418980993}], 'distFromBase': 104.60000000000001, 'height': -45}]
+
+    ppXYInfo      = [{'xSamples': 4, 'ppY': -5.222222222222221, 'ppX': 3.206734785682154, 'ySamples': 3, 'height': 100},
+                     {'xSamples': 4, 'ppY': -1, 'ppX': -3.202083333333333, 'ySamples': 1, 'height': 10},
+                     {'xSamples': 4, 'ppY': 50.0, 'ppX': 6.441666666666667, 'ySamples': 2, 'height': -15},
+                     {'xSamples': 3, 'ppY': -12.0, 'ppX': 8.371428571428572, 'ySamples': 2, 'height': -35},
+                     {'xSamples': 4, 'ppY': -1, 'ppX': 4.919642857142858, 'ySamples': 1, 'height': -45}]
+
+
 
 
     #RUN CALIBRATION FUNCTIONS
@@ -537,9 +545,8 @@ def playCheckers():
     #avgMotion, avgBlur  = 1.5, 280
     blurThreshold       = avgBlur / 4.35       #Its important to set the thresholds first, before other functions run
     motionThreshold     = avgMotion * 3.25     #that use them (such as getBoardCorners()
-    #ppXYInfo, allCornerInfo       = getBoardCorners()    #Get the location of the boards corners at two different robot heights
-    #groundFormula      = getGroundFormula(cornerInfoLow['corners'])
-    groundFormula       = lambda stretch: -0.0994149347433  * stretch + -45.0
+    ppXYInfo, allCornerInfo       = getBoardCorners()    #Get the location of the boards corners at two different robot heights
+    groundFormula       = lambda stretch: -65
 
 
     #SET UP VARIABLES
@@ -550,6 +557,7 @@ def playCheckers():
     jumpFormula    = getJumpFormula(allCornerInfo)
     kingLocation   = [8, 2.5]   #Where the kings are stored relative to the boards grid.
     dumpLocation   = [-3, 2.5]  #Where captured pieces are thrown away
+    # groundFormula      = getGroundFormula(cornerInfoLow['corners'])
 
 
 
@@ -609,12 +617,12 @@ def playCheckers():
 
         #ISOLATE THE BOARD AND FIND THE CIRCLES IN IT
         boardFrame  = objTracker.getTransform(shapeArray[0], frameToAnalyze=stitchedFrame, transformHeight=600, transformWidth=600)  #Isolate board
-        circleArray = objTracker.getCircles(frameToAnalyze = boardFrame, minRadius = 40)  #Get circles on screen
+        circleArray = objTracker.getCircles(frameToAnalyze=boardFrame, minRadius = 40)  #Get circles on screen
 
 
         #GET THE BOARD STATE
         if firstLoop:
-            colorThreshold = getAvgColor(circleArray)[0]  #  If this is the first time being run, get the average color of the pieces on board
+            colorThreshold = getAvgColor(circleArray)[0]  # If this is the first time being run, get the average color of the pieces on board
             kingThreshold = getHighestSTD(circleArray, boardFrame) * 2
             firstLoop = False
             print "playCheckers():\tColorThreshold: ", colorThreshold, " KingThreshold: ", kingThreshold
@@ -694,20 +702,22 @@ def getBoardState(frame, circleArray, screenDimensions, colorThreshold, kingThre
             if dist(nearest.center, location) < squareSize / 2:
 
                 pieceColor = objTracker.bgr2hsv(nearest.color)[0]
+                print "pieceColor: ", pieceColor
                 if pieceColor < colorThreshold:
+
                     if getCircleSTD(nearest, frame) < kingThreshold:
-                        board[row][column] = 2  #IF IS GREEN PIECE
-                        color = (0, 255, 0)
-                    else:
-                        board[row][column] = 4  #IF IS GREEN PIECE
-                        color = (255, 255, 0)
-                else:
-                    if getCircleSTD(nearest, frame) < kingThreshold:
-                        board[row][column] = 1  #IF IS RED PIECE
+                        board[row][column] = 1  #IF IS GREEN PIECE
                         color = (0, 0, 255)
                     else:
-                        board[row][column] = 3  #IF IS RED PIECE
+                        board[row][column] = 3  #IF IS GREEN PIECE
                         color = (0, 255, 255)
+                else:
+                    if getCircleSTD(nearest, frame) < kingThreshold:
+                        board[row][column] = 2  #IF IS RED PIECE
+                        color = (0, 255, 0)
+                    else:
+                        board[row][column] = 4  #IF IS RED PIECE
+                        color = (255, 255, 0)
                 print 'PieceColor: ', pieceColor
 
 
@@ -816,7 +826,7 @@ def focusCamera(**kwargs):
     This function moves the camera closer to the ground forcing it (hopefully) to refocus.
     It then goes back up and tests the blurriness of the camera.
     """
-
+    return
     attempts = 0
     maxAttempts = 3
 
@@ -957,7 +967,7 @@ def pickUpPiece(coords, cornerInfo, ppXYInfo, groundHeightFormula, jumpStretchFo
 
 
     lastSeenPos       = Robot.getPosArgsCopy()
-    pickupHeight      = groundHeightFormula(Robot.pos['stretch']) - 5  #The plus 2 makes it so the sucker isn't firmly pressed against the ground/piece, but more lightly so.
+    pickupHeight      = groundHeightFormula(Robot.pos['stretch'])  #The plus 2 makes it so the sucker isn't firmly pressed against the ground/piece, but more lightly so.
 
     print 'pickupHeight = ', pickupHeight
     stretchPerHeight  = (focusPos[0]['stretch']   - focusPos[-1]['stretch'])  / (focusPos[0]['height']  - focusPos[-1]['height'])
@@ -1007,14 +1017,18 @@ def placePiece(coords, cornerInfo, groundHeightFormula, jumpStretchFormula):
 
     dropRotation, dropStretch = Robot.convertToPolar(location['x'], location['y'], location['stretchDistFromBase'])
 
-    #DROP PIECE IN CORRECT LOCATION
-    dropoffHeight = groundHeightFormula(dropStretch) + 15
-    jumpStretch   = jumpStretchFormula(dropoffHeight)
-
-    print 'dropoffHeight: ', dropoffHeight, ' jumpstretch: ', jumpStretch
+    #Go over the correct location
     Robot.moveTo(height=0, relative=False)
     sleep(.1)
     Robot.moveTo(relative=False, **location)
+
+    #DROP PIECE IN CORRECT LOCATION
+    #dropoffHeight = groundHeightFormula(dropStretch) + 15
+    dropoffHeight = groundHeightFormula(Robot.pos['stretch']) + 15
+    jumpStretch   = jumpStretchFormula(dropoffHeight)
+
+    print 'placePiece(): dropoffHeight: ', dropoffHeight, ' jumpstretch: ', jumpStretch
+
     Robot.moveTo(stretch=jumpStretch)
     sleep(.5)
 
@@ -1058,18 +1072,17 @@ def getBoardCorners():
 
     #This defines the area where the robot will look for corners of the board. TODO: move these constants somewhere in the main program, or prompt user for them
     ## It will then find the marker and refine that to an exact location.
-    searchPositions = [{'stretch':  29, 'rotation':  13},
-                       {'stretch':  32, 'rotation': -37},
-                       {'stretch': 176, 'rotation': -26},
-                       {'stretch': 173, 'rotation':   0}]
-
+    searchPositions = [{'stretch':  42.0, 'rotation':  22.5},
+                       {'stretch':  47.0, 'rotation': -29.5},
+                       {'stretch': 171.0, 'rotation': -18.0},
+                       {'stretch': 171.0, 'rotation':  11.5}]
 
     #This defines the settings the robot should use when targeting the markers at different heights.
-    setting = [{'height': 100, 'tolerance': 7},
-               {'height':  37, 'tolerance': 6},
-               {'height':  5, 'tolerance':  5},
-               {'height':  -6, 'tolerance': 5},
-               {'height': -15, 'tolerance': 4}]
+    setting = [{'height':  100, 'tolerance': 7},
+               {'height':   10, 'tolerance': 6},
+               {'height':  -15, 'tolerance': 5},
+               {'height':  -35, 'tolerance': 5},
+               {'height':  -45, 'tolerance': 4}]
 
     tolerance       = 0.3                       #Find 4 shapes (a marker) that are [tolerance]% different
     cornerPositions = [{'corners': [], 'height': 0, 'distFromBase':0} for i in range(0, len(setting))]  #Corner positions at each height. There are 4 heights, thus 4 sets of 4 corners.
@@ -1084,7 +1097,8 @@ def getBoardCorners():
         sleep(.25)
 
 
-        for i, s in enumerate(setting):  #For each height find the marker, focus on it, and record the position of the corners
+        for i, s in enumerate(setting):  #  For each height find the marker, focus on it, record the position of corners
+            print "getBoardCorners(): Currently at height: ", s["height"]
             Robot.moveTo(height=s['height'], relative=False, waitForRobot=True)
 
             #WAIT FOR CAMERA TO FOCUS
@@ -1195,7 +1209,7 @@ def getMotionAndBlur(**kwargs):
 
     #MOVE TO POSITION
     Robot.moveTo(relative=False, **Robot.home)
-    Robot.moveTo(height = -15, relative=False)
+    Robot.moveTo(height=-15, relative=False)
     sleep(2)
 
     focusCamera(threshold=230)
@@ -1253,7 +1267,7 @@ def getGroundFormula(cornersLow):
 
     Robot.moveTo(relative=False, height=0, **heightPositions[0])
     sleep(.2)
-    while Robot.pos['height'] > -45 and Robot.getOutput('touch')['touch']:
+    while Robot.pos['height'] > -95 and Robot.getOutput('touch')['touch']:
         Robot.moveTo(height = -5)
         sleep(.2)
     groundHeight['bottom']['stretch'] = Robot.pos['stretch']
@@ -1262,11 +1276,11 @@ def getGroundFormula(cornersLow):
 
 
 
-    Robot.moveTo(height=0, relative = False)
+    Robot.moveTo(height=0, relative=False)
     sleep(.1)
     Robot.moveTo(relative=False, **heightPositions[1])
     sleep(.1)
-    while Robot.pos['height'] > -75 and Robot.getOutput('touch')['touch']:
+    while Robot.pos['height'] > -95 and Robot.getOutput('touch')['touch']:
         Robot.moveTo(height = -7.5)
         sleep(.2)
 
@@ -1429,11 +1443,11 @@ def getMarkerPerimeter(tolerance, **kwargs):
     #  TODO: Make sure that if it doesn't see 4 small blocks, that it doesn't confuse the big ones as the markers
 
     avgPerimeter    = 0    #The average pixel area of the markers.
-    similarShapeSets = []  #Records sets of 4 shapes that are similar in size, later to be whittled down more.
 
     while avgPerimeter == 0:
         shapeArray = objTracker.getShapes(4, minArea = 500, maxArea = (vid.frame.shape[0] * vid.frame.shape[1]) / 3)[::-1]
         shapeArray = sorted(shapeArray, key = lambda s: s.perimeter)
+        similarShapeSets = []  #Records sets of 4 shapes that are similar in size, later to be whittled down more.
         shapeArrayCopy = shapeArray[:]
 
         vid.windowFrame['Perspective'] = objTracker.drawShapes(shapeArray, color=(0, 0, 255))
@@ -1453,8 +1467,9 @@ def getMarkerPerimeter(tolerance, **kwargs):
 
         if len(similarShapeSets) >= 1:
             similarShapeSets = sorted(similarShapeSets, key = lambda ss: sum(ss[i].perimeter for i in range(len(ss))) / len(ss))  #Sort by perimeter smallest to largest
-
-            sizeRange        = shapeArray[-1].perimeter / (sum(similarShapeSets[0][i].perimeter for i in range(len(similarShapeSets[0]))) / len(similarShapeSets[-1]))  #How much smaller the last similarShapeSet is compared to the first one
+            #print "shapearray: ", shapeArray
+            #print "similarshapesets: ", similarShapeSets
+            sizeRange = shapeArray[-1].perimeter / (sum(similarShapeSets[0][i].perimeter for i in range(len(similarShapeSets[0]))) / len(similarShapeSets[-1]))  #How much smaller the last similarShapeSet is compared to the first one
 
             #print 'shapeArray: ', shapeArray, '\n'
             #print 'similarShapeSets Sorted', similarShapeSets,
@@ -1485,6 +1500,7 @@ def getMarker(avgPerimeter, tolerance, **kwargs):
 
     shapes = []
     while attempts <= maxAttempts:  #Find at least 4 squares of the correct shape and size
+        lastFrame = vid.frameCount
 
         shapes = objTracker.getShapes(4, minPerimeter = avgPerimeter - avgPerimeter * tolerance * 2, maxPerimeter = avgPerimeter + avgPerimeter * tolerance * 2)
 
@@ -1499,7 +1515,6 @@ def getMarker(avgPerimeter, tolerance, **kwargs):
         if len(shapes) < squaresInMarker:
 
             if attempts != maxAttempts:
-                lastFrame = vid.frameCount
                 while lastFrame == vid.frameCount:
                     pass
             else:
@@ -1510,9 +1525,12 @@ def getMarker(avgPerimeter, tolerance, **kwargs):
 
     #Shorten the list to the squares closest to center screen (Most likely to be relevant markers)
     shapes = objTracker.sortShapesByDistance(shapes)[:4]
+
     vid.windowFrame['Perspective'] = objTracker.drawShapes(shapes)
+
     cv2.waitKey(1)
     markerCentroid = tuple(objTracker.getShapesCentroid(shapes))
+    vid.windowFrame['Perspective'] = cv2.circle(vid.windowFrame['Perspective'], markerCentroid, 3, (0, 255, 0), 3, 3)
 
     if len(markerCentroid) == 0:
         print 'getMarker:():\t ERROR: No marker centroid detected'
@@ -1535,12 +1553,12 @@ def runRobot():
     #global exitApp
     global keyPressed  #Is set in the main function, because CV2 can only read keypresses in the main function. Is a character.
 
-    Robot.moveTo(relative = False, waitForRobot = True, **Robot.home)
+    Robot.moveTo(relative=False, waitForRobot=True, **Robot.home)
     Robot.setGrabber(0)
 
     playCheckers()
 
-    #MAIN ROBOT FUNCTION
+
     while not exitApp:
 
         if keyPressed == 'h':  #HELP COMMAND
@@ -1548,33 +1566,32 @@ def runRobot():
 
 
         if keyPressed == 'x':  #MOVE TO XY
-            #Robot.moveTo(height = float(raw_input('Height?:')), rotation = float(raw_input('Rotation?:')), stretch = float(raw_input('Stretch:')), relative = False)
-            #Robot.moveTo(height = 150, rotation = float(raw_input('Rotation?:')), stretch = float(raw_input('Stretch:')), relative = False)
-            #Robot.moveTo(height = 150, stretch = float(raw_input('Stretch:')), relative = False)
-            #Robot.moveTo(x=float(raw_input('X?: ')), y=float(raw_input('Y?: ')), relative=False)
-            Robot.moveTo(stretch=float(raw_input('Stretch?:')))
-            #Robot.moveTo(height=float(raw_input('height?:')), relative=False)
+            while True:
+                Robot.moveTo(x=float(raw_input('Stretch?:')), y=float(raw_input('Rotation?:')), height=-15, stretchDistFromBase=157.4, relative=False)
 
         if keyPressed == 'p':  #PLAY CHECKERS
             playCheckers()
 
         if keyPressed == 'c':  #PLAY CHECKERS
-            cornerInfo = [{'corners': [{'y': -40.972018918482874, 'x': 184.8128341478034},  {'y': 114.52539890583479, 'x': 151.98033756199985}, {'y': 150.0544435459012,  'x': 307.6572020482049},  {'y': -8.934192457477108, 'x': 341.1830450141577}], 'distFromBase': 158.3,  'height': 100},
-                     {'corners': [{'y': -37.112236810970046, 'x': 174.5993467309843},  {'y': 109.14998136887112, 'x': 147.50773392325937}, {'y': 147.77390766522245, 'x': 290.02262362331373}, {'y': -8.572950570828457, 'x': 327.387773929495}],   'distFromBase': 162.5, 'height':  37},
-                     {'corners': [{'y': -46.42989761657374,  'x': 201.10998137167255}, {'y': 121.99579037334762, 'x': 158.98800939436353}, {'y': 154.00209457831087, 'x': 330.25855759615524}, {'y': -0.0, 'x': 363.4}],                            'distFromBase': 198.4, 'height':   5},
-                     {'corners': [{'y': -36.10085759999442,  'x': 194.78279718841944}, {'y': 123.32014951791244, 'x': 155.03467587246323}, {'y': 152.15862505048878, 'x': 311.9714134704409},  {'y': 3.1075192909709584, 'x': 356.08644080315145}], 'distFromBase': 191.1, 'height':  -6},
-                     {'corners': [{'y': -40.73086900143339,  'x': 200.1986171540355},  {'y': 117.35853582603964, 'x': 158.600958599777},   {'y': 154.87652616058105, 'x': 317.5439365574957},  {'y': 3.100538062572259,  'x': 355.2864712647001}],  'distFromBase': 197.3, 'height': -15}]
-            corners = cornerInfo[-1]
+            while True:
+                cornerInfo = [{'corners': [{'y': -60.876968021935895, 'x': 133.58231456467655}, {'y': 66.57106760303932, 'x': 125.20196866739586}, {'y': 90.06109062127139, 'x': 254.32467429666974}, {'y': -53.988836640177, 'x': 265.36361001132065}], 'distFromBase': 85.80000000000001, 'height': 100},
+                              {'corners': [{'y': -63.116311532279575, 'x': 138.49610542740987}, {'y': 64.88096997701011, 'x': 122.0233573331037}, {'y': 82.87835789136089, 'x': 255.07335767036017}, {'y': -53.86921587952668, 'x': 264.77565518854817}], 'distFromBase': 90.2, 'height': 10},
+                              {'corners': [{'y': -60.669621400607774, 'x': 133.1273339292383}, {'y': 66.33633182164638, 'x': 124.7604948709664}, {'y': 84.81553465708113, 'x': 253.4869130366171}, {'y': -50.62162647339734, 'x': 260.4256917686653}], 'distFromBase': 88.30000000000001, 'height': -15},
+                              {'corners': [{'y': -62.95043423521709, 'x': 138.13212091905928}, {'y': 71.00122352662973, 'x': 130.76798636410047}, {'y': 93.3991592136091, 'x': 263.7510892075915}, {'y': -53.96078389248687, 'x': 277.6041674789994}], 'distFromBase': 100.80000000000001, 'height': -35},
+                              {'corners': [{'y': -61.188494721420284, 'x': 144.15106005065218}, {'y': 70.90579177457782, 'x': 130.59222294156808}, {'y': 93.66620470099612, 'x': 264.5052024004653}, {'y': -46.147310598645475, 'x': 275.76545418980993}], 'distFromBase': 104.60000000000001, 'height': -45}]
 
-            sqrPos  =  getSquarePosition(int(raw_input('Column?')), int(raw_input('Row?')), corners['corners'])
-            Robot.moveTo(relative=False, height=corners['height'], stretchDistFromBase=corners['distFromBase'], **sqrPos)
+
+                corners = cornerInfo[-1]
+
+                sqrPos  =  getSquarePosition(int(raw_input('Column?')), int(raw_input('Row?')), corners['corners'])
+                Robot.moveTo(relative=False, height=corners["height"], stretchDistFromBase=corners['distFromBase'], **sqrPos)
 
 if '__main__' == __name__:
     print 'Start!'
     #SET UP VIDEO CLASS AND WINDOWS VARIABLES
     vid = Vision.Video()
-    vid.createNewWindow('Main',             xPos = 0,   yPos = 10)
-    vid.createNewWindow('Perspective',      xPos = 1020, yPos = 10)
+    vid.createNewWindow('Main',             xPos=0,    yPos=10)
+    vid.createNewWindow('Perspective',      xPos=1020, yPos=10)
     sleep(3)
     vid.getVideo()      #Get the first few frames
     vid.setCamResolution(1000, 1000)  #Sets the resolution as high as the camera allows
@@ -1595,8 +1612,8 @@ if '__main__' == __name__:
     global boardSize
 
 
-    camDistFromGrabber = 1.4   #(inches) Horizontal inches from the camera to the sucker of the robot. Used later for picking up checker pieces  #TODO: put in setup somewhere
-    boardLength        = 6.5   #(inches) Side length of board in inches
+    camDistFromGrabber = 1.47   #(inches) Horizontal inches from the camera to the sucker of the robot. Used later for picking up checker pieces  #TODO: put in setup somewhere
+    boardLength        = 5.9   #(inches) Side length of board in inches
     boardSize          = 6     #Squares per side of board
 
     exitApp            = False
@@ -1607,7 +1624,7 @@ if '__main__' == __name__:
     robotThread = Thread(target = runRobot)
     robotThread.start()
 
-
+    vid.windowFrame["perspective"] = vid.frame
     #DISPLAY VIDEO/IMAGE REC. MAIN THREAD.
     while not exitApp:
         vid.getVideo()
@@ -1648,7 +1665,7 @@ if '__main__' == __name__:
         vid.display('Perspective')
 
         #RECORD KEYPRESSES AS A CHARACTER IN A STRING
-        ch = cv2.waitKey(90)                                     #Wait between frames, and also check for keys pressed.
+        ch = cv2.waitKey(150)                                     #Wait between frames, and also check for keys pressed.
         keyPressed = chr(ch + (ch == -1) * 256).lower().strip()  #Convert ascii to character, and the (ch == -1)*256 is to fix a bug. Used mostly in runRobot() function
         if keyPressed == chr(27): exitApp = True                 #If escape has been pressed, close program
         if keyPressed == 'p':                                    #Pause and unpause when spacebar has been pressed

@@ -146,7 +146,6 @@ class Video:  #Handles basic video functions
         KWARGS:
             "frame" : The frame to display. Defaults to the frame corrosponding to this window in the array self.windowFrame
         """
-
         cv2.imshow(window, self.windowFrame[window])
 
     def getDimensions(self):
@@ -234,7 +233,7 @@ class ObjectTracker:
         gray = cv2.cvtColor(frameToAnalyze, cv2.COLOR_BGR2GRAY)
         gray = cv2.bilateralFilter(gray, bilateralConstant, bilateralConstant, 27)  #Blurs photo while maintaining edge integrity. Up the 2nd number for more lag but accuracy
         #self.vid.windowFrame["Main"] = gray
-        ret, gray = cv2.threshold(gray, 115, 255, thresholdMethod)                  #Use a threshold on the image (black and white)
+        ret, gray = cv2.threshold(gray, 100, 255, thresholdMethod)                  #Use a threshold on the image (black and white)
         edged = cv2.Canny(gray, 100, 130)                                           #Gets edged version of photo. 2nd and 3rd numbers are the thresholds (100,130 for optimal)
         cnts, _ = cv2.findContours(edged.copy(), contourMethod, cv2.CHAIN_APPROX_SIMPLE  )
         cv2.drawContours(edged, cnts, -1, (255, 255, 255), 3)
